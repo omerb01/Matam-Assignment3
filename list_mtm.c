@@ -3,17 +3,21 @@
 //
 
 #include "list_mtm.h"
+#include "node_mtm.h"
 
-typedef struct Node_t *Node;
 struct Node_t {
     ListElement data;
     Node next;
+    Node previous;
+    compareNodeElement compare;
+    copyNodeElement copy;
+    displayNodeElement display;
 };
 
-typedef struct List_t {
+struct List_t {
     Node head;
     ListElement iterator;
-} *List;
+};
 
 int main() {
     return 0;

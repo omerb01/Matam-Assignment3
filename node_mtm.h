@@ -7,8 +7,9 @@
 
 typedef void *NodeElement;
 
-typedef int (*compareFunction)(NodeElement, NodeElement);
-typedef int (*labelFunction)(NodeElement, NodeElement);
+typedef int (*compareNodeElement)(NodeElement, NodeElement);
+typedef int (*copyNodeElement)(NodeElement, NodeElement);
+typedef int (*displayNodeElement)(NodeElement, NodeElement);
 
 typedef struct Node_t *Node;
 
@@ -22,9 +23,10 @@ typedef enum {
 } NodeResult;
 
 //------------------------------------------------------------------------------------------
-// Create a new empty array
-// returns the new array or NULL if can not create one
-Node nodeCreate();
+// Create a new node and connects a given element
+// uses duplication for the given element
+// returns the new node or NULL if can not create one
+Node nodeCreate(NodeElement element, compareNodeElement, displayNodeElement, copyNodeElement);
 
 //------------------------------------------------------------------------------------------
 // add a given node in a position that appears
@@ -54,7 +56,7 @@ NodeResult nodeAddNodeElementEnd(Node, NodeElement);
 // return values : NODE_OK, NODE_ILLEGAL_INDEX.
 NodeResult
 nodeIndexOfNodeElement(Node node, NodeElement element, int base_index,
-                       compareFunction,
+                       compareNodeElement,
                        int *result_index);
 
 //------------------------------------------------------------------------------------------
@@ -71,10 +73,10 @@ NodeResult nodeUpdateNodeElement(Node da, int id, NodeElement element);
 
 //------------------------------------------------------------------------------------------
 // display the element in the given index i.
-// this function uses labelFunction that is guaranteed by the user
+// this function uses displayNodeElement that is guaranteed by the user
 // no need to do here '\n'.
 // return values : NODE_OK, NODE_ILLEGAL_INDEX
-NodeResult nodeDisplayNodeElement(Node da, int i, labelFunction);
+NodeResult nodeDisplayNodeElement(Node da, int i, displayNodeElement);
 
 //------------------------------------------------------------------------------------------
 // display all the elements according to their position, from left to right.
