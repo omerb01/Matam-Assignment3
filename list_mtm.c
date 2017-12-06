@@ -6,17 +6,16 @@
 #include "node_mtm.h"
 
 struct Node_t {
-    ListElement data;
+    NodeElement data;
     Node next;
     Node previous;
-    compareNodeElement compare;
-    copyNodeElement copy;
-    displayNodeElement display;
+    CopyNodeElement copy;
+    FreeNodeElement free;
 };
 
 struct List_t {
     Node head;
-    ListElement iterator;
+    Node iterator;
 };
 
 int main() {
