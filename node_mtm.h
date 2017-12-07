@@ -41,6 +41,9 @@ Node nodeCopy(Node node);
 NodeElement nodeGetElement(Node node);
 
 //------------------------------------------------------------------------------------------
+Node nodeGetNext(Node node);
+
+//------------------------------------------------------------------------------------------
 typedef int (*CompareNodeElement)(NodeElement, NodeElement);
 typedef void* NodeSortKey;
 NodeResult nodeCompare(Node node1, Node node2, NodeSortKey,

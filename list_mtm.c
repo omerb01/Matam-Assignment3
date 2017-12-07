@@ -7,15 +7,15 @@
 
 struct Node_t {
     NodeElement data;
-    Node next;
-    Node previous;
+    Node* next;
+    Node* previous;
     CopyNodeElement copy;
     FreeNodeElement free;
 };
 
 struct List_t {
     Node head;
-    Node iterator;
+    Node* iterator;
 };
 
 int main() {
