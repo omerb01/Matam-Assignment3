@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "node_mtm.h"
 
-int test_counter = 0;
+int test_counter = 1;
 
 #define ASSERT(test_condition)  \
    if (!(test_condition)) {printf("TEST %d FAILED\n", test_counter); } \
@@ -14,14 +14,14 @@ int test_counter = 0;
     test_counter++;
 
 NodeElement copyInt(NodeElement num) {
-    int *result = malloc(sizeof(*result));
+    int *result = malloc(sizeof(int));
     if (result == NULL) return NULL;
     *result = *(int *) num;
     return (void *) result;
 }
 
 void freeInt(NodeElement num) {
-    free(num);
+    free((int*)num);
 }
 
 int compareInt(NodeElement num1, NodeElement num2, NodeSortKey key) {
@@ -38,7 +38,7 @@ bool filterInt(NodeElement num, NodeFilterKey key) {
 int main() {
 
     NodeResult error;
-    int* element = malloc(sizeof(*element));
+    int* element = malloc(sizeof(int));
     printf("start testing node_mtm.c ... \n");
 
     *element = 1;
@@ -82,14 +82,18 @@ int main() {
     error = nodeUpdateElement(node1, element);
     ASSERT(error == NODE_OK && *(int*)nodeGetElement(node1) == 50);
 
+    ASSERT(*(int*)nodeGetElement(node4) == 1);
+
     *element = 25;
     ASSERT(*(int*)nodeGetElement(node1) == 50);
 
     error = nodeClear(node1);
     ASSERT(error == NODE_OK && nodeIsEmpty(node1) == true);
 
-    freeInt(element);
     nodeDestroy(node1);
+    ASSERT(node1 == NULL);
+
+    freeInt(element);
     nodeDestroy(node2);
     nodeDestroy(node3);
     nodeDestroy(node4);
