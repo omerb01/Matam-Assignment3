@@ -9,8 +9,8 @@
 
 typedef void *NodeElement;
 
-typedef int (*FreeNodeElement)(NodeElement);
-typedef int (*CopyNodeElement)(NodeElement);
+typedef void (*FreeNodeElement)(NodeElement);
+typedef NodeElement (*CopyNodeElement)(NodeElement);
 
 typedef struct Node_t *Node;
 
