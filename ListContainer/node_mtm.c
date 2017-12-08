@@ -76,7 +76,7 @@ int nodeCompare(Node node1, Node node2, CompareNodeElement compare, NodeSortKey 
 }
 
 bool nodeFilter(Node node, FilterNodeElement filterElement, NodeFilterKey key) {
-    assert(node != NULL && key != NULL && filterElement != NULL);
+    assert(node != NULL && filterElement != NULL);
     assert(node->data != NULL);
     return filterElement(node->data, key);
 }
