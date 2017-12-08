@@ -55,8 +55,8 @@ Node nodeGetNext(Node node);
 // returns 0 if the nodes are equal, 1 if node1 is bigger than
 // node2 and -1 if node1 is smaller than node2
 // checks by assert if the given nodes and their stored elements are not NULL
-typedef int (*CompareNodeElement)(NodeElement, NodeElement);
 typedef void* NodeSortKey;
+typedef int (*CompareNodeElement)(NodeElement, NodeElement, NodeSortKey);
 int nodeCompare(Node node1, Node node2, NodeSortKey,
                        CompareNodeElement);
 
@@ -65,8 +65,8 @@ int nodeCompare(Node node1, Node node2, NodeSortKey,
 // garenteed by filterFunction and a filter key
 // overwise returns FALSE
 // checks by assert if the given nodes and their stored elements are not NULL
-typedef int (*FilterNodeElement)(NodeElement, NodeElement);
 typedef void* NodeFilterKey;
+typedef bool (*FilterNodeElement)(NodeElement, NodeFilterKey);
 bool nodeFilter(Node node, NodeFilterKey, FilterNodeElement);
 
 //------------------------------------------------------------------------------------------
