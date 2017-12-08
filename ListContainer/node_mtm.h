@@ -5,18 +5,17 @@
 #ifndef ASSIGNMENT3_NODE_MTM_H
 #define ASSIGNMENT3_NODE_MTM_H
 
+#include <stdbool.h>
+
 typedef void *NodeElement;
 
-typedef int (*FreeNodeElement)(NodeElement);
-typedef int (*CopyNodeElement)(NodeElement);
-//typedef int (*displayNodeElement)(NodeElement, NodeElement);
+typedef void (*FreeNodeElement)(NodeElement);
+typedef NodeElement (*CopyNodeElement)(NodeElement);
 
 typedef struct Node_t *Node;
 
-
 /*******************************************************************/
 /* Interface of data type Node  */
-
 
 typedef enum {
     NODE_OK, NODE_MEMORY_ERROR, NODE_ELEMENT_OVERRIDE
@@ -24,36 +23,50 @@ typedef enum {
 
 //------------------------------------------------------------------------------------------
 // Create a new node and connects a given element
-// checks by assert element != NULL
 // makes duplication for the given element
 // returns the new node or NULL if can not create one
 Node nodeCreate(NodeElement element, CopyNodeElement, FreeNodeElement);
 
 //------------------------------------------------------------------------------------------
+// returns TRUE if the given node doesnt include any element
+// otherwise returns FALSE
+// checks by assert if the given node isnt NULL
 bool nodeIsEmpty(Node node);
 
 //------------------------------------------------------------------------------------------
+// creates a new exact copy of a given node
+// checks by assert if the given node isnt NULL
+// creates new memory by duplication function that stored in the given node
+// returns a pointer for the node copy or NULL if failed to allocate memory
 Node nodeCopy(Node node);
 
 //------------------------------------------------------------------------------------------
 // returns the element that stored by a given node
-// element could not be NULL
+// checks by assert if the given node isnt NULL
 NodeElement nodeGetElement(Node node);
 
 //------------------------------------------------------------------------------------------
+// returns the next node which connects to the given node
+// checks by assert if the given node isnt NULL
 Node nodeGetNext(Node node);
 
 //------------------------------------------------------------------------------------------
-typedef int (*CompareNodeElement)(NodeElement, NodeElement);
+// makes comparison between 2 nodes by specific compare function and a sort key
+// returns 0 if the nodes are equal, 1 if node1 is bigger than
+// node2 and -1 if node1 is smaller than node2
+// checks by assert if the given nodes and their stored elements are not NULL
 typedef void* NodeSortKey;
-NodeResult nodeCompare(Node node1, Node node2, NodeSortKey,
-                       CompareNodeElement, int* result);
+typedef int (*CompareNodeElement)(NodeElement, NodeElement, NodeSortKey);
+int nodeCompare(Node node1, Node node2, CompareNodeElement, NodeSortKey);
 
 //------------------------------------------------------------------------------------------
-typedef int (*FilterNodeElement)(NodeElement, NodeElement);
+// returns TRUE is a given node is setting up a given condition which
+// garenteed by filterFunction and a filter key
+// overwise returns FALSE
+// checks by assert if the given nodes and their stored elements are not NULL
 typedef void* NodeFilterKey;
-NodeResult nodeFilter(Node node, NodeFilterKey, FilterNodeElement, bool*
-result);
+typedef bool (*FilterNodeElement)(NodeElement, NodeFilterKey);
+bool nodeFilter(Node node, FilterNodeElement, NodeFilterKey);
 
 //------------------------------------------------------------------------------------------
 // connects a given "next node" to the next node
@@ -64,37 +77,25 @@ result);
 NodeResult nodeAddNext(Node node, Node next);
 
 //------------------------------------------------------------------------------------------
-// connects a given "previous node" to the previous node
-// if node's next != NULL returns NODE_ELEMENT_OVERIDE error
-// checks by assert node != NULL && next != NULL
-// no need for duplication or destroy
-// returns NODE_OK, NODE_ELEMENT_OVERRIDE
-NodeResult nodeAddPrevious(Node node, Node previous);
-
-//------------------------------------------------------------------------------------------
 // initilize the next node by NULL
-// no need for destroy
+// no need to deallocate anything
+// checks by assert if the given node isnt NULL
 // returns NODE_OK
-//NodeResult nodeRemoveNext(Node node);
-
-//------------------------------------------------------------------------------------------
-// initilize the previous node by NULL
-// no need for destroy
-// returns NODE_OK
-//NodeResult nodeRemovePrevious(Node node);
+NodeResult nodeRemoveNext(Node node);
 
 //------------------------------------------------------------------------------------------
 // update an existing element in a given position (index) to be identical
 // to a given element. the given element must not be changed.
+// checks by assert if the given node isnt NULL
 // return values : NODE_OK, NODE_MEMORY_ERROR
 NodeResult nodeUpdateElement(Node node, NodeElement element);
 
 //------------------------------------------------------------------------------------------
-// display the element in the given index i.
-// this function uses displayNodeElement that is guaranteed by the user
-// no need to do here '\n'.
+// deallocate an element which stored by a given node
+// initilizes element by NULL
+// checks by assert if the given node isnt NULL
 // return values : NODE_OK
-//NodeResult nodeDisplayElement(Node node, displayNodeElement);
+NodeResult nodeClear(Node node);
 
 //------------------------------------------------------------------------------------------
 // deallocate all relevant memory and stop using the node
