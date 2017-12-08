@@ -50,9 +50,29 @@ Node nodeCopy(Node node) {
     return node_copy;
 }
 
+bool nodeIsEmpty(Node node) {
+    assert(node != NULL);
+    if (node->data == NULL) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+NodeElement nodeGetElement(Node node) {
+    assert(node != NULL);
+    return node->data;
+}
+
 Node nodeGetNext(Node node) {
     assert(node != NULL);
     return node->next;
+}
+
+int nodeCompare(Node node1, Node node2, CompareNodeElement compare, NodeSortKey key) {
+    assert(node1 != NULL && node2 != NULL && node1->data != NULL &&
+           node2->data != NULL);
+    return compare(node1->data,node2->data,key);
 }
 
 bool nodeFilter(Node node, FilterNodeElement filterElement, NodeFilterKey key) {
@@ -61,15 +81,46 @@ bool nodeFilter(Node node, FilterNodeElement filterElement, NodeFilterKey key) {
     return filterElement(node->data, key);
 }
 
+NodeResult nodeAddNext(Node node, Node next){
+    assert(node != NULL && next != NULL);
+    if(node->next != NULL){
+        return NODE_ELEMENT_OVERRIDE;
+    }
+    else{
+        node->next = next;
+    }
+    return NODE_OK;
+}
+
 NodeResult nodeRemoveNext(Node node) {
     assert(node != NULL);
     node->next = NULL;
     return NODE_OK;
 }
 
+NodeResult nodeUpdateElement(Node node, NodeElement element){
+    assert(node != NULL && element != NULL);
+    NodeElement new_data = node->copyElement(element);
+    if (new_data == NULL){
+        return NODE_MEMORY_ERROR;
+    }
+    node->data=new_data;
+    return NODE_OK;
+}
+
 NodeResult nodeClear(Node node) {
     assert(node != NULL);
-    if(node->data == NULL) return NODE_OK;
+    if (node->data == NULL) return NODE_OK;
     node->freeElement(node->data);
     return NODE_OK;
+}
+
+void nodeDestroy(Node node){
+    if(node == NULL){
+        return;
+    }
+    else{
+        nodeClear(node);
+        free(node);
+    }
 }
