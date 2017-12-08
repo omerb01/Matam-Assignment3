@@ -21,7 +21,7 @@ NodeElement copyInt(NodeElement num) {
 }
 
 void freeInt(NodeElement num) {
-    free((int*)num);
+    free(num);
 }
 
 int compareInt(NodeElement num1, NodeElement num2, NodeSortKey key) {
