@@ -55,8 +55,7 @@ Node nodeGetNext(Node node) {
     return node->next;
 }
 
-bool nodeFilter(Node node, NodeFilterKey key, FilterNodeElement
-filterElement) {
+bool nodeFilter(Node node, FilterNodeElement filterElement, NodeFilterKey key) {
     assert(node != NULL && key != NULL && filterElement != NULL);
     assert(node->data != NULL);
     return filterElement(node->data, key);

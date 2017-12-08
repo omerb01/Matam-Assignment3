@@ -57,8 +57,7 @@ Node nodeGetNext(Node node);
 // checks by assert if the given nodes and their stored elements are not NULL
 typedef void* NodeSortKey;
 typedef int (*CompareNodeElement)(NodeElement, NodeElement, NodeSortKey);
-int nodeCompare(Node node1, Node node2, NodeSortKey,
-                       CompareNodeElement);
+int nodeCompare(Node node1, Node node2, CompareNodeElement, NodeSortKey);
 
 //------------------------------------------------------------------------------------------
 // returns TRUE is a given node is setting up a given condition which
@@ -67,7 +66,7 @@ int nodeCompare(Node node1, Node node2, NodeSortKey,
 // checks by assert if the given nodes and their stored elements are not NULL
 typedef void* NodeFilterKey;
 typedef bool (*FilterNodeElement)(NodeElement, NodeFilterKey);
-bool nodeFilter(Node node, NodeFilterKey, FilterNodeElement);
+bool nodeFilter(Node node, FilterNodeElement, NodeFilterKey);
 
 //------------------------------------------------------------------------------------------
 // connects a given "next node" to the next node
