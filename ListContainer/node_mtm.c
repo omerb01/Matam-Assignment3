@@ -112,6 +112,7 @@ NodeResult nodeClear(Node node) {
     assert(node != NULL);
     if (node->data == NULL) return NODE_OK;
     node->freeElement(node->data);
+    node->data = NULL;
     return NODE_OK;
 }
 

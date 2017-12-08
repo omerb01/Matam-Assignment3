@@ -90,10 +90,8 @@ int main() {
     error = nodeClear(node1);
     ASSERT(error == NODE_OK && nodeIsEmpty(node1) == true);
 
-    nodeDestroy(node1);
-    ASSERT(node1 == NULL);
-
     freeInt(element);
+    nodeDestroy(node1);
     nodeDestroy(node2);
     nodeDestroy(node3);
     nodeDestroy(node4);
