@@ -10,9 +10,9 @@ typedef void *Element;
 typedef int (*cmpFunction)(Element, Element);
 
 void swap(Element *p1, Element *p2) {
-    int temp = *(int*)p1;
-    *(int*)p1 = *(int*)p2;
-    *(int*)p2 = temp;
+    Element temp = *p1;
+    *p1 = *p2;
+    *p2 = temp;
 }
 
 int partition(Element *array, int n, cmpFunction compare) {
@@ -53,17 +53,19 @@ int cmpInt(Element e1, Element e2) {
 
 int main() {
 
-    int array[4] = {4,3,3,1};
-    int* parray[4];
-    for (int i = 0; i < 4; ++i) {
+    int array[10] = {5,2,7,3,1,7,2,9,3,0};
+    void* parray[10];
+    for (int i = 0; i < 10; ++i) {
         parray[i] = array+i;
     }
 
-    quick_sort((void**)parray, 4, cmpInt);
+    quick_sort(parray, 10, cmpInt);
 
-    for (int j = 0; j < 4; ++j) {
-        printf("%d, ", *parray[j]);
+    printf("\n");
+    for (int j = 0; j < 10; ++j) {
+        printf("%d, ", *(int*)parray[j]);
     }
+    printf("\n");
 
     return 0;
 }
