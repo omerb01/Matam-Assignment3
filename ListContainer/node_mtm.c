@@ -104,6 +104,7 @@ NodeResult nodeUpdateElement(Node node, NodeElement element){
     if (new_data == NULL){
         return NODE_MEMORY_ERROR;
     }
+    node->freeElement(node->data);
     node->data=new_data;
     return NODE_OK;
 }
