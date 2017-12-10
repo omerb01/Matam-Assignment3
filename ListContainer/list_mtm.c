@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "list_mtm.h"
 #include "node_mtm.h"
-
+#include "bubblesort.h"
 
 struct List_t {
     Node head;
@@ -233,12 +233,32 @@ ListResult listRemoveCurrent(List list){
     return LIST_SUCCESS;
 }
 
-static void quickSort(List list, CompareListElements compareElement,ListFilterKey key){
-
-}
-
 ListResult listSort(List list, CompareListElements compareElement, ListSortKey key){
-    return LIST_SUCCESS; // DUMMY, for now
+    if (list == NULL || compareElement == NULL || key == NULL){
+        return LIST_NULL_ARGUMENT;
+    }
+    NodeElement temp_iterator;
+    temp_iterator = list->iterator;
+    int counter=0;
+    if(list->iterator != NULL){
+        LIST_FOREACH(ListElement, iterator, list){
+            if(iterator == temp_iterator){
+                break;
+            }
+            counter++;
+        }
+    }
+    list->iterator = temp_iterator;
+    bubbleSort(list, compareElement, key);
+    if(list->iterator != NULL){
+        LIST_FOREACH(ListElement, iterator, list){
+            if(counter == 0){
+                break;
+            }
+            counter--;
+        }
+    }
+    return LIST_SUCCESS;
 }
 
 List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
@@ -262,6 +282,32 @@ List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
 
     list_copy->iterator = NULL;
     return list_copy;
+}
+
+ListResult listClear(List list){
+    if(list == NULL){
+        return LIST_NULL_ARGUMENT;
+    }
+    NodeElement node = list->head;
+    NodeElement node_next;
+    if(nodeIsEmpty(node)){
+        return LIST_SUCCESS;
+    }
+    while(node != NULL){
+        node_next = nodeGetNext(node);
+        if(node_next != NULL){
+            list->iterator = node;
+            assert(listRemoveCurrent(list) == LIST_SUCCESS);
+            node = node_next;
+
+        }
+        else{
+            assert(nodeClear(node) == NODE_OK);
+            break;
+        }
+    }
+    list->iterator=NULL;
+    return LIST_SUCCESS;
 }
 
 void listDestroy(List list) {
