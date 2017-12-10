@@ -17,7 +17,7 @@ struct List_t {
 };
 
 List listCreate(CopyListElement copyElement, FreeListElement freeElement) {
-    assert(copyElement != NULL && freeElement != NULL);
+    if(copyElement == NULL || freeElement == NULL) return NULL;
 
     List list = malloc(sizeof(*list));
     Node head = nodeCreate(NULL, copyElement, freeElement);
@@ -27,6 +27,7 @@ List listCreate(CopyListElement copyElement, FreeListElement freeElement) {
         return NULL;
     }
 
+    list->head = head;
     list->copyElement = copyElement;
     list->freeElement = freeElement;
     list->iterator = NULL;
@@ -34,24 +35,20 @@ List listCreate(CopyListElement copyElement, FreeListElement freeElement) {
 }
 
 List listCopy(List list){
-    assert(list != NULL);
+    if(list == NULL) return NULL;
     List new_list = listCreate(list->copyElement,list->freeElement);
     if (new_list == NULL){
         return NULL;
     }
     ListResult error;
-    int nop_counter=0;
     Node temp_iterator = list->iterator;
-    LIST_FOREACH(ListElement, iterator, list){
-        error = listInsertLast(new_list,iterator);
+    LIST_FOREACH(ListElement, current_element, list){
+        error = listInsertLast(new_list,current_element);
         if (error == LIST_OUT_OF_MEMORY){
             listDestroy(new_list);
         }
-        if (iterator == temp_iterator){
-            LIST_FOREACH(ListElement, iterator2, new_list){
-                nop_counter++;
-            }
-            break;
+        if (list->iterator == temp_iterator){
+            LIST_FOREACH(ListElement, currect_element2, new_list){}
         }
     }
     list->iterator = temp_iterator;
@@ -74,6 +71,10 @@ int listGetSize(List list) {
 
 ListElement listGetFirst(List list){
     assert(list != NULL);
+    if(nodeIsEmpty(list->head)) {
+        list->iterator = NULL;
+        return NULL;
+    }
     list->iterator = list->head;
     return nodeGetElement(list->iterator);
 }
@@ -102,6 +103,11 @@ ListElement listGetCurrent(List list){
 ListResult listInsertFirst(List list, ListElement element) {
     if (list == NULL || element == NULL) return LIST_NULL_ARGUMENT;
 
+    if(nodeIsEmpty(list->head)) {
+        nodeUpdateElement(list->head, element);
+        return LIST_SUCCESS;
+    }
+
     Node iterator = list->iterator;
     listGetFirst(list);
     ListResult list_error = listInsertBeforeCurrent(list, element);
@@ -114,7 +120,7 @@ ListResult listInsertFirst(List list, ListElement element) {
 
 ListResult listInsertLast(List list, ListElement element){
     ListResult error;
-    ListElement temp_iterator;
+    Node temp_iterator;
     Node next_node;
     if (list == NULL || element == NULL){
         return LIST_NULL_ARGUMENT;
@@ -124,10 +130,10 @@ ListResult listInsertLast(List list, ListElement element){
         return error;
     }
     temp_iterator = list->iterator;
-    LIST_FOREACH(ListElement, iterator, list){
+    LIST_FOREACH(ListElement, current_element, list){
         next_node = nodeGetNext(list->iterator);
         if (next_node == NULL){
-            error = listInsertAfterCurrent(list, iterator);
+            error = listInsertAfterCurrent(list, element);
             if (error == LIST_OUT_OF_MEMORY){ //TODO: make it look better
                 return LIST_OUT_OF_MEMORY;
             }
@@ -163,38 +169,40 @@ ListResult listInsertBeforeCurrent(List list, ListElement element) {
             assert(node_error == NODE_OK);
             node_error = nodeAddNext(list->iterator, new_node);
             assert(node_error == NODE_OK);
+            node_error = nodeAddNext(new_node, iterator);
+            assert(node_error == NODE_OK);
             break;
         }
     }
 
-    node_error = nodeAddNext(new_node, list->iterator);
-    assert(node_error == NODE_OK);
+    list->iterator = iterator;
     return LIST_SUCCESS;
 }
 
 ListResult listInsertAfterCurrent(List list, ListElement element){
-    Node new_element, temp_iterator, temp_node;
+    Node new_node, temp_iterator, next_node;
     if (list == NULL || element == NULL){
         return LIST_NULL_ARGUMENT;
     }
     else if(list->iterator == NULL){
         return LIST_INVALID_CURRENT;
     }
-    new_element = nodeCreate(element, list->copyElement,list->freeElement);
-    if (new_element == NULL){
+    new_node = nodeCreate(element, list->copyElement,list->freeElement);
+    if (new_node == NULL){
         return LIST_OUT_OF_MEMORY;
     }
     temp_iterator = list->iterator;
-    LIST_FOREACH(ListElement, iterator, list){
-        if (iterator == element){
-            temp_node = iterator;
-            iterator = nodeGetNext(list->iterator);
-            assert (nodeRemoveNext(iterator) == NODE_OK);
-            assert (nodeAddNext(iterator, element) == NODE_OK); //TODO: element?
+    LIST_FOREACH(ListElement, current_element, list){
+        if (temp_iterator == list->iterator){
+            next_node = nodeGetNext(list->iterator);
+            assert (nodeRemoveNext(list->iterator) == NODE_OK);
+            assert (nodeAddNext(list->iterator, new_node) == NODE_OK);
+            if(next_node != NULL) {
+                assert (nodeAddNext(new_node, next_node) == NODE_OK);
+            }
             break;
         }
     }
-    assert (nodeAddNext(element,temp_node));
     list->iterator = temp_iterator;
     return LIST_SUCCESS;
 }
@@ -209,27 +217,30 @@ ListResult listRemoveCurrent(List list){
         Node next_node = nodeGetNext(list->iterator);
         if(next_node == NULL) {
             node_error = nodeClear(list->iterator);
-            return LIST_SUCCESS;
+            assert(node_error == NODE_OK);
         }
-        nodeDestroy(list->iterator);
-        list->head = next_node;
-        return LIST_SUCCESS;
-    }
-
-    Node iterator = list->iterator;
-    LIST_FOREACH(ListElement, current_element, list) {
-        Node next_node = nodeGetNext(list->iterator);
-        if(next_node == iterator) {
-            Node temp_node = nodeGetNext(next_node);
-            node_error = nodeRemoveNext(list->iterator);
-            assert(node_error == NODE_OK);
-            node_error = nodeAddNext(list->iterator, temp_node);
-            assert(node_error == NODE_OK);
-            nodeDestroy(iterator);
-            break;
+        else {
+            nodeDestroy(list->iterator);
+            list->head = next_node;
         }
     }
+    else {
+        Node iterator = list->iterator;
+        LIST_FOREACH(ListElement, current_element, list) {
+            Node next_node = nodeGetNext(list->iterator);
+            if (next_node == iterator) {
+                Node temp_node = nodeGetNext(next_node);
+                node_error = nodeRemoveNext(list->iterator);
+                assert(node_error == NODE_OK);
+                node_error = nodeAddNext(list->iterator, temp_node);
+                assert(node_error == NODE_OK);
+                nodeDestroy(iterator);
+                break;
+            }
+        }
+    }
 
+    list->iterator = NULL;
     return LIST_SUCCESS;
 }
 
