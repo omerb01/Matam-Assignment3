@@ -100,6 +100,7 @@ NodeResult nodeRemoveNext(Node node) {
 
 NodeResult nodeUpdateElement(Node node, NodeElement element){
     assert(node != NULL && element != NULL);
+
     NodeElement new_data = node->copyElement(element);
     if (new_data == NULL){
         return NODE_MEMORY_ERROR;

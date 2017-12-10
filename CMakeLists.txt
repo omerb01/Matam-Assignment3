@@ -4,6 +4,6 @@ project(Assignment3 C)
 set(CMAKE_C_STANDARD 99)
 
 add_executable(Assignment3 ListContainer/list_mtm.c ListContainer/node_mtm.c
-        main.c)
+        main.c )
 
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Werror -pedantic")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Werror -pedantic")

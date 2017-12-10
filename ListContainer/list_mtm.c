@@ -8,6 +8,7 @@
 #include "list_mtm.h"
 #include "node_mtm.h"
 
+
 struct List_t {
     Node head;
     Node iterator;
@@ -32,6 +33,31 @@ List listCreate(CopyListElement copyElement, FreeListElement freeElement) {
     return list;
 }
 
+List listCopy(List list){
+    assert(list != NULL);
+    List new_list = listCreate(list->copyElement,list->freeElement);
+    if (new_list == NULL){
+        return NULL;
+    }
+    ListResult error;
+    int nop_counter=0;
+    Node temp_iterator = list->iterator;
+    LIST_FOREACH(ListElement, iterator, list){
+        error = listInsertLast(new_list,iterator);
+        if (error == LIST_OUT_OF_MEMORY){
+            listDestroy(new_list);
+        }
+        if (iterator == temp_iterator){
+            LIST_FOREACH(ListElement, iterator2, new_list){
+                nop_counter++;
+            }
+            break;
+        }
+    }
+    list->iterator = temp_iterator;
+    return new_list;
+}
+
 int listGetSize(List list) {
     if (list == NULL) return -1;
     if (nodeIsEmpty(list->head)) return 0;
@@ -44,6 +70,12 @@ int listGetSize(List list) {
 
     list->iterator = iterator;
     return counter;
+}
+
+ListElement listGetFirst(List list){
+    assert(list != NULL);
+    list->iterator = list->head;
+    return nodeGetElement(list->iterator);
 }
 
 ListElement listGetNext(List list) {
@@ -60,6 +92,13 @@ ListElement listGetNext(List list) {
     return nodeGetElement(list->iterator);
 }
 
+ListElement listGetCurrent(List list){
+    if (list == NULL || list->iterator == NULL){
+        return NULL;
+    }
+    return nodeGetElement(list->iterator);
+}
+
 ListResult listInsertFirst(List list, ListElement element) {
     if (list == NULL || element == NULL) return LIST_NULL_ARGUMENT;
 
@@ -70,6 +109,34 @@ ListResult listInsertFirst(List list, ListElement element) {
     assert(list_error == LIST_SUCCESS);
 
     list->iterator = iterator;
+    return LIST_SUCCESS;
+}
+
+ListResult listInsertLast(List list, ListElement element){
+    ListResult error;
+    ListElement temp_iterator;
+    Node next_node;
+    if (list == NULL || element == NULL){
+        return LIST_NULL_ARGUMENT;
+    }
+    if (nodeIsEmpty(list->head) == true){
+        error = listInsertFirst(list,element);
+        return error;
+    }
+    temp_iterator = list->iterator;
+    LIST_FOREACH(ListElement, iterator, list){
+        next_node = nodeGetNext(list->iterator);
+        if (next_node == NULL){
+            error = listInsertAfterCurrent(list, iterator);
+            if (error == LIST_OUT_OF_MEMORY){ //TODO: make it look better
+                return LIST_OUT_OF_MEMORY;
+            }
+            assert(error == LIST_SUCCESS);
+            break;
+        }
+
+    }
+    list->iterator = temp_iterator;
     return LIST_SUCCESS;
 }
 
@@ -105,6 +172,33 @@ ListResult listInsertBeforeCurrent(List list, ListElement element) {
     return LIST_SUCCESS;
 }
 
+ListResult listInsertAfterCurrent(List list, ListElement element){
+    Node new_element, temp_iterator, temp_node;
+    if (list == NULL || element == NULL){
+        return LIST_NULL_ARGUMENT;
+    }
+    else if(list->iterator == NULL){
+        return LIST_INVALID_CURRENT;
+    }
+    new_element = nodeCreate(element, list->copyElement,list->freeElement);
+    if (new_element == NULL){
+        return LIST_OUT_OF_MEMORY;
+    }
+    temp_iterator = list->iterator;
+    LIST_FOREACH(ListElement, iterator, list){
+        if (iterator == element){
+            temp_node = iterator;
+            iterator = nodeGetNext(list->iterator);
+            assert (nodeRemoveNext(iterator) == NODE_OK);
+            assert (nodeAddNext(iterator, element) == NODE_OK); //TODO: element?
+            break;
+        }
+    }
+    assert (nodeAddNext(element,temp_node));
+    list->iterator = temp_iterator;
+    return LIST_SUCCESS;
+}
+
 ListResult listRemoveCurrent(List list){
     if(list == NULL) return LIST_NULL_ARGUMENT;
     if(list->iterator == NULL) return LIST_INVALID_CURRENT;
@@ -137,6 +231,14 @@ ListResult listRemoveCurrent(List list){
     }
 
     return LIST_SUCCESS;
+}
+
+static void quickSort(List list, CompareListElements compareElement,ListFilterKey key){
+
+}
+
+ListResult listSort(List list, CompareListElements compareElement, ListSortKey key){
+    return LIST_SUCCESS; // DUMMY, for now
 }
 
 List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
