@@ -195,6 +195,11 @@ int main() {
     error = listSort(list1, compareInt, NULL);
     ASSERT(error == LIST_SUCCESS);
 
+    i = 0;
+    LIST_FOREACH(int*, current_num, list1) {
+        i++;
+    }
+
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
         if(i == 7) ASSERT(*current_num == 0);
@@ -221,12 +226,30 @@ int main() {
 
     LIST_FOREACH(int*, current_num, list1) {
         if(*current_num == 999) {
-            error = listRemoveCurrent(list1);
+            error = listRemoveCurrent(list1); // removes one "999"
             ASSERT(error == LIST_SUCCESS);
         }
     }
     error = listRemoveCurrent(list1);
     ASSERT(error == LIST_INVALID_CURRENT);
+
+    i = listGetSize(list1);
+    LIST_FOREACH(int*, current_num, list1) {
+        if(i == 6) ASSERT(*current_num == 0);
+        if(i == 5) ASSERT(*current_num == 1);
+        if(i == 4) ASSERT(*current_num == 2);
+        if(i == 3) ASSERT(*current_num == 3);
+        if(i == 2) ASSERT(*current_num == 4);
+        if(i == 1) ASSERT(*current_num == 999);
+        i--;
+    }
+
+    LIST_FOREACH(int*, current_num, list1) {
+        if(*current_num == 999) {
+            error = listRemoveCurrent(list1); // removes one "999"
+            ASSERT(error == LIST_SUCCESS);
+        }
+    }
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
@@ -278,4 +301,6 @@ int main() {
     listDestroy(list1);
     listDestroy(list2);
     listDestroy(list3);
+
+    printf("FINISHED\n");
 }

@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include "list_mtm.h"
 #include "node_mtm.h"
-#include "bubblesort.h"
 
 struct List_t {
     Node head;
@@ -17,7 +16,7 @@ struct List_t {
 };
 
 List listCreate(CopyListElement copyElement, FreeListElement freeElement) {
-    if(copyElement == NULL || freeElement == NULL) return NULL;
+    if (copyElement == NULL || freeElement == NULL) return NULL;
 
     List list = malloc(sizeof(*list));
     Node head = nodeCreate(NULL, copyElement, freeElement);
@@ -34,21 +33,21 @@ List listCreate(CopyListElement copyElement, FreeListElement freeElement) {
     return list;
 }
 
-List listCopy(List list){
-    if(list == NULL) return NULL;
-    List new_list = listCreate(list->copyElement,list->freeElement);
-    if (new_list == NULL){
+List listCopy(List list) {
+    if (list == NULL) return NULL;
+    List new_list = listCreate(list->copyElement, list->freeElement);
+    if (new_list == NULL) {
         return NULL;
     }
     ListResult error;
     Node temp_iterator = list->iterator;
-    LIST_FOREACH(ListElement, current_element, list){
-        error = listInsertLast(new_list,current_element);
-        if (error == LIST_OUT_OF_MEMORY){
+    LIST_FOREACH(ListElement, current_element, list) {
+        error = listInsertLast(new_list, current_element);
+        if (error == LIST_OUT_OF_MEMORY) {
             listDestroy(new_list);
         }
-        if (list->iterator == temp_iterator){
-            LIST_FOREACH(ListElement, currect_element2, new_list){}
+        if (list->iterator == temp_iterator) {
+            LIST_FOREACH(ListElement, currect_element2, new_list) {}
         }
     }
     list->iterator = temp_iterator;
@@ -69,9 +68,9 @@ int listGetSize(List list) {
     return counter;
 }
 
-ListElement listGetFirst(List list){
+ListElement listGetFirst(List list) {
     assert(list != NULL);
-    if(nodeIsEmpty(list->head)) {
+    if (nodeIsEmpty(list->head)) {
         list->iterator = NULL;
         return NULL;
     }
@@ -93,8 +92,8 @@ ListElement listGetNext(List list) {
     return nodeGetElement(list->iterator);
 }
 
-ListElement listGetCurrent(List list){
-    if (list == NULL || list->iterator == NULL){
+ListElement listGetCurrent(List list) {
+    if (list == NULL || list->iterator == NULL) {
         return NULL;
     }
     return nodeGetElement(list->iterator);
@@ -103,7 +102,7 @@ ListElement listGetCurrent(List list){
 ListResult listInsertFirst(List list, ListElement element) {
     if (list == NULL || element == NULL) return LIST_NULL_ARGUMENT;
 
-    if(nodeIsEmpty(list->head)) {
+    if (nodeIsEmpty(list->head)) {
         nodeUpdateElement(list->head, element);
         return LIST_SUCCESS;
     }
@@ -118,23 +117,23 @@ ListResult listInsertFirst(List list, ListElement element) {
     return LIST_SUCCESS;
 }
 
-ListResult listInsertLast(List list, ListElement element){
+ListResult listInsertLast(List list, ListElement element) {
     ListResult error;
     Node temp_iterator;
     Node next_node;
-    if (list == NULL || element == NULL){
+    if (list == NULL || element == NULL) {
         return LIST_NULL_ARGUMENT;
     }
-    if (nodeIsEmpty(list->head) == true){
-        error = listInsertFirst(list,element);
+    if (nodeIsEmpty(list->head) == true) {
+        error = listInsertFirst(list, element);
         return error;
     }
     temp_iterator = list->iterator;
-    LIST_FOREACH(ListElement, current_element, list){
+    LIST_FOREACH(ListElement, current_element, list) {
         next_node = nodeGetNext(list->iterator);
-        if (next_node == NULL){
+        if (next_node == NULL) {
             error = listInsertAfterCurrent(list, element);
-            if (error == LIST_OUT_OF_MEMORY){ //TODO: make it look better
+            if (error == LIST_OUT_OF_MEMORY) { //TODO: make it look better
                 return LIST_OUT_OF_MEMORY;
             }
             assert(error == LIST_SUCCESS);
@@ -164,7 +163,7 @@ ListResult listInsertBeforeCurrent(List list, ListElement element) {
     Node iterator = list->iterator;
     LIST_FOREACH(ListElement, current_element, list) {
         Node next_node = nodeGetNext(list->iterator);
-        if(next_node == iterator) {
+        if (next_node == iterator) {
             node_error = nodeRemoveNext(list->iterator);
             assert(node_error == NODE_OK);
             node_error = nodeAddNext(list->iterator, new_node);
@@ -179,25 +178,24 @@ ListResult listInsertBeforeCurrent(List list, ListElement element) {
     return LIST_SUCCESS;
 }
 
-ListResult listInsertAfterCurrent(List list, ListElement element){
+ListResult listInsertAfterCurrent(List list, ListElement element) {
     Node new_node, temp_iterator, next_node;
-    if (list == NULL || element == NULL){
+    if (list == NULL || element == NULL) {
         return LIST_NULL_ARGUMENT;
-    }
-    else if(list->iterator == NULL){
+    } else if (list->iterator == NULL) {
         return LIST_INVALID_CURRENT;
     }
-    new_node = nodeCreate(element, list->copyElement,list->freeElement);
-    if (new_node == NULL){
+    new_node = nodeCreate(element, list->copyElement, list->freeElement);
+    if (new_node == NULL) {
         return LIST_OUT_OF_MEMORY;
     }
     temp_iterator = list->iterator;
-    LIST_FOREACH(ListElement, current_element, list){
-        if (temp_iterator == list->iterator){
+    LIST_FOREACH(ListElement, current_element, list) {
+        if (temp_iterator == list->iterator) {
             next_node = nodeGetNext(list->iterator);
             assert (nodeRemoveNext(list->iterator) == NODE_OK);
             assert (nodeAddNext(list->iterator, new_node) == NODE_OK);
-            if(next_node != NULL) {
+            if (next_node != NULL) {
                 assert (nodeAddNext(new_node, next_node) == NODE_OK);
             }
             break;
@@ -207,24 +205,22 @@ ListResult listInsertAfterCurrent(List list, ListElement element){
     return LIST_SUCCESS;
 }
 
-ListResult listRemoveCurrent(List list){
-    if(list == NULL) return LIST_NULL_ARGUMENT;
-    if(list->iterator == NULL) return LIST_INVALID_CURRENT;
+ListResult listRemoveCurrent(List list) {
+    if (list == NULL) return LIST_NULL_ARGUMENT;
+    if (list->iterator == NULL) return LIST_INVALID_CURRENT;
 
     NodeResult node_error;
 
-    if(list->iterator == list->head) {
+    if (list->iterator == list->head) {
         Node next_node = nodeGetNext(list->iterator);
-        if(next_node == NULL) {
+        if (next_node == NULL) {
             node_error = nodeClear(list->iterator);
             assert(node_error == NODE_OK);
-        }
-        else {
+        } else {
             nodeDestroy(list->iterator);
             list->head = next_node;
         }
-    }
-    else {
+    } else {
         Node iterator = list->iterator;
         LIST_FOREACH(ListElement, current_element, list) {
             Node next_node = nodeGetNext(list->iterator);
@@ -232,9 +228,11 @@ ListResult listRemoveCurrent(List list){
                 Node temp_node = nodeGetNext(next_node);
                 node_error = nodeRemoveNext(list->iterator);
                 assert(node_error == NODE_OK);
-                node_error = nodeAddNext(list->iterator, temp_node);
-                assert(node_error == NODE_OK);
-                nodeDestroy(iterator);
+                if (temp_node != NULL) {
+                    node_error = nodeAddNext(list->iterator, temp_node);
+                    assert(node_error == NODE_OK);
+                    nodeDestroy(iterator);
+                }
                 break;
             }
         }
@@ -244,46 +242,60 @@ ListResult listRemoveCurrent(List list){
     return LIST_SUCCESS;
 }
 
-ListResult listSort(List list, CompareListElements compareElement, ListSortKey key){
-    if (list == NULL || compareElement == NULL || key == NULL){
-        return LIST_NULL_ARGUMENT;
-    }
-    NodeElement temp_iterator;
-    temp_iterator = list->iterator;
-    int counter=0;
-    if(list->iterator != NULL){
-        LIST_FOREACH(ListElement, iterator, list){
-            if(iterator == temp_iterator){
-                break;
+static ListResult maxSort(List list, CompareListElements compareElement,
+                    ListSortKey key) {
+    assert(list != NULL && compareElement != NULL);
+    Node node1, node2, min;
+    node1 = list->head;
+
+    NodeResult node_error;
+
+    while(node1 != NULL) {
+        min = node1;
+        node2 = node1;
+
+        while(node2 != NULL) {
+            if(nodeCompare(node2, min, compareElement, key) < 0) {
+                min = node2;
             }
-            counter++;
+            node2 = nodeGetNext(node2);
         }
+
+        Node temp_node = nodeCopy(node1);
+        node_error = nodeUpdateElement(node1, nodeGetElement(min));
+        if(node_error == NODE_MEMORY_ERROR) return LIST_OUT_OF_MEMORY;
+        assert(node_error == NODE_OK);
+        node_error = nodeUpdateElement(min, nodeGetElement(temp_node));
+        if(node_error == NODE_MEMORY_ERROR) return LIST_OUT_OF_MEMORY;
+        assert(node_error == NODE_OK);
+        nodeDestroy(temp_node);
+
+        node1 = nodeGetNext(node1);
     }
-    list->iterator = temp_iterator;
-    bubbleSort(list, compareElement, key);
-    if(list->iterator != NULL){
-        LIST_FOREACH(ListElement, iterator, list){
-            if(counter == 0){
-                break;
-            }
-            counter--;
-        }
-    }
+
     return LIST_SUCCESS;
 }
 
-List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
-    if(list == NULL || filterElement == NULL) return NULL;
+ListResult
+listSort(List list, CompareListElements compareElement, ListSortKey key) {
+    if (list == NULL || compareElement == NULL) {
+        return LIST_NULL_ARGUMENT;
+    }
+    return maxSort(list, compareElement, key);
+}
+
+List listFilter(List list, FilterListElement filterElement, ListFilterKey key) {
+    if (list == NULL || filterElement == NULL) return NULL;
 
     ListResult list_error;
 
     List list_copy = listCopy(list);
-    if(list_copy == NULL) return NULL;
+    if (list_copy == NULL) return NULL;
 
     Node current_node = list_copy->head;
-    while(current_node != NULL) {
+    while (current_node != NULL) {
         Node temp_node = nodeGetNext(current_node);
-        if(nodeFilter(current_node, filterElement, key) == false) {
+        if (nodeFilter(current_node, filterElement, key) == false) {
             list_copy->iterator = current_node;
             list_error = listRemoveCurrent(list_copy);
             assert(list_error == LIST_SUCCESS);
@@ -295,34 +307,33 @@ List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
     return list_copy;
 }
 
-ListResult listClear(List list){
-    if(list == NULL){
+ListResult listClear(List list) {
+    if (list == NULL) {
         return LIST_NULL_ARGUMENT;
     }
     NodeElement node = list->head;
     NodeElement node_next;
-    if(nodeIsEmpty(node)){
+    if (nodeIsEmpty(node)) {
         return LIST_SUCCESS;
     }
-    while(node != NULL){
+    while (node != NULL) {
         node_next = nodeGetNext(node);
-        if(node_next != NULL){
+        if (node_next != NULL) {
             list->iterator = node;
             assert(listRemoveCurrent(list) == LIST_SUCCESS);
             node = node_next;
 
-        }
-        else{
+        } else {
             assert(nodeClear(node) == NODE_OK);
             break;
         }
     }
-    list->iterator=NULL;
+    list->iterator = NULL;
     return LIST_SUCCESS;
 }
 
 void listDestroy(List list) {
-    if(list == NULL) return;
+    if (list == NULL) return;
 
     ListResult list_error = listClear(list);
     assert(list_error == LIST_SUCCESS);
