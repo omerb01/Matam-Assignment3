@@ -10,7 +10,7 @@ int test_counter = 1;
 
 #define ASSERT(test_condition)  \
    {if (!(test_condition)) {printf("TEST %d FAILED at line %d\n", \
-    test_counter, __LINE__); return 1;} \
+    test_counter, __LINE__); } \
    else {printf("TEST %d OK at line %d\n", test_counter, __LINE__);} \
     test_counter++;}
 
@@ -194,11 +194,6 @@ int main() {
     ASSERT(error == LIST_NULL_ARGUMENT);
     error = listSort(list1, compareInt, NULL);
     ASSERT(error == LIST_SUCCESS);
-
-    i = 0;
-    LIST_FOREACH(int*, current_num, list1) {
-        i++;
-    }
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {

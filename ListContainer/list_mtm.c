@@ -235,8 +235,8 @@ ListResult listRemoveCurrent(List list) {
                 if (temp_node != NULL) {
                     node_error = nodeAddNext(list->iterator, temp_node);
                     assert(node_error == NODE_OK);
-                    nodeDestroy(iterator);
                 }
+                nodeDestroy(iterator);
                 break;
             }
         }
@@ -253,6 +253,7 @@ static ListResult maxSort(List list, CompareListElements compareElement,
     node1 = list->head;
 
     NodeResult node_error;
+    ListElement temp_element;
 
     while(node1 != NULL) {
         min = node1;
@@ -265,15 +266,26 @@ static ListResult maxSort(List list, CompareListElements compareElement,
             node2 = nodeGetNext(node2);
         }
 
-        Node temp_node = nodeCopy(node1);
-        node_error = nodeUpdateElement(node1, nodeGetElement(min));
-        if(node_error == NODE_MEMORY_ERROR) return LIST_OUT_OF_MEMORY;
-        assert(node_error == NODE_OK);
-        node_error = nodeUpdateElement(min, nodeGetElement(temp_node));
-        if(node_error == NODE_MEMORY_ERROR) return LIST_OUT_OF_MEMORY;
-        assert(node_error == NODE_OK);
-        nodeDestroy(temp_node);
+        if (node1 != min) {
+            temp_element = list->copyElement(nodeGetElement(node1));
+            if (temp_element == NULL) return LIST_OUT_OF_MEMORY;
 
+            node_error = nodeUpdateElement(node1, nodeGetElement(min));
+            if (node_error == NODE_MEMORY_ERROR) {
+                list->freeElement(temp_element);
+                return LIST_OUT_OF_MEMORY;
+            }
+            assert(node_error == NODE_OK);
+
+            node_error = nodeUpdateElement(min, temp_element);
+            if (node_error == NODE_MEMORY_ERROR) {
+                list->freeElement(temp_element);
+                return LIST_OUT_OF_MEMORY;
+            }
+            assert(node_error == NODE_OK);
+
+            list->freeElement(temp_element);
+        }
         node1 = nodeGetNext(node1);
     }
 
