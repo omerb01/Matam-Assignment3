@@ -180,6 +180,7 @@ ListResult listInsertBeforeCurrent(List list, ListElement element) {
 
 ListResult listInsertAfterCurrent(List list, ListElement element) {
     Node new_node, temp_iterator, next_node;
+    NodeResult node_error;
     if (list == NULL || element == NULL) {
         return LIST_NULL_ARGUMENT;
     } else if (list->iterator == NULL) {
@@ -193,10 +194,13 @@ ListResult listInsertAfterCurrent(List list, ListElement element) {
     LIST_FOREACH(ListElement, current_element, list) {
         if (temp_iterator == list->iterator) {
             next_node = nodeGetNext(list->iterator);
-            assert (nodeRemoveNext(list->iterator) == NODE_OK);
-            assert (nodeAddNext(list->iterator, new_node) == NODE_OK);
+            node_error = nodeRemoveNext(list->iterator);
+            assert (node_error == NODE_OK);
+            node_error = nodeAddNext(list->iterator, new_node);
+            assert (node_error == NODE_OK);
             if (next_node != NULL) {
-                assert (nodeAddNext(new_node, next_node) == NODE_OK);
+                node_error = nodeAddNext(new_node, next_node);
+                assert (node_error == NODE_OK);
             }
             break;
         }
@@ -311,6 +315,8 @@ ListResult listClear(List list) {
     if (list == NULL) {
         return LIST_NULL_ARGUMENT;
     }
+    NodeResult node_error;
+    ListResult list_error;
     NodeElement node = list->head;
     NodeElement node_next;
     if (nodeIsEmpty(node)) {
@@ -320,11 +326,13 @@ ListResult listClear(List list) {
         node_next = nodeGetNext(node);
         if (node_next != NULL) {
             list->iterator = node;
-            assert(listRemoveCurrent(list) == LIST_SUCCESS);
+            list_error = listRemoveCurrent(list);
+            assert(list_error == LIST_SUCCESS);
             node = node_next;
 
         } else {
-            assert(nodeClear(node) == NODE_OK);
+            node_error = nodeClear(node);
+            assert(node_error == NODE_OK);
             break;
         }
     }
@@ -335,7 +343,8 @@ ListResult listClear(List list) {
 void listDestroy(List list) {
     if (list == NULL) return;
 
-    ListResult list_error = listClear(list);
+    ListResult list_error;
+    list_error = listClear(list);
     assert(list_error == LIST_SUCCESS);
 
     nodeDestroy(list->head);
