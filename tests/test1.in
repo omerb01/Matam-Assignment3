@@ -1,0 +1,89 @@
+student add 111111118 Ariel Wershal
+student add 222222226 Eran Channover
+
+student login 111111118
+student friend_request 222222226
+student logout
+
+student login 222222226
+student handle_request 111111118 accept
+grade_sheet add 1 234122 3.0 100
+student logout
+
+student login 111111118
+
+grade_sheet add 1 104012 5.5 84
+grade_sheet add 1 104167 5.0 43
+grade_sheet add 1 104167 5.0 71
+grade_sheet add 1 234114 4.0 88
+grade_sheet add 1 234145 3.0 98
+grade_sheet add 1 394808 1.0 92
+grade_sheet add 2 104013 5.5 66
+grade_sheet add 2 104013 5.5 63
+grade_sheet add 2 114071 3.5 98
+grade_sheet add 2 234118 3.0 98
+grade_sheet add 2 234122 3.0 28
+grade_sheet add 2 234122 3.0 96
+grade_sheet add 2 234141 3.0 73
+grade_sheet add 2 394806 1.0 96
+grade_sheet add 3 094412 4.0 80
+grade_sheet add 3 104134 2.5 82
+grade_sheet add 3 134058 3.0 70
+grade_sheet add 3 234218 3.0 75
+grade_sheet add 3 234262 3.0 94
+grade_sheet add 3 234293 4.0 71
+grade_sheet add 3 394902 1.5 96
+grade_sheet add 4 125001 3.0 69
+grade_sheet add 4 134020 3.5 56
+grade_sheet add 4 134020 3.5 76
+grade_sheet add 4 234123 4.5 94
+grade_sheet add 4 234247 3.0 95
+grade_sheet add 4 234267 3.0 60
+grade_sheet add 4 234267 3.0 68
+grade_sheet add 4 236353 3.0 78
+grade_sheet add 4 394902 1.5 92
+grade_sheet add 5 234107 4.0 51
+grade_sheet add 5 234107 4.0 63
+grade_sheet add 5 234900 2.0 74
+grade_sheet add 5 236327 3.0 77
+grade_sheet add 5 236334 3.0 64
+grade_sheet add 5 236334 3.0 68
+grade_sheet add 5 236343 3.0 80
+grade_sheet add 5 236360 3.0 71
+grade_sheet add 5 324440 2.0 79
+grade_sheet add 5 394902 1.5 97
+grade_sheet add 6 094591 3.5 86
+grade_sheet add 6 234319 3.0 93
+grade_sheet add 6 236370 3.0 90
+grade_sheet add 6 236504 3.0 89
+grade_sheet add 6 236604 2.0 65
+grade_sheet add 6 236653 3.0 87
+grade_sheet add 6 324290 2.0 73
+grade_sheet add 6 394902 1.5 93
+grade_sheet add 7 104174 3.5 25
+grade_sheet add 7 104174 3.5 90
+grade_sheet add 7 236350 3.0 84
+grade_sheet add 7 236503 3.0 71
+grade_sheet add 7 236603 2.0 71
+grade_sheet add 7 236703 3.0 44
+grade_sheet add 7 394902 1.5 98
+
+grade_sheet remove 4 125001
+grade_sheet update 236703 100
+
+report full
+report clean
+report best 3
+report worst 3
+report reference 234122 3
+
+student unfriend 222222226
+
+report faculty_request 236703 remove_course
+student logout
+
+student remove 111111118
+student remove 222222226
+
+# this should print an error...
+student remove 222222226
