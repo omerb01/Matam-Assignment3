@@ -9,8 +9,6 @@
 
 typedef struct GradesSheet_t *GradesSheet;
 
-typedef void *Grade;
-
 typedef enum SheetResult_t {
     SHEET_SUCCESS,
     SHEET_OUT_OF_MEMORY,
@@ -55,7 +53,7 @@ SheetResult sheetRemoveLastGrade(GradesSheet, int semester, int course_id);
  * SHEET_GRADE_DOES_NOT_EXIST if course's current grade doesn't exist
  * otherwise SHEET_SUCCESS
  */
-SheetResult sheetUpdateLastGrade(GradesSheet, int new_grade, int course_id);
+SheetResult sheetUpdateLastGrade(GradesSheet, int course_id, int new_grade);
 
 /* Stores in a given pointer the latest highest grade by a given course_id
  * returns:
