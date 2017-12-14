@@ -5,7 +5,7 @@
 #ifndef ASSIGNMENT3_GRAPH_H
 #define ASSIGNMENT3_GRAPH_H
 
-#include "../libmtm/set.h"
+#include "set.h"
 
 typedef struct Graph_t *Graph;
 
@@ -28,6 +28,7 @@ typedef enum GrapResult_t {
 } GraphResult;
 
 /*  Creates a new Graph
+ *  allocates new memory for it
  *  check by assert assuring functions are not null
  *  returns:
  *  NULL if memory cannot be allocated
@@ -78,7 +79,7 @@ GraphResult graphRemoveEdge(Graph, VertexLabel, VertexLabel);
  * returns:
  * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_DOES_NOT_EXIST if the given vertex doesn't exist
- * other GRAPH_SUCCESS
+ * otherwise GRAPH_SUCCESS
  */
 Set graphNeighbors(Graph, VertexLabel);
 
@@ -86,7 +87,7 @@ Set graphNeighbors(Graph, VertexLabel);
  * returns:
  * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_DOES_NOT_EXIST if one of the given vertices doesn't exist
- *
+ * otherwise GRAPH_SUCCESS
  */
 GraphResult edgeExists(Graph, VertexLabel, VertexLabel, bool *result);
 
