@@ -6,7 +6,10 @@
 #define ASSIGNMENT3_STUDENT_H
 
 #include <stdbool.h>
+#include <stdio.h>
+
 #include "set.h"
+#include "GradesSheet.h"
 
 typedef struct Student_t *Student;
 typedef enum StudentResult_t {
@@ -95,7 +98,7 @@ StudentResult studentRemoveLastGrade(Student, int semester, int course_id);
  * STUDENT_FAIL if cannot print for some reason
  * otherwise STUDENT_SUCCESS
  */
-StudentResult studentPrintFullSheet(Student);
+StudentResult studentPrintFullSheet(FILE* output_channel, Student);
 
 /* Prints a clean version (the effective grades) of the given student's grades sheet
  * returns:
@@ -103,7 +106,7 @@ StudentResult studentPrintFullSheet(Student);
  * STUDENT_FAIL if cannot print for some reason
  * otherwise STUDENT_SUCCESS
  */
-StudentResult studentPrintCleanSheet(Student);
+StudentResult studentPrintCleanSheet(FILE* output_channel, Student);
 
 /* Prints a given amount of highest effective grades in the *clean version* grades sheet
  * returns:
@@ -112,7 +115,7 @@ StudentResult studentPrintCleanSheet(Student);
  * STUDENT_FAIL if cannot print for some reason
  * otherwise STUDENT_SUCCESS
  */
-StudentResult studentPrintHighestGrades(Student, int amount);
+StudentResult studentPrintHighestGrades(FILE* output_channel, Student, int amount);
 
 /* Prints a given amount of lowest effective grades in the *clean version* student's grades sheet
  * returns:
@@ -121,14 +124,14 @@ StudentResult studentPrintHighestGrades(Student, int amount);
  * STUDENT_FAIL if cannot print for some reason
  * otherwise STUDENT_SUCCESS
  */
-StudentResult studentPrintLowestGrades(Student, int amount);
+StudentResult studentPrintLowestGrades(FILE* output_channel, Student, int amount);
 /* Prints student's reference sources using a set of friends pointers.
  * returns:
  * STUDENT_NULL_ARGUMENT if one of the arguments is NULL
  * STUDENT_FAIL if cannot print for some reason
  *
  */
-StudentResult studentPrintReferences(Student, Set friends);
+StudentResult studentPrintReferences(FILE* output_channel, Student, Set friends);
 /* Destroys all relevant memory associated to student
  */
 void studentDestroy(Student);
