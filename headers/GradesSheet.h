@@ -24,6 +24,14 @@ typedef enum SheetResult_t {
  */
 GradesSheet sheetCreate();
 
+/* Copies GradesSheet into a new copy
+ * allocates new memory for it
+ * returns:
+ * NULL is memory allocation failed or if given GradesSheet is NULL
+ * otherwise returns a pointer to the new GradesSheet
+ */
+GradesSheet sheetCopy(GradesSheet);
+
 /* Adds a new grade to the Grades Sheet
  * allocates new memory for data storing
  * returns:
