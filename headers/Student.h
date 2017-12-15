@@ -18,7 +18,6 @@ typedef enum StudentResult_t {
     STUDENT_INVALID_ARGUMENT,
     STUDENT_OUT_OF_MEMORY,
     STUNDET_ALREADY_SENT_REQUEST,
-    STUDENT_FAIL,
     STUDENT_DIDNT_SEND_REQUEST,
     STUDENT_GRADE_DOES_NOT_EXIST
 } StudentResult;
@@ -41,7 +40,9 @@ Student studentCreate(int id, char *first_name, char *last_name);
 StudentResult studentIsEqual(Student, int id, bool *result);
 
 /* Sends a friend request to the given requested student
+ * allocated new memory for the new request
  * returns:
+ * STUDENT_OUT_OF_MEMORY if memory problem occurred
  * STUDENT_NULL_ARGUMENT if one of the relevant arguments is NULL
  * STUNDET_ALREADY_SENT_REQUEST - if friend request was already sent
  * otherwise STUDENT_SUCCESS
@@ -95,7 +96,7 @@ StudentResult studentRemoveLastGrade(Student, int semester, int course_id);
 /* Prints a full version (no grades restriction) of the given student's grades sheet
  * returns:
  * STUDENT_NULL_ARGUMENT if the given student is null
- * STUDENT_FAIL if cannot print for some reason
+ * STUDENT_OUT_OF_MEMORY if memory problem occurred
  * otherwise STUDENT_SUCCESS
  */
 StudentResult studentPrintFullSheet(FILE* output_channel, Student);
@@ -103,7 +104,7 @@ StudentResult studentPrintFullSheet(FILE* output_channel, Student);
 /* Prints a clean version (the effective grades) of the given student's grades sheet
  * returns:
  * STUDENT_NULL_ARGUMENT if the given student is null
- * STUDENT_FAIL if cannot print for some reason
+ * STUDENT_OUT_OF_MEMORY if memory problem occurred
  * otherwise STUDENT_SUCCESS
  */
 StudentResult studentPrintCleanSheet(FILE* output_channel, Student);
@@ -112,7 +113,7 @@ StudentResult studentPrintCleanSheet(FILE* output_channel, Student);
  * returns:
  * STUDENT_NULL_ARGUMENT if the given student is null
  * STUDENT_INVALID_ARGUMENT if the argument is invalid
- * STUDENT_FAIL if cannot print for some reason
+ * STUDENT_OUT_OF_MEMORY if memory problem occurred
  * otherwise STUDENT_SUCCESS
  */
 StudentResult studentPrintHighestGrades(FILE* output_channel, Student, int amount);
@@ -121,14 +122,14 @@ StudentResult studentPrintHighestGrades(FILE* output_channel, Student, int amoun
  * returns:
  * STUDENT_NULL_ARGUMENT if the student sheet is null
  * STUDENT_INVALID_ARGUMENT if the argument is invalid
- * STUDENT_FAIL if cannot print for some reason
+ * STUDENT_OUT_OF_MEMORY if memory problem occurred
  * otherwise STUDENT_SUCCESS
  */
 StudentResult studentPrintLowestGrades(FILE* output_channel, Student, int amount);
 /* Prints student's reference sources using a set of friends pointers.
  * returns:
  * STUDENT_NULL_ARGUMENT if one of the arguments is NULL
- * STUDENT_FAIL if cannot print for some reason
+ * STUDENT_OUT_OF_MEMORY if memory problem occurred
  *
  */
 StudentResult studentPrintReferences(FILE* output_channel, Student, Set friends);

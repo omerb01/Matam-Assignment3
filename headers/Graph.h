@@ -38,18 +38,20 @@ Graph graphCreate(CopyVertexLabel copyLabel, FreeVertexLabel freeLabel,
                   CompareVertexLabel compareLabel);
 
 /* Adds a new vertex to the Graph
+ * allocates new memory for the vertex
  * returns:
- * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_OUT_OF_MEMORY if memory allocation failed
+ * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_ALREADY_EXISTS if the given vertex already exists
  * otherwise GRAPH_SUCCESS
  */
 GraphResult graphAddVertex(Graph, VertexLabel);
 
 /* Adds a new Edge between two vertices
+ * allocates new memory for the edge
  * returns:
- * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_OUT_OF_MEMORY if memory allocation failed
+ * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_DOES_NOT_EXIST if one of the given vertices doesn't exist
  * GRAPH_EDGE_ALREADY_EXISTS if edge between the two given vertices already exists
  * otherwise GRAPH_SUCCESS

@@ -14,7 +14,6 @@ typedef enum SheetResult_t {
     SHEET_NULL_ARGUMENT,
     SHEET_INVALID_ARGUMENT,
     SHEET_GRADE_DOES_NOT_EXIST,
-    SHEET_FAIL
 } SheetResult;
 
 /* Creates a new Grades Sheet
@@ -65,8 +64,8 @@ SheetResult sheetHighestLastGrade(GradesSheet, int course_id, int *result);
 
 /* Prints a full version (no grades restriction) of the given grades sheet
  * returns:
+ * SHEET_OUT_OF_MEMORY if memory problem occurred
  * SHEET_NULL_ARGUMENT if the given grades sheet is null
- * SHEET_FAIL if cannot print for some reason
  * otherwise SHEET_SUCCESS
  */
 SheetResult sheetPrintFull(FILE* output_channel, GradesSheet);
@@ -74,7 +73,7 @@ SheetResult sheetPrintFull(FILE* output_channel, GradesSheet);
 /* Prints a clean version (the effective grades) of the given grades sheet
  * returns:
  * SHEET_NULL_ARGUMENT if the given grades sheet is null
- * SHEET_FAIL if cannot print for some reason
+ * SHEET_OUT_OF_MEMORY if memory problem occurred
  * otherwise SHEET_SUCCESS
  */
 SheetResult sheetPrintClean(FILE* output_channel, GradesSheet);
@@ -83,7 +82,7 @@ SheetResult sheetPrintClean(FILE* output_channel, GradesSheet);
  * returns:
  * SHEET_NULL_ARGUMENT if the given grades sheet is null
  * SHEET_INVALID_ARGUMENT if the argument is invalid
- * SHEET_FAIL if cannot print for some reason
+ * SHEET_OUT_OF_MEMORY if memory problem occurred
  * otherwise SHEET_SUCCESS
  */
 SheetResult sheetPrintHighestGrades(FILE* output_channel, GradesSheet, int amount);
@@ -91,7 +90,7 @@ SheetResult sheetPrintHighestGrades(FILE* output_channel, GradesSheet, int amoun
  * returns:
  * SHEET_NULL_ARGUMENT if the given grades sheet is null
  * SHEET_INVALID_ARGUMENT if the argument is invalid
- * SHEET_FAIL if cannot print for some reason
+ * SHEET_OUT_OF_MEMORY if memory problem occurred
  * otherwise SHEET_SUCCESS
  */
 SheetResult sheetPrintLowestGrades(FILE* output_channel, GradesSheet, int amount);
