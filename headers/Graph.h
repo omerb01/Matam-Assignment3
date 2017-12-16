@@ -21,6 +21,7 @@ typedef enum GrapResult_t {
     GRAPH_SUCCCESS,
     GRAPH_OUT_OF_MEMORY,
     GRAPH_NULL_ARGUMENT,
+    GRAPH_INVALID_ARGUMENT,
     GRAPH_VERTEX_ALREADY_EXISTS,
     GRAPH_VERTEX_DOES_NOT_EXIST,
     GRAPH_EDGE_DOES_NOT_EXIST,
@@ -52,6 +53,7 @@ GraphResult graphAddVertex(Graph, VertexLabel);
  * returns:
  * GRAPH_OUT_OF_MEMORY if memory allocation failed
  * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
+ * GRAPH_INVALID_ARGUMENT if label1 is equal to label2
  * GRAPH_VERTEX_DOES_NOT_EXIST if one of the given vertices doesn't exist
  * GRAPH_EDGE_ALREADY_EXISTS if edge between the two given vertices already exists
  * otherwise GRAPH_SUCCESS
@@ -60,6 +62,7 @@ GraphResult graphAddEdge(Graph, VertexLabel, VertexLabel);
 
 /* Removes a vertex and it's edges from the graph
  * returns:
+ * GRAPH_OUT_OF_MEMORY if memory problem occurred
  * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_DOES_NOT_EXIST if the given vertex doesn't exist
  * otherwise GRAPH_SUCCESS
@@ -69,6 +72,7 @@ GraphResult graphRemoveVertex(Graph, VertexLabel);
 
 /* Removes a single edge between two given vertices
  * returns:
+ * GRAPH_OUT_OF_MEMORY if memory problem occurred
  * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_DOES_NOT_EXIST if one of the given vertices doesn't exist
  * GRAPH_EDGE_DOES_NOT_EXIST if two of the given vertices doesn't share an edge
@@ -77,7 +81,7 @@ GraphResult graphRemoveVertex(Graph, VertexLabel);
 GraphResult graphRemoveEdge(Graph, VertexLabel, VertexLabel);
 
 /* Returns a SET of neighbors connected with a given vertex by edges
- * allocates a net SET of vertexlabels
+ * allocates a new SET of vertexlabels
  * returns:
  * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_DOES_NOT_EXIST if the given vertex doesn't exist
@@ -85,8 +89,18 @@ GraphResult graphRemoveEdge(Graph, VertexLabel, VertexLabel);
  */
 Set graphNeighbors(Graph, VertexLabel);
 
-/* Check's if an edge exists between two given vertices and stores the result in a given result pointer
+/* Checks if a vertex exists in a given graph and stores the result
+ * in a given result pointer
  * returns:
+ * GRAPH_OUT_OF_MEMORY if memory problem occurred
+ * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
+ * otherwise GRAPH_SUCCESS
+ */
+GraphResult vertexExists(Graph, VertexLabel, bool *result);
+
+/* Checks if an edge exists between two given vertices and stores the result in a given result pointer
+ * returns:
+ * GRAPH_OUT_OF_MEMORY if memory problem occurred
  * GRAPH_NULL_ARGUMENT if graph or vertexlabel are NULL
  * GRAPH_VERTEX_DOES_NOT_EXIST if one of the given vertices doesn't exist
  * otherwise GRAPH_SUCCESS
