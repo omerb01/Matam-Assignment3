@@ -14,6 +14,7 @@ typedef struct Grade_t {
     int grade_value;
 } *Grade;
 
+/*
 
 static bool testGradesSheetCreate() {
     GradesSheet sheet = sheetCreate();
@@ -635,9 +636,10 @@ static bool testSheetPrintLowestGrades() {
     sheetDestroy(gsheet);
     return true;
 }
+*/
 
 int main() {
-    RUN_TEST(testGradesSheetCreate);
+/*    RUN_TEST(testGradesSheetCreate);
     RUN_TEST(testGradesSheetCopy);
     RUN_TEST(testGradesSheetAddGrade);
     RUN_TEST(testGradesSheetRemoveGrade);
@@ -646,5 +648,16 @@ int main() {
     RUN_TEST(testSheetPrintFull);
     RUN_TEST(testSheetPrintClear);
     RUN_TEST(testSheetPrintHighestGrades);
-    RUN_TEST(testSheetPrintLowestGrades);
+    RUN_TEST(testSheetPrintLowestGrades);*/
+    GradesSheet gsheet = sheetCreate();
+    FILE* out = stdout;
+    sheetAddGrade(gsheet,4,234123,10,56);
+    sheetAddGrade(gsheet,4,234122,10,56);
+    sheetAddGrade(gsheet,3,234122,10,28);
+    sheetAddGrade(gsheet,2,234122,6,96);
+    //sheetPrintFull(out,gsheet);
+    sheetRemoveLastGrade(gsheet,4,234123);
+    sheetRemoveLastGrade(gsheet,4,234122);
+    sheetPrintFull(out,gsheet);
+    sheetDestroy(gsheet);
 }

@@ -112,6 +112,16 @@ static int semesterGradeCompareFunction(Grade grade1, Grade grade2) {
     }
 }
 
+static int semesterIdCompareFunction(List semester_list1, List semester_list2){
+    Grade first = (Grade)listGetFirst(semester_list1);
+    Grade second = (Grade)listGetFirst(semester_list2);
+    if (first->semester > second->semester) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 static void calcSemesterInfo(Grade current_grade, int *effective_point,
                              int *effective_grade_sum) {
     int effective_p = 0, effective_g = 0;
@@ -351,6 +361,31 @@ createSortedCleanSheetByKey(GradesSheet grades_sheet, int counter,
     return clean_grades_list;
 }
 
+static List getLatestCourse(GradesSheet grades_sheet, int* latest_index, int course_id){
+    int key=0, last_grade_index;
+    ListResult result = listSort(grades_sheet->sheet, (CompareListElements)semesterIdCompareFunction, (ListSortKey)&key);
+    if(result == LIST_OUT_OF_MEMORY) return NULL;
+    List latest_semester_list;
+    LIST_FOREACH(List, current_semester_list, grades_sheet->sheet){
+        last_grade_index = getSemesterLastGradeIndex(current_semester_list,
+                                                     course_id);
+        if(last_grade_index != -1) latest_semester_list = current_semester_list;
+    }
+    last_grade_index = getSemesterLastGradeIndex(latest_semester_list,
+                                                 course_id);
+    *latest_index = last_grade_index;
+    return latest_semester_list;
+}
+
+static void listRemoveFromSheet(List list_to_remove, GradesSheet grades_sheet){
+    LIST_FOREACH(List,current_semester_list, grades_sheet->sheet){
+        if(list_to_remove == current_semester_list){
+            listRemoveCurrent(grades_sheet->sheet);
+            break;
+        }
+    }
+}
+
 GradesSheet sheetCreate() {
     GradesSheet new_sheet = malloc(sizeof(*new_sheet));
     new_sheet->sheet = listCreate((CopyListElement) semesterSheetCopy,
@@ -420,27 +455,22 @@ sheetRemoveLastGrade(GradesSheet grades_sheet, int semester,
     //TODO: use later with general function
     if (grades_sheet == NULL || grades_sheet->sheet == NULL)
         return SHEET_NULL_ARGUMENT;
-    if (semester <= 0 || course_id <= 0 || course_id > 1000000 ||
-        semester > listGetSize(grades_sheet->sheet))
+    if (semester <= 0 || course_id <= 0 || course_id > 1000000)
         return SHEET_INVALID_ARGUMENT;
-    List semester_grades;
-    LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
-        Grade first_grade_in_semester = (Grade) listGetFirst(
-                semester_grades_list);
-        if (first_grade_in_semester != NULL &&
-            first_grade_in_semester->semester == semester) {
-            semester_grades = semester_grades_list;
-            break;
-        }
-    }
-    int last_grade_index = getSemesterLastGradeIndex(semester_grades,
-                                                     course_id);
+    int last_grade_index;
+    List lastest_semester_list = getLatestCourse(grades_sheet,&last_grade_index, course_id);
+    if(lastest_semester_list == NULL) return SHEET_OUT_OF_MEMORY;
+
     if (last_grade_index == -1) {
         return SHEET_GRADE_DOES_NOT_EXIST;
-    } else {
-        LIST_FOREACH(Grade, grade_iterator, semester_grades) {
+    }
+    else if(listGetSize(lastest_semester_list) == 1){
+        listRemoveFromSheet(lastest_semester_list,grades_sheet);
+    }
+    else {
+        LIST_FOREACH(Grade, grade_iterator, lastest_semester_list) {
             if (!last_grade_index) {
-                listRemoveCurrent(semester_grades);
+                listRemoveCurrent(lastest_semester_list);
                 break;
             }
             last_grade_index--;
@@ -458,23 +488,18 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
     if (course_id <= 0 || course_id > 1000000 ||
         new_grade < 0 || new_grade > 100)
         return SHEET_INVALID_ARGUMENT;
-    List semester_grades;
-    int current_index = -1, lastindex = -1;
-    LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
-        current_index = getSemesterLastGradeIndex(semester_grades_list,
-                                                  course_id);
-        if (current_index != -1) semester_grades = semester_grades_list;
-        current_index =
-                current_index > lastindex ? current_index : lastindex;
-        lastindex = current_index;
-    }
-    if (current_index != -1) {
-        LIST_FOREACH(Grade, grade_iterator, semester_grades) {
-            if (!current_index) {
+
+    int last_grade_index;
+    List lastest_semester_list = getLatestCourse(grades_sheet,&last_grade_index, course_id);
+    if(lastest_semester_list == NULL) return SHEET_OUT_OF_MEMORY;
+
+    if (last_grade_index != -1) {
+        LIST_FOREACH(Grade, grade_iterator, lastest_semester_list) {
+            if (!last_grade_index) {
                 grade_iterator->grade_value = new_grade;
                 break;
             }
-            current_index--;
+            last_grade_index--;
         }
         return SHEET_SUCCESS;
     }
