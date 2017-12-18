@@ -31,7 +31,6 @@ static ListElement semesterSheetCopy(ListElement semesterGradesList) {
     if ((List) semesterGradesList == NULL) return NULL;
     List new_sheet = listCopy((List) semesterGradesList);
     if (new_sheet == NULL) return NULL;
-    //sheetCopyGrades(new_sheet, (List)semesterGradesList);
     listDestroy((List) semesterGradesList);
     return (ListElement) new_sheet;
 }
@@ -43,13 +42,11 @@ static void semesterSheetDestroy(ListElement semesterGradesList) {
 static Grade gradeCopyFunction(Grade grade) {
     if (grade == NULL) return NULL;
     Grade new_grade = malloc(sizeof(*new_grade));
-    //TODO: check if previous grade needs to be freed
     if (new_grade == NULL) return NULL;
     new_grade->points_x2 = grade->points_x2;
     new_grade->grade_value = grade->grade_value;
     new_grade->semester = grade->semester;
     new_grade->course_id = grade->course_id;
-    //free(grade);
     return new_grade;
 }
 
@@ -219,8 +216,6 @@ static ListResult filterOutSportCourses(GradesSheet grades_sheet,
         LIST_FOREACH(Grade, current_grade, semester_grades_list) {
             histogram[current_grade->course_id]++;
         }
-        //counter = countSportCoursesInSemester(semester_grades_list);
-        //listGetFirst(semester_grades_list);
         temp_filtered_list = listFilter(semester_grades_list,
                                         (FilterListElement) filterOutSportCoursesFunction,
                                         (ListSortKey) histogram);
@@ -557,7 +552,3 @@ void sheetDestroy(GradesSheet grades_sheet) {
     listDestroy(grades_sheet->sheet);
     free(grades_sheet);
 }
-
-
-
-// --------- functions graveyard ---------
