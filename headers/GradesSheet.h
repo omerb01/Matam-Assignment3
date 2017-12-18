@@ -10,9 +10,6 @@
 
 typedef struct GradesSheet_t *GradesSheet;
 
-/*typedef void (*listFreeElement)(ListElement);
-
-typedef ListElement (*listCopyElement)(ListElement);*/
 
 typedef enum SheetResult_t {
     SHEET_SUCCESS,
@@ -112,9 +109,5 @@ SheetResult sheetPrintLowestGrades(FILE* output_channel, GradesSheet, int amount
  * de-allocates all relevant memory
  */
 void sheetDestroy(GradesSheet sheet);
-
-//TODO:remove this shit:
-
-void printSheet(GradesSheet gsheet);
 
 #endif //ASSIGNMENT3_GRADESSHEET_H
