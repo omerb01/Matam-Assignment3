@@ -24,7 +24,7 @@ typedef enum StudentResult_t {
 
 /* Creates a new student with given arguments
  * allocates new memory for relevant arguments
- * assert relevant arguments aren't NULL
+ * assert relevant arguments aren't NULL and id is valid
  * returns:
  * NULL if memory allocation failed
  * otherwise pointer to the new Student
@@ -48,7 +48,6 @@ Student studentCopy(Student);
 int studentCompare(Student student1, Student student2);
 
 /* Sends a friend request to the given requested student
- * allocated new memory for the new request
  * returns:
  * STUDENT_OUT_OF_MEMORY if memory problem occurred
  * STUDENT_NULL_ARGUMENT if one of the relevant arguments is NULL
@@ -141,10 +140,12 @@ studentPrintLowestGrades(FILE *output_channel, Student, int amount);
  * returns:
  * STUDENT_NULL_ARGUMENT if one of the arguments is NULL
  * STUDENT_OUT_OF_MEMORY if memory problem occurred
- *
+ * STUDENT_INVALID_ARGUMENT if the argument is invalid
+ * otherwise STUDENT_SUCCESS;
  */
 StudentResult
-studentPrintReferences(FILE *output_channel, Student, Set friends);
+studentPrintReferences(FILE *output_channel, Set friends,
+                       int course_id, int amount);
 
 /* Destroys all relevant memory associated to student
  */
