@@ -9,6 +9,6 @@ link_directories(headers)
 
 add_executable(Assignment3 tests/GradesSheet_test.c headers/GradesSheet.h
         headers/Student.h headers/CourseManager.h GradesSheet.c
-        Student.c CourseManager.c)
+        CourseManager.c)
 
 target_link_libraries(Assignment3 libmtm.a)

@@ -501,7 +501,7 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
         }
         return SHEET_SUCCESS;
     }
-    return SHEET_SUCCESS;
+    return SHEET_GRADE_DOES_NOT_EXIST;
 }
 
 SheetResult
