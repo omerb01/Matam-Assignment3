@@ -6,8 +6,13 @@
 #define ASSIGNMENT3_GRADESSHEET_H
 #include <stdio.h>
 #include "list.h"
+#include "../headers/mtm_ex3.h"
 
 typedef struct GradesSheet_t *GradesSheet;
+
+/*typedef void (*listFreeElement)(ListElement);
+
+typedef ListElement (*listCopyElement)(ListElement);*/
 
 typedef enum SheetResult_t {
     SHEET_SUCCESS,
@@ -64,7 +69,7 @@ SheetResult sheetUpdateLastGrade(GradesSheet, int course_id, int new_grade);
 
 /* Stores in a given pointer the latest highest grade by a given course_id
  * returns:
- * SHEET_NULL_ARGUMENT if the given grades sheet is null
+ * SHEET_NULL_ARGUMENT if the given grades sheet is null or result
  * SHEET_INVALID_ARGUMENT if one of the arguments is invalid
  * SHEET_GRADE_DOES_NOT_EXIST if course's current grade doesn't exist
  * otherwise SHEET_SUCCESS
@@ -106,6 +111,10 @@ SheetResult sheetPrintLowestGrades(FILE* output_channel, GradesSheet, int amount
 /* Destroys the grade sheet
  * de-allocates all relevant memory
  */
-void sheetDestroy();
+void sheetDestroy(GradesSheet sheet);
+
+//TODO:remove this shit:
+
+void printSheet(GradesSheet gsheet);
 
 #endif //ASSIGNMENT3_GRADESSHEET_H
