@@ -369,9 +369,11 @@ static List getLatestCourse(GradesSheet grades_sheet, int* latest_index, int cou
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet){
         last_grade_index = getSemesterLastGradeIndex(current_semester_list,
                                                      course_id);
-        if(last_grade_index != -1) latest_semester_list = current_semester_list;
+        if(last_grade_index != -1){
+            *latest_index=last_grade_index;
+            latest_semester_list = current_semester_list;
+        }
     }
-    *latest_index = last_grade_index;
     return latest_semester_list;
 }
 

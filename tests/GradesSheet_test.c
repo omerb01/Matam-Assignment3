@@ -651,10 +651,16 @@ int main() {
     RUN_TEST(testSheetPrintLowestGrades);*/
     GradesSheet gsheet = sheetCreate();
     FILE* out = stdout;
-    sheetAddGrade(gsheet,4,234123,10,56);
-    sheetAddGrade(gsheet,4,234122,10,56);
-    sheetAddGrade(gsheet,3,234122,10,28);
+    sheetAddGrade(gsheet,2,104013,11,66);
+    sheetAddGrade(gsheet,2,104013,11,63);
+    sheetAddGrade(gsheet,2,114071,7,98);
+    sheetAddGrade(gsheet,2,234118,6,98);
+    sheetAddGrade(gsheet,3,12345,10,100);
+    sheetAddGrade(gsheet,3,12346,10,100);
+    sheetAddGrade(gsheet,3,12347,10,100);
     sheetAddGrade(gsheet,2,234122,6,96);
+    sheetAddGrade(gsheet,2,234141,6,73);
+    sheetAddGrade(gsheet,2,394806,2,96);
     //sheetPrintFull(out,gsheet);
     sheetUpdateLastGrade(gsheet,234122,0);
     sheetPrintFull(out,gsheet);
