@@ -140,6 +140,15 @@ static List getCleanGradesForCurrentSemester(List semester) {
     return clean_current_semester_grades;
 }
 
+/*static void calcTotalAndFailedPointsSheet(GradesSheet grades_sheet, int* total_points, int* total_failed_points){
+    LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet){
+        LIST_FOREACH(Grade, current_grade, semester_grades_list){
+            total_points+=current_grade->points_x2;
+            if(current_grade->grade_value < 55) total_failed_points+=current_grade->points_x2;
+        }
+    }
+}*/
+
 static void
 printSemesterInfo(FILE *output_stream, List clean_grades_sheet, List semester,
                   int *total_points_sheet, int *failed_total_sheet) {
@@ -156,7 +165,6 @@ printSemesterInfo(FILE *output_stream, List clean_grades_sheet, List semester,
     }
     List clean_grades_current_semester = getCleanGradesForCurrentSemester(
             semester); // TODO:take care of NULL
-    //printList(clean_grades_current_semester);
     LIST_FOREACH(Grade, current_grade, clean_grades_current_semester) {
         calcSemesterInfo(current_grade,
                          &effective_points, &effective_grade_sum);
@@ -244,7 +252,7 @@ static void printSemesterInfoClean(FILE *output_stream, List grade_sheet,
                           current_grade->points_x2,
                           current_grade->grade_value);
         effective_p += current_grade->points_x2;
-        effective_g += effective_p * current_grade->grade_value;
+        effective_g += (current_grade->points_x2)*(current_grade->grade_value);
     }
 
     *effective_point_sheet += effective_p;
