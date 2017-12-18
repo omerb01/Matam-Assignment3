@@ -95,7 +95,7 @@ static int semesterGradeCompareFunction(Grade grade1, Grade grade2) {
     } else if (grade1->course_id < grade2->course_id) {
         return 0;
     } else {
-        return grade1->grade_value > grade2->grade_value ? 1 : 0;
+        return grade1->semester > grade2->semester ? 1 : 0;
     }
 }
 
@@ -105,9 +105,12 @@ static void calcSemesterInfo(Grade current_grade, int *total_points,
     int total_p = 0, failed_p = 0, effective_p = 0, effective_g = 0;
 
     total_p += current_grade->points_x2;
-    if (current_grade->grade_value < 55)
+    if (current_grade->grade_value < 55) {
         failed_p += current_grade->points_x2;
-    else effective_p += current_grade->points_x2;
+    }
+    else{
+        effective_p += current_grade->points_x2;
+    }
     effective_g += effective_p * current_grade->grade_value;
 
     *total_points += total_p;
@@ -130,7 +133,7 @@ printSemesterInfo(FILE *output_stream, List semester, int *total_points_sheet,
                          &effective_points, &effective_grade_sum);
     }
     mtmPrintSemesterInfo(output_stream,
-                         ((Grade) listGetFirst(semester))->course_id,
+                         ((Grade) listGetFirst(semester))->semester,
                          total_points, failed_points, effective_points,
                          effective_grade_sum);
 
@@ -364,7 +367,8 @@ sheetRemoveLastGrade(GradesSheet grades_sheet, int semester, int course_id) {
     //TODO: use later with general function
     if (grades_sheet == NULL || grades_sheet->sheet == NULL)
         return SHEET_NULL_ARGUMENT;
-    if (semester <= 0 || course_id <= 0 || course_id > 1000000)
+    if (semester <= 0 || course_id <= 0 || course_id > 1000000 ||
+        semester > listGetSize(grades_sheet->sheet))
         return SHEET_INVALID_ARGUMENT;
     List semester_grades;
     LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
@@ -378,7 +382,9 @@ sheetRemoveLastGrade(GradesSheet grades_sheet, int semester, int course_id) {
     }
     int last_grade_index = getSemesterLastGradeIndex(semester_grades,
                                                      course_id);
-    if (last_grade_index != -1) {
+    if (last_grade_index == -1) {
+        return SHEET_GRADE_DOES_NOT_EXIST;
+    } else {
         LIST_FOREACH(Grade, grade_iterator, semester_grades) {
             if (!last_grade_index) {
                 listRemoveCurrent(semester_grades);

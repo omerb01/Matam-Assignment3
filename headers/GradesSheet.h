@@ -51,6 +51,7 @@ sheetAddGrade(GradesSheet, int semester, int course_id, int points_x2,
  * returns:
  * SHEET_INVALID_ARGUMENT if one of the arguments is invalid
  * SHEET_NULL_ARGUMENT if the given grades sheet is null
+ * SHEET_GRADE_DOES_NOT_EXISTS if the given grade was already removed or doesn't exist
  * otherwise SHEET_SUCCESS
  */
 SheetResult sheetRemoveLastGrade(GradesSheet, int semester, int course_id);
