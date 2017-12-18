@@ -198,7 +198,6 @@ static bool testStudentUpdateLastGrade() {
     studentAddGrade(student, 2, 104013, 11, 63);
     studentAddGrade(student, 2, 114071, 7, 98);
     studentAddGrade(student, 2, 234118, 6, 98);
-    //studentAddGrade(student, 3, 234122, 10, 28);
     studentAddGrade(student, 3, 12345, 10, 100);
     studentAddGrade(student, 3, 12346, 10, 100);
     studentAddGrade(student, 3, 12347, 10, 100);
@@ -301,7 +300,9 @@ static bool testStudentPrintReferences() {
     StudentResult student_error;
     FILE *output_stream = stdout;
 
+    studentAddGrade(student1, 2, 234122, 6, 80);
     studentAddGrade(student1, 2, 234122, 6, 23);
+    //studentAddGrade(student1, 3, 234122, 6, 80);
     studentAddGrade(student2, 2, 234122, 6, 55);
     studentAddGrade(student3, 2, 234122, 6, 80);
     studentAddGrade(student5, 2, 234122, 6, 50);
@@ -335,6 +336,7 @@ static bool testStudentPrintReferences() {
     student_error = studentPrintReferences(output_stream, friends, 234122, -1);
     ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
 
+    // TODO: highest grade sheet doesnt give the last grade
 /*
     printf("\n");
     student_error = studentPrintReferences(output_stream, friends, 234122, 2);
@@ -357,6 +359,7 @@ static bool testStudentPrintReferences() {
     studentDestroy(student4);
     studentDestroy(student5);
     studentDestroy(student6);
+    studentDestroy(student7);
     return true;
 }
 
