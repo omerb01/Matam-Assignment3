@@ -656,8 +656,7 @@ int main() {
     sheetAddGrade(gsheet,3,234122,10,28);
     sheetAddGrade(gsheet,2,234122,6,96);
     //sheetPrintFull(out,gsheet);
-    sheetRemoveLastGrade(gsheet,4,234123);
-    sheetRemoveLastGrade(gsheet,4,234122);
+    sheetUpdateLastGrade(gsheet,234123,12);
     sheetPrintFull(out,gsheet);
     sheetDestroy(gsheet);
 }

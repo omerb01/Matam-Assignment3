@@ -371,8 +371,6 @@ static List getLatestCourse(GradesSheet grades_sheet, int* latest_index, int cou
                                                      course_id);
         if(last_grade_index != -1) latest_semester_list = current_semester_list;
     }
-    last_grade_index = getSemesterLastGradeIndex(latest_semester_list,
-                                                 course_id);
     *latest_index = last_grade_index;
     return latest_semester_list;
 }
