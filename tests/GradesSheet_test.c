@@ -2,11 +2,9 @@
 // Created by Omer on 15/12/2017.
 //
 
-#include <assert.h>
 #include <stdlib.h>
 #include "../headers/test_utilities.h"
 #include "../headers/GradesSheet.h"
-#include <stdio.h>
 
 
 typedef struct Grade_t {
@@ -24,7 +22,6 @@ static bool testGradesSheetCreate() {
     sheetDestroy(sheet);
     return true;
 }
-
 static bool testGradesSheetCopy() {
     GradesSheet gsheet = sheetCreate();
     sheetAddGrade(gsheet, 1, 104012, 11, 84);
@@ -86,7 +83,6 @@ static bool testGradesSheetCopy() {
     sheetDestroy(copied_sheet);
     return true;
 }
-
 static bool testGradesSheetAddGrade() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -152,7 +148,6 @@ static bool testGradesSheetAddGrade() {
     sheetDestroy(gsheet);
     return true;
 }
-
 static bool testGradesSheetRemoveGrade() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
