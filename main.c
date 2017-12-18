@@ -31,9 +31,4 @@ bool filterInt(NodeElement num, NodeFilterKey key) {
 
 int main() {
 
-    List list = listCreate(copyInt, freeInt);
-
-    if(list == NULL) return 0;
-
-    return 0;
 }
