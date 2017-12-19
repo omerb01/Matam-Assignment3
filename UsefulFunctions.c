@@ -8,23 +8,6 @@
 #include <assert.h>
 #include "headers/UsefulFunctions.h"
 
-SetElement studentCopyForSet(SetElement element) {
-    /* DO NOTHING */
-    return element;
-}
-
-void studentFreeForSet(SetElement element) {
-    /* DO NOTHING */
-}
-
-int studentCompareForSet(SetElement element1, SetElement element2) {
-    assert(element1 != NULL && element2 != NULL);
-    Student student1 = (Student) element1;
-    Student student2 = (Student) element2;
-
-    return studentCompare(student1, student2);
-}
-
 bool isValidId(int id) {
     if (id > 0 && id < 1000000000) return true;
     return false;

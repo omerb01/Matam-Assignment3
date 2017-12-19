@@ -14,14 +14,6 @@
             malloc(sizeof(*($$variable$$))); \
             if(($$variable$$) == NULL) {return NULL;}
 
-// ~~~~~~~~~~~~~~~~~~~~~~~ STUDENT SET FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~
-
-SetElement studentCopyForSet(SetElement element);
-
-void studentFreeForSet(SetElement element);
-
-int studentCompareForSet(SetElement element1, SetElement element2);
-
 // ~~~~~~~~~~~~~~~~~~~~~~~ VALIDATION FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~
 
 bool isValidId(int id);
