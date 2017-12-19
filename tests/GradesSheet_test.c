@@ -205,8 +205,8 @@ static bool testGradesSheetRemoveGrade() {
     sheetAddGrade(gsheet, 7, 236350, 6, 84);
     sheetAddGrade(gsheet, 7, 236503, 6, 71);
     sheetAddGrade(gsheet, 7, 236603, 4, 71);
-   /* errorcode = */sheetRemoveLastGrade(gsheet, 10, 56);
-   //ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
+    errorcode = sheetRemoveLastGrade(gsheet, 10, 56);
+    ASSERT_TEST(errorcode == SHEET_GRADE_DOES_NOT_EXIST);
     sheetRemoveLastGrade(gsheet, 7, 71);
     sheetRemoveLastGrade(gsheet, 7, 71);
     errorcode = sheetRemoveLastGrade(gsheet, 7, 71);
@@ -214,6 +214,7 @@ static bool testGradesSheetRemoveGrade() {
     errorcode = sheetRemoveLastGrade(gsheet, -1, 2);
     ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     errorcode = sheetRemoveLastGrade(gsheet, 1, 1000001);
+    ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     sheetDestroy(gsheet);
     return true;
 }
@@ -274,8 +275,8 @@ static bool testGradesSheetUpdateGrade() {
     sheetAddGrade(gsheet, 7, 236350, 6, 84);
     sheetAddGrade(gsheet, 7, 236503, 6, 71);
     sheetAddGrade(gsheet, 7, 236603, 4, 71);
-    /*errorcode = */sheetUpdateLastGrade(gsheet, 5, 99);
-    //ASSERT_TEST(errorcode == SHEET_GRADE_DOES_NOT_EXIST);
+    errorcode = sheetUpdateLastGrade(gsheet, 5, 99);
+    ASSERT_TEST(errorcode == SHEET_GRADE_DOES_NOT_EXIST);
     errorcode = sheetUpdateLastGrade(gsheet, 1, 1000001);
     ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     errorcode = sheetUpdateLastGrade(gsheet, -1, 2);
@@ -638,5 +639,22 @@ int main() {
     RUN_TEST(testSheetPrintClear);
     RUN_TEST(testSheetPrintHighestGrades);
     RUN_TEST(testSheetPrintLowestGrades);
-
+/*    SheetResult errorcode;
+    GradesSheet gsheet = sheetCreate();
+    ASSERT_TEST(gsheet != NULL);
+    sheetAddGrade(gsheet, 1, 104012, 11, 84);
+    sheetAddGrade(gsheet, 1, 104167, 10, 43);
+    sheetAddGrade(gsheet, 1, 104167, 10, 71);
+    sheetAddGrade(gsheet, 1, 234114, 8, 88);
+    sheetAddGrade(gsheet, 1, 234145, 6, 98);
+    sheetAddGrade(gsheet, 1, 394808, 2, 92);
+    errorcode = sheetRemoveLastGrade(gsheet, 10, 56);
+    ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
+    errorcode = sheetRemoveLastGrade(gsheet, 7, 71);
+    ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
+    errorcode = sheetRemoveLastGrade(gsheet, -1, 2);
+    ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
+    errorcode = sheetRemoveLastGrade(gsheet, 1, 1000001);
+    sheetDestroy(gsheet);*/
+    return true;
 }

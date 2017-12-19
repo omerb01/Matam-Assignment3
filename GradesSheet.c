@@ -484,15 +484,15 @@ sheetRemoveLastGrade(GradesSheet grades_sheet, int semester,
     CHECK_GRADE_NOT_NULL();
     if (!(isValidSemester(semester) && isValidCourseId(course_id)))
         return SHEET_INVALID_ARGUMENT;
-    int last_grade_index = -1;
+    int last_grade_index;
     List lastest_semester_list = getLatestCourseToRemove(grades_sheet,
                                                          &last_grade_index,
                                                          course_id, semester);
 
-    if (lastest_semester_list == NULL) {
+    if (semester > getLastSemesterNumber(grades_sheet)) {
+        return SHEET_GRADE_DOES_NOT_EXIST;
+    } else if (lastest_semester_list == NULL) {
         return SHEET_OUT_OF_MEMORY;
-    } else if (semester > getLastSemesterNumber(grades_sheet)) {
-        return SHEET_INVALID_ARGUMENT;
     } else if (last_grade_index == -1) {
         return SHEET_GRADE_DOES_NOT_EXIST;
     } else if (listGetSize(lastest_semester_list) == 1) {
@@ -519,9 +519,9 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
     int last_grade_index = -1;
     List lastest_semester_list = getLatestCourse(grades_sheet,
                                                  &last_grade_index, course_id);
-    if (lastest_semester_list == NULL) return SHEET_OUT_OF_MEMORY;
 
-    if (last_grade_index != -1) {
+
+    if (last_grade_index != -1 && lastest_semester_list != NULL) {
         LIST_FOREACH(Grade, grade_iterator, lastest_semester_list) {
             if (!last_grade_index) {
                 grade_iterator->grade_value = new_grade;
@@ -531,7 +531,10 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
         }
         return SHEET_SUCCESS;
     }
-    return SHEET_GRADE_DOES_NOT_EXIST;
+    else if(last_grade_index == -1 && lastest_semester_list == NULL) {
+        return SHEET_GRADE_DOES_NOT_EXIST;
+    }
+    return SHEET_OUT_OF_MEMORY;
 }
 
 SheetResult
