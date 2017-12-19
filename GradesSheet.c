@@ -398,7 +398,6 @@ getLatestCourseToRemove(GradesSheet grades_sheet, int *latest_index, int course_
     return latest_semester_list;
 
 }
-
 static void listRemoveFromSheet(List list_to_remove, GradesSheet grades_sheet) {
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         if (list_to_remove == current_semester_list) {
@@ -485,7 +484,7 @@ sheetRemoveLastGrade(GradesSheet grades_sheet, int semester,
     if (!(isValidSemester(semester) && isValidCourseId(course_id)))
         return SHEET_INVALID_ARGUMENT;
     int last_grade_index = -1;
-    List lastest_semester_list = getLatestCourseToRemove(grades_sheet,
+    List lastest_semester_list =getLatestCourseToRemove(grades_sheet,
                                                  &last_grade_index, course_id,semester);
 
     if (lastest_semester_list == NULL) {
@@ -499,7 +498,7 @@ sheetRemoveLastGrade(GradesSheet grades_sheet, int semester,
     } else {
         LIST_FOREACH(Grade, grade_iterator, lastest_semester_list) {
             if (!last_grade_index) {
-                listRemoveCurrent(lastest_semester_list);
+                //listRemoveCurrent(lastest_semester_list);
                 break;
             }
             last_grade_index--;

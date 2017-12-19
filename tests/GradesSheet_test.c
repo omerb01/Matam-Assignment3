@@ -13,7 +13,7 @@ typedef struct Grade_t {
     int points_x2;
     int grade_value;
 } *Grade;
-/*static bool testGradesSheetCreate() {
+static bool testGradesSheetCreate() {
     GradesSheet sheet = sheetCreate();
     ASSERT_TEST(sheet != NULL);
 
@@ -147,8 +147,10 @@ static bool testGradesSheetAddGrade() {
     return true;
 }
 static bool testGradesSheetRemoveGrade() {
+
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
+
     ASSERT_TEST(gsheet != NULL);
 
     sheetAddGrade(gsheet, 1, 104012, 11, 84);
@@ -203,9 +205,8 @@ static bool testGradesSheetRemoveGrade() {
     sheetAddGrade(gsheet, 7, 236350, 6, 84);
     sheetAddGrade(gsheet, 7, 236503, 6, 71);
     sheetAddGrade(gsheet, 7, 236603, 4, 71);
-    errorcode = sheetRemoveLastGrade(gsheet, 12,
-                                     69);
-    ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
+    errorcode = sheetRemoveLastGrade(gsheet, 10, 56);
+   ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     sheetRemoveLastGrade(gsheet, 7, 71);
     sheetRemoveLastGrade(gsheet, 7, 71);
     errorcode = sheetRemoveLastGrade(gsheet, 7, 71);
@@ -214,10 +215,8 @@ static bool testGradesSheetRemoveGrade() {
     ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     errorcode = sheetRemoveLastGrade(gsheet, 1, 1000001);
     sheetDestroy(gsheet);
-
     return true;
 }
-
 static bool testGradesSheetUpdateGrade() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -285,7 +284,6 @@ static bool testGradesSheetUpdateGrade() {
     sheetDestroy(gsheet);
     return true;
 }
-
 static bool testGradesSheetHighestLastGrade() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -353,7 +351,6 @@ static bool testGradesSheetHighestLastGrade() {
     sheetDestroy(gsheet);
     return true;
 }
-
 
 static bool testSheetPrintFull() {
     SheetResult errorcode;
@@ -423,7 +420,6 @@ static bool testSheetPrintFull() {
     sheetDestroy(gsheet);
     return true;
 }
-
 static bool testSheetPrintClear() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -561,7 +557,6 @@ static bool testSheetPrintHighestGrades() {
     sheetDestroy(gsheet);
     return true;
 }
-
 static bool testSheetPrintLowestGrades() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -630,10 +625,10 @@ static bool testSheetPrintLowestGrades() {
     ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     sheetDestroy(gsheet);
     return true;
-}*/
+}
 
 int main() {
-/*    RUN_TEST(testGradesSheetCreate);
+    RUN_TEST(testGradesSheetCreate);
     RUN_TEST(testGradesSheetCopy);
     RUN_TEST(testGradesSheetAddGrade);
     RUN_TEST(testGradesSheetRemoveGrade);
@@ -642,13 +637,6 @@ int main() {
     RUN_TEST(testSheetPrintFull);
     RUN_TEST(testSheetPrintClear);
     RUN_TEST(testSheetPrintHighestGrades);
-    RUN_TEST(testSheetPrintLowestGrades);*/
+    RUN_TEST(testSheetPrintLowestGrades);
 
-    GradesSheet gsheet = sheetCreate();
-    FILE* out = stdout;
-    sheetAddGrade(gsheet, 3, 12345, 10, 100);
-    sheetAddGrade(gsheet, 3, 12347, 10, 100);
-    sheetAddGrade(gsheet, 2, 12346, 10, 100);
-    sheetPrintHighestGrades(out,gsheet,4);
-    sheetDestroy(gsheet);
 }
