@@ -13,7 +13,7 @@ typedef struct Grade_t {
     int points_x2;
     int grade_value;
 } *Grade;
-
+/*
 static bool testGradesSheetCreate() {
     GradesSheet sheet = sheetCreate();
     ASSERT_TEST(sheet != NULL);
@@ -631,10 +631,10 @@ static bool testSheetPrintLowestGrades() {
     ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     sheetDestroy(gsheet);
     return true;
-}
+}*/
 
 int main() {
-    RUN_TEST(testGradesSheetCreate);
+/*    RUN_TEST(testGradesSheetCreate);
     RUN_TEST(testGradesSheetCopy);
     RUN_TEST(testGradesSheetAddGrade);
     RUN_TEST(testGradesSheetRemoveGrade);
@@ -643,23 +643,18 @@ int main() {
     RUN_TEST(testSheetPrintFull);
     RUN_TEST(testSheetPrintClear);
     RUN_TEST(testSheetPrintHighestGrades);
-    RUN_TEST(testSheetPrintLowestGrades);
+    RUN_TEST(testSheetPrintLowestGrades);*/
 
-    /*GradesSheet gsheet = sheetCreate();
+    GradesSheet gsheet = sheetCreate();
     FILE* out = stdout;
-    sheetAddGrade(gsheet,2,104013,11,66);
-    sheetAddGrade(gsheet,2,104013,11,63);
-    sheetAddGrade(gsheet,2,114071,7,98);
-    sheetAddGrade(gsheet,3,12345,10,100);
-    sheetAddGrade(gsheet,3,12346,10,100);
-    sheetAddGrade(gsheet,3,12347,10,100);
-    sheetAddGrade(gsheet,2,234122,6,96);
-    sheetAddGrade(gsheet,2,234141,6,73);
-    sheetAddGrade(gsheet,2,394806,2,96);
-    sheetAddGrade(gsheet,1,104013,10,63);
-    sheetAddGrade(gsheet,1,234107,8,63);
-    sheetAddGrade(gsheet,1,236604,4,65);
+    sheetAddGrade(gsheet,3, 234122,10,30);
+    sheetAddGrade(gsheet,3, 234122,10,50);
+    sheetAddGrade(gsheet,3, 234122,10,40);
+    sheetAddGrade(gsheet,2, 234122,6,60);
+    sheetAddGrade(gsheet,2, 234122,6,80);
+    sheetAddGrade(gsheet,2, 234122,6,70);
+    sheetRemoveLastGrade(gsheet,2,234122);
     sheetPrintFull(out,gsheet);
     sheetPrintLowestGrades(out, gsheet, 3);
-    sheetDestroy(gsheet);*/
+    sheetDestroy(gsheet);
 }

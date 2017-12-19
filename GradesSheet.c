@@ -115,7 +115,7 @@ static int semesterGradeCompareFunction(Grade grade1, Grade grade2) {
     }
 }
 
-static int semesterIdCompareFunction(List semester_list1, List semester_list2) {
+/*static int semesterIdCompareFunction(List semester_list1, List semester_list2) { TODO:
     Grade first = (Grade) listGetFirst(semester_list1);
     Grade second = (Grade) listGetFirst(semester_list2);
     if (first->semester > second->semester) {
@@ -123,7 +123,7 @@ static int semesterIdCompareFunction(List semester_list1, List semester_list2) {
     } else {
         return 0;
     }
-}
+}*/
 
 static void calcSemesterInfo(Grade current_grade, int *effective_point,
                              int *effective_grade_sum) {
@@ -370,11 +370,11 @@ static int getLastSemesterNumber(GradesSheet grades_sheet) {
 
 static List
 getLatestCourse(GradesSheet grades_sheet, int *latest_index, int course_id) {
-    int key = 0, last_grade_index;
-    ListResult result = listSort(grades_sheet->sheet,
+    int last_grade_index;
+    /*ListResult result = listSort(grades_sheet->sheet,
                                  (CompareListElements) semesterIdCompareFunction,
                                  (ListSortKey) &key);
-    if (result == LIST_OUT_OF_MEMORY) return NULL;
+    if (result == LIST_OUT_OF_MEMORY) return NULL;*/
     List latest_semester_list;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         last_grade_index = getSemesterLastGradeIndex(current_semester_list,
@@ -530,6 +530,7 @@ sheetHighestLastGrade(GradesSheet grades_sheet, int course_id,
         return SHEET_INVALID_ARGUMENT;
     if (result == NULL) return SHEET_NULL_ARGUMENT;
     int curr_max = -1, max = -1;
+
     LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
         curr_max = getSemesterHighestGrade(semester_grades_list,
                                            course_id);
