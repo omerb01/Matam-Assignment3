@@ -204,7 +204,6 @@ static bool testGradesSheetRemoveGrade() {
     sheetAddGrade(gsheet, 7, 236350, 6, 84);
     sheetAddGrade(gsheet, 7, 236503, 6, 71);
     sheetAddGrade(gsheet, 7, 236603, 4, 71);
-    //TODO: decide if it's an error or a valid request:
     errorcode = sheetRemoveLastGrade(gsheet, 12,
                                      69);
     ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
