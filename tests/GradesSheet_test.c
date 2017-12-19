@@ -137,8 +137,8 @@ static bool testGradesSheetAddGrade() {
     sheetAddGrade(gsheet, 7, 236350, 6, 84);
     sheetAddGrade(gsheet, 7, 236503, 6, 71);
     sheetAddGrade(gsheet, 7, 236603, 4, 71);
-    /*errorcode = */sheetAddGrade(gsheet, -1, 2, 3, 4);
-    //ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
+    errorcode = sheetAddGrade(gsheet, -1, 2, 3, 4);
+    ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     errorcode = sheetAddGrade(gsheet, 1, 1000001, 3, 4);
     ASSERT_TEST(errorcode == SHEET_INVALID_ARGUMENT);
     errorcode = sheetAddGrade(gsheet, 1, 2, 3, 105);

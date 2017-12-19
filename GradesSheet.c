@@ -368,7 +368,7 @@ static int getLastSemesterNumber(GradesSheet grades_sheet) {
 static List
 getLatestCourse(GradesSheet grades_sheet, int *latest_index, int course_id) {
     int last_grade_index;
-    List latest_semester_list;
+    List latest_semester_list=NULL;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         last_grade_index = getSemesterLastGradeIndex(current_semester_list,
                                                      course_id);
@@ -385,7 +385,7 @@ static List
 getLatestCourseToRemove(GradesSheet grades_sheet, int *latest_index,
                         int course_id, int semester) {
     int last_grade_index;
-    List latest_semester_list;
+    List latest_semester_list=NULL;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         if (((Grade) listGetFirst(current_semester_list))->semester ==
             semester) {
@@ -464,7 +464,7 @@ sheetAddGrade(GradesSheet grades_sheet, int semester, int course_id,
     Grade new_grade = gradeCopy(semester, course_id, points_x2,
                                 grade_value);
     if (new_grade == NULL) return SHEET_OUT_OF_MEMORY;
-    List new_semester;
+    List new_semester=NULL;//TODO
     int grade_inserted = 0;
 
     SheetResult result = insertGradeIntoSheet(grades_sheet, new_grade,
