@@ -36,4 +36,6 @@ bool isValidAmount(int amount);
 bool isValidRequest(char *request);
 
 bool isGradeFail(int grade_value);
+
+bool isSportCourse(int course_id);
 #endif //ASSIGNMENT3_USEFULFUNCTIONS_H

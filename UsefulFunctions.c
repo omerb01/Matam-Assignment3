@@ -45,6 +45,13 @@ bool isValidAmount(int amount) {
     return false;
 }
 
+bool isSportCourse(int course_id){
+    if(course_id <= 399999 && course_id >= 390000){
+        return true;
+    }
+    return false;
+}
+
 bool isGradeFail(int grade_value){
     if(grade_value >= 55){
         return false;
