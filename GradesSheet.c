@@ -322,15 +322,16 @@ semeserGradesSortFunction(Grade grade1, Grade grade2, ListSortKey key) {
         return condition;
     } else if (compareGradeValue(grade1, grade2) == 0) {
         if (compareSemester(grade1, grade2) == 1) {
-            return !condition;
-        } else if (compareSemester(grade1, grade2) == 0) {
+            return 1; //was !condition
+        } else/* if (compareSemester(grade1, grade2) == 0) */{
             if (compareCourseId(grade1, grade2) == 1) {
-                return condition;
-            } else {
-                return !condition;
+                return 1;
+            } else{
+                return 0;
             }
-        } else {
+/*        } else {
             return condition; //changed from !
+        }*/
         }
     } else {
         return !condition;
