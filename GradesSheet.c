@@ -206,11 +206,6 @@ printFullSheetSummary(FILE *output_stream, GradesSheet grades_sheet,
     return SHEET_SUCCESS;
 }
 
-static bool isSportCourse(int course_id) {
-    if (isSportCourse(course_id)) return true;
-    return false;
-}
-
 static bool filterOutSportCoursesFunction(Grade grade, ListSortKey key) {
     int *counted = &((int *) key)[grade->course_id];
     if (!isSportCourse(grade->course_id)) {
