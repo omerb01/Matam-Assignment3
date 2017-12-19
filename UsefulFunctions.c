@@ -45,6 +45,15 @@ bool isValidAmount(int amount) {
     return false;
 }
 
+bool isGradeFail(int grade_value){
+    if(grade_value >= 55){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
 bool isValidRequest(char *request) {
     if (strcmp(request, "cancel_course") == 0 ||
         strcmp(request, "register_course") == 0 ||

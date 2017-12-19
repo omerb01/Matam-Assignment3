@@ -129,7 +129,7 @@ static void calcSemesterInfo(Grade current_grade, int *effective_point,
                              int *effective_grade_sum) {
     int effective_p = 0, effective_g = 0;
 
-    if (current_grade->grade_value >= 55) {
+    if (!isGradeFail(current_grade->grade_value)) {
         effective_p += current_grade->points_x2;
     }
     effective_g += effective_p * (current_grade->grade_value);
@@ -161,7 +161,7 @@ printSemesterInfo(FILE *output_stream, List clean_grades_sheet, List semester,
     LIST_FOREACH(Grade, current_grade, semester) {
         mtmPrintGradeInfo(output_stream, current_grade->course_id,
                           current_grade->points_x2, current_grade->grade_value);
-        if (current_grade->grade_value < 55) {
+        if (isGradeFail(current_grade->grade_value)) {
             failed_points += current_grade->points_x2;
         }
         total_points += current_grade->points_x2;
@@ -193,7 +193,7 @@ printFullSheetSummary(FILE *output_stream, GradesSheet grades_sheet,
 
     int total_effective_points = 0, total_effective_points_sum = 0;
     LIST_FOREACH(Grade, current_grade, grades_sheet_clean) {
-        if (current_grade->grade_value >= 55) {
+        if (!isGradeFail(current_grade->grade_value)) {
             total_effective_points += current_grade->points_x2;
             total_effective_points_sum +=
                     (current_grade->grade_value) * (current_grade->points_x2);
@@ -207,7 +207,7 @@ printFullSheetSummary(FILE *output_stream, GradesSheet grades_sheet,
 }
 
 static bool isSportCourse(int course_id) {
-    if (course_id >= 390000 && course_id <= 399999) return true;
+    if (isSportCourse(course_id)) return true;
     return false;
 }
 

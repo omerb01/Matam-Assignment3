@@ -35,4 +35,5 @@ bool isValidAmount(int amount);
 
 bool isValidRequest(char *request);
 
+bool isGradeFail(int grade_value);
 #endif //ASSIGNMENT3_USEFULFUNCTIONS_H
