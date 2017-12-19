@@ -519,7 +519,7 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
 }
 
 SheetResult
-sheetHighestLastGrade(GradesSheet grades_sheet, int course_id,
+sheetHighestGrade(GradesSheet grades_sheet, int course_id,
                       int *result) {
     CHECK_GRADE_NOT_NULL();
     if (!(isValidCourseId(course_id)))

@@ -73,7 +73,7 @@ SheetResult sheetUpdateLastGrade(GradesSheet, int course_id, int new_grade);
  * SHEET_GRADE_DOES_NOT_EXIST if course's current grade doesn't exist
  * otherwise SHEET_SUCCESS
  */
-SheetResult sheetHighestLastGrade(GradesSheet, int course_id, int *result);
+SheetResult sheetHighestGrade(GradesSheet, int course_id, int *result);
 
 /* Prints a full version (no grades restriction) of the given grades sheet
  * returns:
