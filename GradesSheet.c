@@ -360,12 +360,14 @@ createSortedCleanSheetByKey(GradesSheet grades_sheet, int counter,
 }
 
 static int getLastSemesterNumber(GradesSheet grades_sheet) {
-    int semester_number;
+    int semester_number = -1, highest_semester_number = -1;
     LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
         semester_number = ((Grade) listGetFirst(
                 semester_grades_list))->semester;
+        highest_semester_number = highest_semester_number > semester_number
+                                  ? highest_semester_number : semester_number;
     }
-    return semester_number;
+    return highest_semester_number;
 }
 
 static List
@@ -520,7 +522,7 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
 
 SheetResult
 sheetHighestGrade(GradesSheet grades_sheet, int course_id,
-                      int *result) {
+                  int *result) {
     CHECK_GRADE_NOT_NULL();
     if (!(isValidCourseId(course_id)))
         return SHEET_INVALID_ARGUMENT;
@@ -546,8 +548,8 @@ SheetResult sheetPrintFull(FILE *output_channel, GradesSheet grades_sheet) {
 
     int total_points_sheet = 0, failed_points_sheet = 0;/*, effective_point_sheet = 0, effective_grade_sum_sheet = 0;*/
     ListResult result = listSort(grades_sheet->sheet,
-                                     (CompareListElements) semesterIdCompareFunction,
-                                     0);
+                                 (CompareListElements) semesterIdCompareFunction,
+                                 0);
     if (result == LIST_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
     LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
         SheetResult result = printSemesterInfo(output_channel,
@@ -561,8 +563,8 @@ SheetResult sheetPrintFull(FILE *output_channel, GradesSheet grades_sheet) {
         }
     }
     SheetResult sresult = printFullSheetSummary(output_channel, grades_sheet,
-                                               total_points_sheet,
-                                               failed_points_sheet);
+                                                total_points_sheet,
+                                                failed_points_sheet);
     if (sresult == SHEET_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
 
     listDestroy(clean_grades_sheet);
