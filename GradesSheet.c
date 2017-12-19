@@ -370,7 +370,7 @@ static int getLastSemesterNumber(GradesSheet grades_sheet) {
 static List
 getLatestCourse(GradesSheet grades_sheet, int *latest_index, int course_id) {
     int last_grade_index;
-    List latest_semester_list;
+    List latest_semester_list=NULL;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         last_grade_index = getSemesterLastGradeIndex(current_semester_list,
                                                      course_id);
@@ -385,8 +385,8 @@ getLatestCourse(GradesSheet grades_sheet, int *latest_index, int course_id) {
 
 static List
 getLatestCourseToRemove(GradesSheet grades_sheet, int *latest_index, int course_id, int semester) {
-    int last_grade_index;
-    List latest_semester_list;
+    int last_grade_index=-1;
+    List latest_semester_list=NULL;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         if(((Grade)listGetFirst(current_semester_list))->semester == semester){
             last_grade_index = getSemesterLastGradeIndex(current_semester_list,
@@ -498,7 +498,7 @@ sheetRemoveLastGrade(GradesSheet grades_sheet, int semester,
     } else {
         LIST_FOREACH(Grade, grade_iterator, lastest_semester_list) {
             if (!last_grade_index) {
-                //listRemoveCurrent(lastest_semester_list);
+                listRemoveCurrent(lastest_semester_list);
                 break;
             }
             last_grade_index--;
@@ -517,7 +517,7 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
     int last_grade_index = -1;
     List lastest_semester_list = getLatestCourse(grades_sheet,
                                                  &last_grade_index, course_id);
-    if (lastest_semester_list == NULL) return SHEET_OUT_OF_MEMORY;
+    if (lastest_semester_list == NULL) return SHEET_OUT_OF_MEMORY; //TODO:check this
 
     if (last_grade_index != -1) {
         LIST_FOREACH(Grade, grade_iterator, lastest_semester_list) {
