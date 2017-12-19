@@ -115,7 +115,7 @@ static int semesterGradeCompareFunction(Grade grade1, Grade grade2) {
     }
 }
 
-/*static int semesterIdCompareFunction(List semester_list1, List semester_list2) { TODO:
+static int semesterIdCompareFunction(List semester_list1, List semester_list2) {
     Grade first = (Grade) listGetFirst(semester_list1);
     Grade second = (Grade) listGetFirst(semester_list2);
     if (first->semester > second->semester) {
@@ -123,7 +123,7 @@ static int semesterGradeCompareFunction(Grade grade1, Grade grade2) {
     } else {
         return 0;
     }
-}*/
+}
 
 static void calcSemesterInfo(Grade current_grade, int *effective_point,
                              int *effective_grade_sum) {
@@ -371,10 +371,6 @@ static int getLastSemesterNumber(GradesSheet grades_sheet) {
 static List
 getLatestCourse(GradesSheet grades_sheet, int *latest_index, int course_id) {
     int last_grade_index;
-    /*ListResult result = listSort(grades_sheet->sheet,
-                                 (CompareListElements) semesterIdCompareFunction,
-                                 (ListSortKey) &key);
-    if (result == LIST_OUT_OF_MEMORY) return NULL;*/
     List latest_semester_list;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         last_grade_index = getSemesterLastGradeIndex(current_semester_list,
@@ -549,7 +545,10 @@ SheetResult sheetPrintFull(FILE *output_channel, GradesSheet grades_sheet) {
     if (clean_grades_sheet == NULL) return SHEET_OUT_OF_MEMORY;
 
     int total_points_sheet = 0, failed_points_sheet = 0;/*, effective_point_sheet = 0, effective_grade_sum_sheet = 0;*/
-
+    ListResult result = listSort(grades_sheet->sheet,
+                                     (CompareListElements) semesterIdCompareFunction,
+                                     0);
+    if (result == LIST_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
     LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
         SheetResult result = printSemesterInfo(output_channel,
                                                clean_grades_sheet,
@@ -561,10 +560,10 @@ SheetResult sheetPrintFull(FILE *output_channel, GradesSheet grades_sheet) {
             return SHEET_OUT_OF_MEMORY;
         }
     }
-    SheetResult result = printFullSheetSummary(output_channel, grades_sheet,
+    SheetResult sresult = printFullSheetSummary(output_channel, grades_sheet,
                                                total_points_sheet,
                                                failed_points_sheet);
-    if (result == SHEET_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
+    if (sresult == SHEET_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
 
     listDestroy(clean_grades_sheet);
 
