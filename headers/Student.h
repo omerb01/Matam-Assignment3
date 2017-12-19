@@ -70,7 +70,7 @@ studentIsSentFriendRequest(Student, Student requested, bool *result);
  * STUDENT_DIDNT_SEND_REQUEST if no friend request was sent by the given student
  * otherwise STUDENT_SUCCESS
  */
-StudentResult stundetRemoveSentFriendRequest(Student, Student requested);
+StudentResult studentRemoveSentFriendRequest(Student, Student requested);
 
 /* Adds a new grade to the Grades Sheet
  * returns:
@@ -99,6 +99,9 @@ StudentResult studentUpdateLastGrade(Student, int course_id, int new_grade);
  * otherwise STUDENT_SUCCESS
  */
 StudentResult studentRemoveLastGrade(Student, int semester, int course_id);
+
+StudentResult studentIsCourseDone(Student student, int course_id,
+                                  bool *result);
 
 /* Prints a full version (no grades restriction) of the given student's grades sheet
  * returns:

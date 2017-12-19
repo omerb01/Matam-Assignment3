@@ -62,6 +62,23 @@ static char *strCopy(char *str) {
     return strcpy(str_copy, str);
 }
 
+static SetElement studentCopyForSet(SetElement element) {
+    /* DO NOTHING */
+    return element;
+}
+
+static void studentFreeForSet(SetElement element) {
+    /* DO NOTHING */
+}
+
+static int studentCompareForSet(SetElement element1, SetElement element2) {
+    assert(element1 != NULL && element2 != NULL);
+    Student student1 = (Student) element1;
+    Student student2 = (Student) element2;
+
+    return studentCompare(student1, student2);
+}
+
 Student studentCreate(int id, char *first_name, char *last_name) {
     assert(first_name != NULL && last_name != NULL);
     assert(isValidId(id));
@@ -139,7 +156,7 @@ studentIsSentFriendRequest(Student student, Student requested, bool *result) {
     return STUDENT_SUCCESS;
 }
 
-StudentResult stundetRemoveSentFriendRequest(Student student, Student
+StudentResult studentRemoveSentFriendRequest(Student student, Student
 requested) {
     if (student == NULL || requested == NULL) return STUDENT_NULL_ARGUMENT;
 
@@ -172,6 +189,25 @@ StudentResult studentRemoveLastGrade(Student student, int semester,
     SheetResult sheet_error = sheetRemoveLastGrade(student->grades_sheet,
                                                    semester, course_id);
     return convertSheetResultToStudentResult(sheet_error);
+}
+
+StudentResult studentIsCourseDone(Student student, int course_id,
+                                  bool *result) {
+    if (student == NULL || result == NULL) return STUDENT_NULL_ARGUMENT;
+
+    int highest_grade;
+    SheetResult sheet_error = sheetHighestGrade(student->grades_sheet,
+                                                    course_id,
+                                                    &highest_grade);
+    if(sheet_error == SHEET_INVALID_ARGUMENT){
+        return STUDENT_INVALID_ARGUMENT;
+    }
+    if(sheet_error == SHEET_GRADE_DOES_NOT_EXIST) {
+        *result = false;
+    }
+    assert(sheet_error == SHEET_SUCCESS);
+    *result = true;
+    return STUDENT_SUCCESS;
 }
 
 StudentResult studentPrintFullSheet(FILE *output_channel, Student student) {
@@ -273,17 +309,17 @@ static List buildRefrencesList(Set friends, int course_id) {
     SheetResult sheet_error;
     ListResult list_error;
     RefrenceSource refrence_source;
-    int highest_last_grade;
+    int highest_grade;
 
     List refrences = listCreate(refrenceCopy, refrenceFree);
     if (refrences == NULL) return NULL;
 
     SET_FOREACH(Student, iterator, friends) {
         // TODO: check with Ilya if the highest grade is not an effective grade
-        sheet_error = sheetHighestLastGrade(iterator->grades_sheet, course_id,
-                                            &highest_last_grade);
+        sheet_error = sheetHighestGrade(iterator->grades_sheet, course_id,
+                                            &highest_grade);
         if (sheet_error == SHEET_GRADE_DOES_NOT_EXIST) {
-            highest_last_grade = NONE_GRADE;
+            highest_grade = NONE_GRADE;
         } else if (sheet_error == SHEET_OUT_OF_MEMORY) {
             listDestroy(refrences);
             return NULL;
@@ -291,7 +327,7 @@ static List buildRefrencesList(Set friends, int course_id) {
             assert(sheet_error == SHEET_SUCCESS);
         }
 
-        refrence_source = refrenceCreate(iterator, highest_last_grade);
+        refrence_source = refrenceCreate(iterator, highest_grade);
         if (refrence_source == NULL) {
             listDestroy(refrences);
             return NULL;
@@ -333,7 +369,7 @@ studentPrintReferences(FILE *output_channel, Set friends,
 
     LIST_FOREACH(RefrenceSource, iterator, refrences) {
         if (amount <= 0) break;
-        if(iterator->highest_last_grade != NONE_GRADE) {
+        if (iterator->highest_last_grade != NONE_GRADE) {
             mtmPrintStudentName(output_channel, iterator->student->first_name,
                                 iterator->student->last_name);
         }
