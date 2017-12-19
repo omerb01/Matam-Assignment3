@@ -14,7 +14,15 @@
             malloc(sizeof(*($$variable$$))); \
             if(($$variable$$) == NULL) {return NULL;}
 
+// ~~~~~~~~~~~~~~~~~~~~~ USER INTERFACE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~
+
+SetElement dontCopyElement(SetElement);
+
+void dontFreeElement(SetElement);
+
 // ~~~~~~~~~~~~~~~~~~~~~~~ VALIDATION FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~
+
+#define INVALID_ID -1
 
 bool isValidId(int id);
 

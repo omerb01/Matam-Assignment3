@@ -8,6 +8,15 @@
 #include <assert.h>
 #include "headers/UsefulFunctions.h"
 
+SetElement dontCopyElement(SetElement element) {
+    /* DO NOTHING */
+    return element;
+}
+
+void dontFreeElement(SetElement element) {
+    /* DO NOTHING */
+}
+
 bool isValidId(int id) {
     if (id > 0 && id < 1000000000) return true;
     return false;

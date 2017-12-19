@@ -62,15 +62,6 @@ static char *strCopy(char *str) {
     return strcpy(str_copy, str);
 }
 
-static SetElement studentCopyForSet(SetElement element) {
-    /* DO NOTHING */
-    return element;
-}
-
-static void studentFreeForSet(SetElement element) {
-    /* DO NOTHING */
-}
-
 static int studentCompareForSet(SetElement element1, SetElement element2) {
     assert(element1 != NULL && element2 != NULL);
     Student student1 = (Student) element1;
@@ -88,7 +79,7 @@ Student studentCreate(int id, char *first_name, char *last_name) {
     char *first_name_copy = strCopy(first_name);
     char *last_name_copy = strCopy(last_name);
     GradesSheet grades_sheet = sheetCreate();
-    Set friends_requests_sent = setCreate(studentCopyForSet, studentFreeForSet,
+    Set friends_requests_sent = setCreate(dontCopyElement, dontFreeElement,
                                           studentCompareForSet);
     if (first_name_copy == NULL || last_name_copy == NULL ||
         grades_sheet == NULL || friends_requests_sent == NULL) {
@@ -204,6 +195,7 @@ StudentResult studentIsCourseDone(Student student, int course_id,
     }
     if(sheet_error == SHEET_GRADE_DOES_NOT_EXIST) {
         *result = false;
+        return STUDENT_SUCCESS;
     }
     assert(sheet_error == SHEET_SUCCESS);
     *result = true;
