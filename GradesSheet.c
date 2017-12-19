@@ -322,7 +322,7 @@ semeserGradesSortFunction(Grade grade1, Grade grade2, ListSortKey key) {
         return condition;
     } else if (compareGradeValue(grade1, grade2) == 0) {
         if (compareSemester(grade1, grade2) == 1) {
-            return condition;
+            return !condition;
         } else if (compareSemester(grade1, grade2) == 0) {
             if (compareCourseId(grade1, grade2) == 1) {
                 return condition;
@@ -330,7 +330,7 @@ semeserGradesSortFunction(Grade grade1, Grade grade2, ListSortKey key) {
                 return !condition;
             }
         } else {
-            return !condition;
+            return condition; //changed from !
         }
     } else {
         return !condition;

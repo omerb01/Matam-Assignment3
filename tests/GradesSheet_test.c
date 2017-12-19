@@ -647,14 +647,23 @@ int main() {
 
     GradesSheet gsheet = sheetCreate();
     FILE* out = stdout;
-    sheetAddGrade(gsheet,3, 234122,10,30);
-    sheetAddGrade(gsheet,3, 234122,10,50);
-    sheetAddGrade(gsheet,3, 234122,10,40);
-    sheetAddGrade(gsheet,2, 234122,6,60);
-    sheetAddGrade(gsheet,2, 234122,6,80);
-    sheetAddGrade(gsheet,2, 234122,6,70);
-    sheetRemoveLastGrade(gsheet,3,234122);
-    sheetPrintFull(out,gsheet);
-    sheetPrintLowestGrades(out, gsheet, 3);
+    sheetAddGrade(gsheet, 3, 234122, 6, 28);
+    sheetAddGrade(gsheet, 2, 234122, 6, 96);
+    sheetAddGrade(gsheet, 2, 234122, 6, 40);
+    sheetAddGrade(gsheet, 2, 234122, 6, 30);
+    sheetAddGrade(gsheet, 2, 12345, 10, 100);
+    sheetAddGrade(gsheet, 3, 12347, 10, 100);
+    sheetAddGrade(gsheet, 3, 12346, 10, 100);
+    sheetAddGrade(gsheet, 2, 104013, 11, 66);
+    sheetAddGrade(gsheet, 2, 234141, 6, 73);
+    sheetAddGrade(gsheet, 2, 104013, 11, 63);
+    sheetAddGrade(gsheet, 2, 114071, 7, 98);
+    sheetAddGrade(gsheet, 3, 394806, 2, 50);
+    sheetAddGrade(gsheet, 3, 394806, 2, 90);
+    sheetAddGrade(gsheet, 2, 394806, 2, 96);
+    sheetAddGrade(gsheet, 2, 394806, 2, 30);
+    sheetAddGrade(gsheet, 2, 394806, 2, 90);
+    sheetAddGrade(gsheet, 2, 234118, 6, 98);
+    sheetPrintHighestGrades(out,gsheet,3);
     sheetDestroy(gsheet);
 }
