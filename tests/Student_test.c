@@ -2,9 +2,27 @@
 // Created by Omer on 15/12/2017.
 //
 
+#include <assert.h>
 #include "../headers/test_utilities.h"
 #include "../headers/Student.h"
 #include "../headers/UsefulFunctions.h"
+
+static SetElement studentCopyForSet(SetElement element) {
+    /* DO NOTHING */
+    return element;
+}
+
+static void studentFreeForSet(SetElement element) {
+    /* DO NOTHING */
+}
+
+static int studentCompareForSet(SetElement element1, SetElement element2) {
+    assert(element1 != NULL && element2 != NULL);
+    Student student1 = (Student) element1;
+    Student student2 = (Student) element2;
+
+    return studentCompare(student1, student2);
+}
 
 static bool testStudentCreate() {
     Student student = NULL;
@@ -126,7 +144,7 @@ static bool testStudentIsSentFriendRequest() {
     return true;
 }
 
-static bool testStundetRemoveSentFriendRequest() {
+static bool testStudentRemoveSentFriendRequest() {
     Student student1 = studentCreate(205795511, "Omer", "Belhasin");
     Student student2 = studentCreate(111111111, "Shlomo", "Artzi");
     StudentResult student_error;
@@ -135,13 +153,13 @@ static bool testStundetRemoveSentFriendRequest() {
     studentSendFriendReuqest(student1, student2);
     studentSendFriendReuqest(student2, student1);
 
-    student_error = stundetRemoveSentFriendRequest(NULL, student2);
+    student_error = studentRemoveSentFriendRequest(NULL, student2);
     ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
-    student_error = stundetRemoveSentFriendRequest(student1, NULL);
+    student_error = studentRemoveSentFriendRequest(student1, NULL);
     ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
-    student_error = stundetRemoveSentFriendRequest(student1, student2);
+    student_error = studentRemoveSentFriendRequest(student1, student2);
     ASSERT_TEST(student_error == STUDENT_SUCCESS);
-    student_error = stundetRemoveSentFriendRequest(student1, student2);
+    student_error = studentRemoveSentFriendRequest(student1, student2);
     ASSERT_TEST(student_error == STUDENT_DIDNT_SEND_REQUEST);
     studentIsSentFriendRequest(student2, student1, &result);
     ASSERT_TEST(result == true);
@@ -179,9 +197,8 @@ static bool testStudentAddGrade() {
     ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
     student_error = studentAddGrade(student, 2, 104013, 11, 0);
     ASSERT_TEST(student_error == STUDENT_SUCCESS);
-    //student_error = studentAddGrade(student, 1, 104167, -1, 43);
-    //ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
-    // TODO: tell Ilya to fix points validation
+    student_error = studentAddGrade(student, 1, 104167, -1, 43);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
     student_error = studentAddGrade(student, 1, 104167, 0, 43);
     ASSERT_TEST(student_error == STUDENT_SUCCESS);
     
@@ -190,7 +207,6 @@ static bool testStudentAddGrade() {
 }
 
 static bool testStudentUpdateLastGrade() {
-    // TODO: assure grades_sheet's function works
     Student student = studentCreate(205795511, "Omer", "Belhasin");
     StudentResult student_error;
 
@@ -198,6 +214,7 @@ static bool testStudentUpdateLastGrade() {
     studentAddGrade(student, 2, 104013, 11, 63);
     studentAddGrade(student, 2, 114071, 7, 98);
     studentAddGrade(student, 2, 234118, 6, 98);
+    studentAddGrade(student, 3, 234122, 6, 28);
     studentAddGrade(student, 3, 12345, 10, 100);
     studentAddGrade(student, 3, 12346, 10, 100);
     studentAddGrade(student, 3, 12347, 10, 100);
@@ -232,10 +249,8 @@ static bool testStudentUpdateLastGrade() {
 }
 
 static bool testStudentRemoveLastGrade() {
-    // TODO: assure grades_sheet's function works
     Student student = studentCreate(205795511, "Omer", "Belhasin");
     StudentResult student_error;
-    //FILE *output_stream = stdout;
 
     studentAddGrade(student, 3, 234122, 10, 30);
     studentAddGrade(student, 3, 234122, 10, 50);
@@ -260,32 +275,202 @@ static bool testStudentRemoveLastGrade() {
     student_error = studentRemoveLastGrade(student, 2, 234122);
     ASSERT_TEST(student_error == STUDENT_SUCCESS);
 
-    //printf("\n");
-    //studentPrintFullSheet(output_stream, student);
+    FILE *output_stream = stdout;
+    printf("\n");
+    studentPrintFullSheet(output_stream, student);
 
-    //student_error = studentRemoveLastGrade(student, 3, 234122);
-    //ASSERT_TEST(student_error == STUDENT_SUCCESS);
+    student_error = studentRemoveLastGrade(student, 3, 234122);
+    ASSERT_TEST(student_error == STUDENT_SUCCESS);
 
-    //printf("\n");
-    //studentPrintFullSheet(output_stream, student);
+    printf("\n");
+    studentPrintFullSheet(output_stream, student);
+
+    studentDestroy(student);
+    return true;
+}
+
+static bool testStudentIsCourseDone() {
+    Student student = studentCreate(205795511, "Omer", "Belhasin");
+    StudentResult student_error;
+    bool result;
+
+    student_error = studentIsCourseDone(NULL, 234122, &result);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+    student_error = studentIsCourseDone(student, 234122, NULL);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+
+    student_error = studentIsCourseDone(student, 234129992, &result);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
+    student_error = studentIsCourseDone(student, 0, &result);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
+    student_error = studentIsCourseDone(student, -1, &result);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
+
+    student_error = studentIsCourseDone(student, 234122, &result);
+    ASSERT_TEST(student_error == STUDENT_SUCCESS);
+    ASSERT_TEST(result == false);
+
+    studentAddGrade(student, 1, 234122, 6, 90);
+    student_error = studentIsCourseDone(student, 234122, &result);
+    ASSERT_TEST(student_error == STUDENT_SUCCESS);
+    ASSERT_TEST(result == true);
 
     studentDestroy(student);
     return true;
 }
 
 static bool testStudentPrintFullSheet() {
+    Student student = studentCreate(205795511, "Omer", "Belhasin");
+
+    studentAddGrade(student, 3, 234122, 6, 91);
+    studentAddGrade(student, 2, 234122, 6, 96);
+    studentAddGrade(student, 2, 234122, 6, 40);
+    studentAddGrade(student, 2, 234122, 6, 90);
+    studentAddGrade(student, 3, 12345, 10, 100);
+    studentAddGrade(student, 3, 12346, 10, 100);
+    studentAddGrade(student, 3, 12347, 10, 100);
+    studentAddGrade(student, 2, 104013, 11, 66);
+    studentAddGrade(student, 2, 234141, 6, 73);
+    studentAddGrade(student, 2, 104013, 11, 63);
+    studentAddGrade(student, 2, 114071, 7, 98);
+    studentAddGrade(student, 2, 394806, 2, 96);
+    studentAddGrade(student, 2, 234118, 6, 98);
+
+    FILE *output_stream = stdout;
+    StudentResult student_error;
+
+    student_error = studentPrintFullSheet(NULL, student);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+    student_error = studentPrintFullSheet(output_stream, NULL);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+
+    printf("\n");
+    student_error = studentPrintFullSheet(output_stream, student);
+    ASSERT_TEST(student_error == STUDENT_SUCCESS);
+
+    studentDestroy(student);
     return true;
 }
 
 static bool testStudentPrintCleanSheet() {
+    // TODO: is a failed grade treated like effective grade?
+    Student student = studentCreate(205795511, "Omer", "Belhasin");
+
+    studentAddGrade(student, 3, 234122, 6, 28);
+    studentAddGrade(student, 2, 234122, 6, 96);
+    studentAddGrade(student, 2, 234122, 6, 40);
+    studentAddGrade(student, 2, 234122, 6, 30);
+    studentAddGrade(student, 3, 12345, 10, 100);
+    studentAddGrade(student, 3, 12346, 10, 100);
+    studentAddGrade(student, 3, 12347, 10, 100);
+    studentAddGrade(student, 2, 104013, 11, 66);
+    studentAddGrade(student, 2, 234141, 6, 73);
+    studentAddGrade(student, 2, 104013, 11, 63);
+    studentAddGrade(student, 2, 114071, 7, 98);
+    studentAddGrade(student, 3, 394806, 2, 50);
+    studentAddGrade(student, 3, 394806, 2, 54);
+    studentAddGrade(student, 2, 394806, 2, 96);
+    studentAddGrade(student, 2, 394806, 2, 30);
+    studentAddGrade(student, 2, 394806, 2, 40);
+    studentAddGrade(student, 2, 234118, 6, 98);
+
+    FILE *output_stream = stdout;
+    StudentResult student_error;
+
+    student_error = studentPrintCleanSheet(NULL, student);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+    student_error = studentPrintCleanSheet(output_stream, NULL);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+
+    printf("\n");
+    student_error = studentPrintCleanSheet(output_stream, student);
+    ASSERT_TEST(student_error == STUDENT_SUCCESS);
+
+    studentDestroy(student);
     return true;
 }
 
 static bool testStudentPrintHighestGrades() {
+    Student student = studentCreate(205795511, "Omer", "Belhasin");
+
+    studentAddGrade(student, 3, 234122, 6, 28);
+    studentAddGrade(student, 2, 234122, 6, 96);
+    studentAddGrade(student, 2, 234122, 6, 40);
+    studentAddGrade(student, 2, 234122, 6, 30);
+    studentAddGrade(student, 3, 12345, 10, 100);
+    studentAddGrade(student, 2, 12347, 10, 100);
+    studentAddGrade(student, 3, 12346, 10, 100);
+    studentAddGrade(student, 2, 104013, 11, 66);
+    studentAddGrade(student, 2, 234141, 6, 73);
+    studentAddGrade(student, 2, 104013, 11, 63);
+    studentAddGrade(student, 2, 114071, 7, 98);
+    studentAddGrade(student, 3, 394806, 2, 50);
+    studentAddGrade(student, 3, 394806, 2, 90);
+    studentAddGrade(student, 2, 394806, 2, 96);
+    studentAddGrade(student, 2, 394806, 2, 30);
+    studentAddGrade(student, 2, 394806, 2, 90);
+    studentAddGrade(student, 2, 234118, 6, 98);
+
+    FILE *output_stream = stdout;
+    StudentResult student_error;
+
+    student_error = studentPrintHighestGrades(NULL, student, 2);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+    student_error = studentPrintHighestGrades(output_stream, NULL, 2);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+
+    student_error = studentPrintHighestGrades(output_stream, student, 0);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
+    student_error = studentPrintHighestGrades(output_stream, student, -1);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
+
+    printf("\n");
+    student_error = studentPrintHighestGrades(output_stream, student, 4);
+    ASSERT_TEST(student_error == STUDENT_SUCCESS);
+
+    studentDestroy(student);
     return true;
 }
 
 static bool testStudentPrintLowestGrades() {
+    Student student = studentCreate(205795511, "Omer", "Belhasin");
+
+    studentAddGrade(student, 3, 234122, 6, 28);
+    studentAddGrade(student, 2, 234122, 6, 96);
+    studentAddGrade(student, 2, 234122, 6, 40);
+    studentAddGrade(student, 2, 234122, 6, 30);
+    studentAddGrade(student, 3, 12345, 10, 2);
+    studentAddGrade(student, 3, 12347, 10, 2);
+    studentAddGrade(student, 2, 12346, 10, 2);
+    studentAddGrade(student, 2, 104013, 11, 66);
+    studentAddGrade(student, 2, 234141, 6, 73);
+    studentAddGrade(student, 2, 104013, 11, 63);
+    studentAddGrade(student, 2, 114071, 7, 98);
+    studentAddGrade(student, 3, 394806, 2, 50);
+    studentAddGrade(student, 3, 394806, 2, 54);
+    studentAddGrade(student, 2, 394806, 2, 96);
+    studentAddGrade(student, 2, 394806, 2, 30);
+    studentAddGrade(student, 2, 394806, 2, 40);
+    studentAddGrade(student, 2, 234118, 6, 98);
+
+    FILE *output_stream = stdout;
+    StudentResult student_error;
+
+    student_error = studentPrintLowestGrades(NULL, student, 2);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+    student_error = studentPrintLowestGrades(output_stream, NULL, 2);
+    ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
+
+    student_error = studentPrintLowestGrades(output_stream, student, 0);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
+    student_error = studentPrintLowestGrades(output_stream, student, -1);
+    ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
+
+    printf("\n");
+    student_error = studentPrintLowestGrades(output_stream, student, 4);
+    ASSERT_TEST(student_error == STUDENT_SUCCESS);
+
+    studentDestroy(student);
     return true;
 }
 
@@ -302,7 +487,6 @@ static bool testStudentPrintReferences() {
 
     studentAddGrade(student1, 2, 234122, 6, 80);
     studentAddGrade(student1, 2, 234122, 6, 23);
-    //studentAddGrade(student1, 3, 234122, 6, 80);
     studentAddGrade(student2, 2, 234122, 6, 55);
     studentAddGrade(student3, 2, 234122, 6, 80);
     studentAddGrade(student5, 2, 234122, 6, 50);
@@ -336,8 +520,6 @@ static bool testStudentPrintReferences() {
     student_error = studentPrintReferences(output_stream, friends, 234122, -1);
     ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
 
-    // TODO: highest grade sheet doesnt give the last grade
-/*
     printf("\n");
     student_error = studentPrintReferences(output_stream, friends, 234122, 2);
     ASSERT_TEST(student_error == STUDENT_SUCCESS);
@@ -350,7 +532,6 @@ static bool testStudentPrintReferences() {
 
     student_error = studentPrintReferences(output_stream, friends, 234112, 10);
     ASSERT_TEST(student_error == STUDENT_SUCCESS);
-*/
 
     setDestroy(friends);
     studentDestroy(student1);
@@ -374,10 +555,11 @@ int main() {
     RUN_TEST(testStudentCompare);
     RUN_TEST(testStudentSendFriendRequest);
     RUN_TEST(testStudentIsSentFriendRequest);
-    RUN_TEST(testStundetRemoveSentFriendRequest);
+    RUN_TEST(testStudentRemoveSentFriendRequest);
     RUN_TEST(testStudentAddGrade);
     RUN_TEST(testStudentUpdateLastGrade);
     RUN_TEST(testStudentRemoveLastGrade);
+    RUN_TEST(testStudentIsCourseDone);
     RUN_TEST(testStudentPrintFullSheet);
     RUN_TEST(testStudentPrintCleanSheet);
     RUN_TEST(testStudentPrintHighestGrades);

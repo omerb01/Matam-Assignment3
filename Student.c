@@ -307,7 +307,7 @@ static List buildRefrencesList(Set friends, int course_id) {
     if (refrences == NULL) return NULL;
 
     SET_FOREACH(Student, iterator, friends) {
-        // TODO: check with Ilya if the highest grade is not an effective grade
+
         sheet_error = sheetHighestGrade(iterator->grades_sheet, course_id,
                                             &highest_grade);
         if (sheet_error == SHEET_GRADE_DOES_NOT_EXIST) {
