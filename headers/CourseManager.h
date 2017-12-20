@@ -47,6 +47,7 @@ managerAddStudent(CourseManager, int id, char *first_name, char *last_name);
 
 /* Removes student from the Course Manager and his associated memory
  * returns:
+ * MANAGER_OUT_OF_MEMORY if memory problem occurred
  * MANAGER_NULL_ARGUMENT if one of the relevant arguments is NULL
  * MANAGER_INVALID_ARGUMENT if one of the relevant arguments is invalid
  * MANAGER_STUDENT_DOES_NOT_EXIST if the student does not exist
@@ -56,6 +57,7 @@ ManagerResult managerRemoveStudent(CourseManager, int id);
 
 /* Sign-in a student into the Course Manager system
  * returns:
+ * MANAGER_OUT_OF_MEMORY if memory problem occurred
  * MANAGER_NULL_ARGUMENT if one of the relevant arguments is NULL
  * MANAGER_INVALID_ARGUMENT if one of the relevant arguments is invalid
  * MANAGER_ALREADY_LOGGED_IN if student is already logged in the system
@@ -67,7 +69,6 @@ ManagerResult managerLogin(CourseManager, int id);
 /* Logs out the student from the Course Manager system
  * returns:
  * MANAGER_NULL_ARGUMENT if one of the relevant arguments is NULL
- * MANAGER_INVALID_ARGUMENT if one of the relevant arguments is invalid
  * MANAGER_NOT_LOGGED_IN if the student doesn't logged in
  * otherwise MANAGER_SUCCESS
  */
@@ -75,6 +76,7 @@ ManagerResult managerLogout(CourseManager);
 
 /* Prints a message if the request is legitimate
  * returns:
+ * MANAGER_OUT_OF_MEMORY if a memory problem occurred
  * MANAGER_NULL_ARGUMENT if one of the relevant arguments is NULL
  * MANAGER_INVALID_ARGUMENT if one of the relevant arguments is invalid
  * MANAGER_NOT_LOGGED_IN if the student doesn't logged in
@@ -82,7 +84,8 @@ ManagerResult managerLogout(CourseManager);
  * otherwise MANAGER_SUCCESS
  */
 ManagerResult
-managerFacultyRequest(CourseManager, int course_id, char *request);
+managerFacultyRequest(FILE *output_channel, CourseManager, int course_id,
+                      char *request);
 
 /* Sends a friend request to the given id
  * returns:
@@ -114,6 +117,7 @@ managerHandleFriendRequest(CourseManager, int id_waiting_for_response,
 
 /* Un-friends a friend and removes any related friend requests
  * returns:
+ * MANAGER_OUT_OF_MEMORY if a memory problem occurred
  * MANAGER_NULL_ARGUMENT if one of the relevant arguments is NULL
  * MANAGER_INVALID_ARGUMENT if one of the relevant arguments is invalid
  * MANAGER_NOT_LOGGED_IN if the student doesn't logged in
@@ -137,6 +141,7 @@ managerAddGrade(CourseManager, int semester, int course_id, int points_x2,
 
 /* Removes the last(latest) grade of the given semester's course (also given)
  * returns:
+ * MANAGER_OUT_OF_MEMORY if a memory problem occurred
  * MANAGER_NULL_ARGUMENT if one of the relevant arguments is NULL
  * MANAGER_INVALID_ARGUMENT if one of the relevant arguments is invalid
  * MANAGER_NOT_LOGGED_IN if the student doesn't logged in
@@ -148,6 +153,7 @@ managerRemoveLastGrade(CourseManager, int semester, int course_id);
 
 /* Updates the given course's(latest taken) last(latest) grade with the given new grade
  * returns:
+ * MANAGER_OUT_OF_MEMORY if a memory problem occurred
  * MANAGER_NULL_ARGUMENT if one of the relevant arguments is NULL
  * MANAGER_INVALID_ARGUMENT if one of the relevant arguments is invalid
  * MANAGER_NOT_LOGGED_IN if the student doesn't logged in
