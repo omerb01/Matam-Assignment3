@@ -55,7 +55,7 @@ int studentCompare(Student student1, Student student2);
  * otherwise STUDENT_SUCCESS
  */
 StudentResult studentSendFriendReuqest(Student,
-                                       Student requested); //TODO: check answer in forum
+                                       Student requested);
 /* Checks if the given student sent a friend request to the requested student
  * returns:
  * STUDENT_NULL_ARGUMENT if one of the relevant arguments is NULL
@@ -100,6 +100,13 @@ StudentResult studentUpdateLastGrade(Student, int course_id, int new_grade);
  */
 StudentResult studentRemoveLastGrade(Student, int semester, int course_id);
 
+/* Checks if the given student did the given course and stores the result in
+ * a given pointer
+ * returns:
+ * STUDENT_NULL_ARGUMENT if the given student is null
+ * STUDENT_INVALID_ARGUMENT if one of the arguments is invalid
+ * otherwise STUDENT_SUCCESS
+ */
 StudentResult studentIsCourseDone(Student student, int course_id,
                                   bool *result);
 
