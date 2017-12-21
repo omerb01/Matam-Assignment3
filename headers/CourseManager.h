@@ -22,7 +22,8 @@ typedef enum ManagerResult_t {
     MANAGER_NOT_REQUESTED,
     MANAGER_ALREADY_REQUESTED,
     MANAGER_COURSE_DOES_NOT_EXIST,
-    MANAGER_NULL_ARGUMENT
+    MANAGER_NULL_ARGUMENT,
+    MANAGER_FAIL
 } ManagerResult;
 
 /* Creates a new Course Manager
