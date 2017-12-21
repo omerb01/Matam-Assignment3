@@ -63,10 +63,46 @@ static bool testManagerRemoveStudent() {
     ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
 
     managerAddStudent(manager, 205795511, "Omer", "Belhasin");
-    managerAddStudent(manager, 555555555, "Omer", "Belhasin");
+    managerAddStudent(manager, 111111111, "Shlomo", "Artzi");
+    managerAddStudent(manager, 222222222, "Omer", "Adam");
+    managerAddStudent(manager, 333333333, "Aviv", "Gefen");
+
+    managerLogin(manager, 111111111);
+    managerSendFriendRequest(manager, 205795511);
+    managerLogout(manager);
+
+    managerLogin(manager, 222222222);
+    managerSendFriendRequest(manager, 205795511);
+    managerLogout(manager);
+
+    managerLogin(manager, 333333333);
+    managerSendFriendRequest(manager, 205795511);
+    managerLogout(manager);
+
+    managerLogin(manager, 205795511);
+    managerHandleFriendRequest(manager, 111111111, "accept");
+    managerHandleFriendRequest(manager, 222222222, "accept");
+    managerSendFriendRequest(manager, 333333333);
+
     manager_error = managerRemoveStudent(manager, 205795511);
     ASSERT_TEST(manager_error == MANAGER_SUCCESS);
-    manager_error = managerRemoveStudent(manager, 555555555);
+    manager_error = managerRemoveStudent(manager, 205795511);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+    manager_error = managerHandleFriendRequest(manager, 333333333, "accept");
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+
+    managerAddStudent(manager, 205795511, "Omer", "Belhasin");
+    managerLogin(manager, 205795511);
+    manager_error = managerSendFriendRequest(manager, 333333333);
+    ASSERT_TEST(manager_error == MANAGER_SUCCESS);
+    manager_error = managerSendFriendRequest(manager, 111111111);
+    ASSERT_TEST(manager_error == MANAGER_SUCCESS);
+    manager_error = managerSendFriendRequest(manager, 222222222);
+    ASSERT_TEST(manager_error == MANAGER_SUCCESS);
+    managerLogout(manager);
+
+    managerLogin(manager, 333333333);
+    manager_error = managerSendFriendRequest(manager, 205795511);
     ASSERT_TEST(manager_error == MANAGER_SUCCESS);
 
     managerDestroy(manager);
