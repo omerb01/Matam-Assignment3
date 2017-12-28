@@ -3,7 +3,7 @@
 //
 
 #include <stdio.h>
-#include "test_utilities.h"
+#include "..\headers\test_utilities.h"
 #include "list_mtm.h"
 #include <stdlib.h>
 
@@ -289,7 +289,6 @@ int main() {
     ASSERT(list3 == NULL);
     list3 = listFilter(NULL, filterInt, key);
     ASSERT(list3 == NULL);
-    printList(list1);
     list3 = listFilter(list1, filterInt, key);
 
     i = listGetSize(list3);
