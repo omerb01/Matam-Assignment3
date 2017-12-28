@@ -47,29 +47,24 @@ static bool isNumberMainArgumentsValid(int argc) {
 }
 
 static void getInputFile(int argc, char **argv, FILE **input) {
-    if (argc == 1) {
-        *input = stdin;
-        return;
-    }
     for (int i = 0; i < argc; i++) {
         if (strcmp(argv[i], "-i") == 0) {
             *input = fopen(argv[i + 1], "r");
             return;
         }
     }
+    *input = stdin;
+    return;
 }
 
 static void getOutputFile(int argc, char **argv, FILE **output) {
-    if (argc == 1) {
-        *output = stdin;
-        return;
-    }
     for (int i = 0; i < argc; i++) {
         if (strcmp(argv[i], "-o") == 0) {
             *output = fopen(argv[i + 1], "w");
             return;
         }
     }
+    *output = stdout;
 }
 
 static char *copyCommand(char *command);
@@ -81,7 +76,7 @@ static bool isDelimiter(char c) {
 
 static char *getStringWithoutOffset(char *string_with_offset) {
     char *iterator = string_with_offset;
-    char *iterator_end = string_with_offset;
+    char *iterator_end = string_with_offset-1;
     iterator_end += strlen(string_with_offset);
     while (isDelimiter(*iterator)) iterator++;
     while (isDelimiter(*iterator_end) || *iterator_end == '\n') iterator_end--;
@@ -447,6 +442,12 @@ commandRouter(List command, CourseManager course_manager, FILE *output) {
         return -1;
     }
 }
+//TODO:REMOVE
+static void printList(List list){
+    LIST_FOREACH(ListElement, iterator, list){
+        printf("%s ", (char*)iterator);
+    }
+}
 
 int main(int argc, char **argv) {
     if (!isNumberMainArgumentsValid(argc)) {
@@ -488,6 +489,8 @@ int main(int argc, char **argv) {
             mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
             return -1;
         }
+        printList(command);
+        printf("\n");
         critical_status = commandRouter(command, course_manager, output);
         if (critical_status == -1) break;
 

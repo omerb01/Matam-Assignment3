@@ -245,17 +245,15 @@ ListResult listRemoveCurrent(List list) {
 List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
     if (list == NULL || filterElement == NULL) return NULL;
     ListResult list_error;
-    Node temp;
     List list_copy = listCopy(list);
     if (list_copy == NULL) return NULL;
     listGetFirst(list_copy);
     while(list_copy->iterator!=NULL){
         if(filterElement(list_copy->iterator->element,key) == false){
             list_error = listRemoveCurrent(list_copy);
-            list_copy->iterator = temp;
+            listGetFirst(list_copy);
             assert(list_error == LIST_SUCCESS);
         }
-        temp=list_copy->iterator;
         listGetNext(list_copy);
     }
     list_copy->iterator=NULL;

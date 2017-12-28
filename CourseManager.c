@@ -187,14 +187,14 @@ managerAddStudent(CourseManager manager, int id, char *first_name,
         return MANAGER_NULL_ARGUMENT;
     }
 
-    if (!isValidId(id)) return MANAGER_INVALID_ARGUMENT;
-
     Student student = studentCreate(id, first_name, last_name);
     if (student == NULL) return MANAGER_OUT_OF_MEMORY;
 
     SetResult set_error = setAdd(manager->students, student);
     if (set_error != SET_SUCCESS) studentDestroy(student);
     CONVERT_SET_RESULT_TO_MANAGER_RESULT(set_error);
+
+    if (!isValidId(id)) return MANAGER_INVALID_ARGUMENT;
 
     GraphResult graph_error = graphAddVertex(manager->friendships, &id);
     if (graph_error != GRAPH_SUCCCESS) {
