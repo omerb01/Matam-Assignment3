@@ -1,11 +1,3 @@
-//
-// Created by Ilya on 12/28/2017.
-//
-
-//
-// Created by Ilya on 12/24/2017.
-//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "list_mtm.h"
@@ -54,7 +46,7 @@ static void swapElements(Node *element1, Node *element2){
 static ListResult maxSort(List list, CompareListElements compareElement,
                           ListSortKey key){
     assert(list != NULL && compareElement != NULL);
-    Node temp_iterator=list->iterator, temp=list->iterator;
+    Node temp=list->iterator;
     for(listGetFirst(list);list->iterator!=NULL;list->iterator = list->iterator->next){
         for(temp=list->iterator->next; temp!=NULL; temp=temp->next){
             if(compareElement(list->iterator->element,temp->element,key)>0){
@@ -91,7 +83,6 @@ List listCopy(List list) {
     List copied_list = listCreate(list->copy, list->free);
     Node temp_iterator = list->iterator;
     ListResult error;
-    //TODO:clear
     LIST_FOREACH(ListElement, iterator, list) {
         error = listInsertLast(copied_list, iterator);
         if (error == LIST_OUT_OF_MEMORY) {
