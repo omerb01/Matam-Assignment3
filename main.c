@@ -335,7 +335,6 @@ static ManagerResult
 mainFacultyRequest(List command, CourseManager course_manager, FILE *output) {
     int course_id = stringToInt((char *) listGetNext(command));
     char *request = (char *) listGetNext(command);
-    if (course_id == -1) return MANAGER_INVALID_ARGUMENT;
     return managerFacultyRequest(output, course_manager, course_id, request);
 }
 
@@ -343,7 +342,6 @@ static ManagerResult
 mainReference(List command, CourseManager course_manager, FILE *output) {
     int course_id = stringToInt((char *) listGetNext(command));
     int amount = stringToInt((char *) listGetNext(command));
-    if (course_id == -1 || amount == -1) return MANAGER_INVALID_ARGUMENT;
     return managerPrintReferences(output, course_manager, course_id, amount);
 }
 
@@ -356,11 +354,9 @@ reportRouter(List command, CourseManager course_manager, FILE *output) {
         return managerPrintCleanSheet(output, course_manager);
     } else if (IS_COMMAND("best")) {
         int amount = stringToInt((char *) listGetNext(command));
-        if (amount == -1) return MANAGER_INVALID_ARGUMENT;
         return managerPrintHighestGrades(output, course_manager, amount);
     } else if (IS_COMMAND("worst")) {
         int amount = stringToInt((char *) listGetNext(command));
-        if (amount == -1) return MANAGER_INVALID_ARGUMENT;
         return managerPrintLowestGrades(output, course_manager, amount);
     } else if (IS_COMMAND("reference")) {
         return mainReference(command, course_manager, output);
