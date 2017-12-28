@@ -29,6 +29,7 @@ allocateMemory(Node *new_node, ListElement element, List list) {
     }
     (*new_node)->element = temp;
     (*new_node)->next = NULL;
+    return LIST_SUCCESS;
 }
 
 static void setOldIterator(Node old_iterator, List list) {
@@ -158,7 +159,6 @@ ListResult listInsertFirst(List list, ListElement element) {
 }
 
 ListResult listInsertLast(List list, ListElement element) {
-    ListResult error;
     Node temp_iterator, new_node = NULL;
     if (list == NULL || element == NULL) {
         return LIST_NULL_ARGUMENT;
@@ -276,6 +276,7 @@ ListResult listClear(List list) {
             listGetFirst(list);
         } while (list->iterator != NULL);
     }
+    return LIST_SUCCESS;
 }
 
 ListResult
