@@ -60,7 +60,7 @@ static ListResult maxSort(List list, CompareListElements compareElement,
             break;
         }
     }
-
+    return LIST_SUCCESS;
 }
 
 List listCreate(CopyListElement copyElement, FreeListElement freeElement) {
