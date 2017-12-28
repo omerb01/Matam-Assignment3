@@ -456,14 +456,40 @@ static void printList(List list) {
 static bool isMainArgumentsValid(char **argv, int argc) {
     if (!isNumberMainArgumentsValid(argc)) return false;
     for (int i = 1; i < argc; i++) {
-        if(strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "-o") == 0) {
+        if (strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "-o") == 0) {
             i++;
-        }
-        else {
+        } else {
             return false;
         }
     }
     return true;
+}
+
+static void commandProcess(List command, FILE *input, FILE *output,
+                           CourseManager course_manager) {
+
+    int critical_status = 0;
+
+    char buffer[MAX_LEN];
+
+    while (fgets(buffer, MAX_LEN, input) != NULL) {
+        if (isStringEmpty(buffer)) {
+            continue;
+        } else if (isStringComment(buffer)) {
+            continue;
+        }
+
+        if (loadCommandIntoList(command, buffer) == -1) {
+            mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
+            return;
+        }
+        printList(command);
+        printf("\n");
+        critical_status = commandRouter(command, course_manager, output);
+        if (critical_status == -1) break;
+
+        listClear(command);
+    }
 }
 
 int main(int argc, char **argv) {
@@ -489,29 +515,7 @@ int main(int argc, char **argv) {
         mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
         return -1;
     }
-
-    int critical_status = 0;
-
-    char buffer[MAX_LEN];
-
-    while (fgets(buffer, MAX_LEN, input) != NULL) {
-        if (isStringEmpty(buffer)) {
-            continue;
-        } else if (isStringComment(buffer)) {
-            continue;
-        }
-
-        if (loadCommandIntoList(command, buffer) == -1) {
-            mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
-            return -1;
-        }
-        printList(command);
-        printf("\n");
-        critical_status = commandRouter(command, course_manager, output);
-        if (critical_status == -1) break;
-
-        listClear(command);
-    }
+    commandProcess(command, input, output, course_manager);
 
     managerDestroy(course_manager);
     listDestroy(command);
