@@ -7,8 +7,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Werror -pedantic")
 
 link_directories(headers)
 
-add_executable(mtm_cm headers/GradesSheet.h headers/Graph.h headers/mtm_ex3.h
-        headers/Student.h headers/CourseManager.h headers/UsefulFunctions.h headers/CourseManager.h
-        headers/set.h UsefulFunctions.c GradesSheet.c Student.c CourseManager.c Graph.c main.c)
+add_executable(Assignment3 ListContainer/list_test.c headers/GradesSheet.h
+        headers/Student.h headers/Graph.h headers/CourseManager.h GradesSheet.c
+        Student.c Graph.c CourseManager.c UsefulFunctions.c
+        headers/UsefulFunctions.h ListContainer/list_mtm.h ListContainer/mtm_list.c)
 
-target_link_libraries(mtm_cm libmtm.a)
+target_link_libraries(Assignment3 libmtm.a)
