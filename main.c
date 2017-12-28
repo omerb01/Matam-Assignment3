@@ -265,7 +265,8 @@ static int pointsToNumber(char *points) {
     int points2x = 0;
     char *iterator = points;
     if (point_index == -1) {
-        return stringToInt(points);
+        points2x =  stringToInt(points);
+        return points2x*2;
     } else {
         *(iterator + point_index) = '\0';
         points2x = stringToInt(iterator);
@@ -445,13 +446,11 @@ commandRouter(List command, CourseManager course_manager, FILE *output) {
     }
 }
 //TODO:REMOVE
-/*
 static void printList(List list){
     LIST_FOREACH(ListElement, iterator, list){
         printf("%s ", (char*)iterator);
     }
 }
-*/
 
 int main(int argc, char **argv) {
     if (!isNumberMainArgumentsValid(argc)) {
@@ -493,7 +492,8 @@ int main(int argc, char **argv) {
             mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
             return -1;
         }
-        if(listGetFirst(command))
+        printList(command);
+        printf("\n");
         critical_status = commandRouter(command, course_manager, output);
         if (critical_status == -1) break;
 
