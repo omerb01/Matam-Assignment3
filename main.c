@@ -76,7 +76,7 @@ static bool isDelimiter(char c) {
 
 static char *getStringWithoutOffset(char *string_with_offset) {
     char *iterator = string_with_offset;
-    char *iterator_end = string_with_offset-1;
+    char *iterator_end = string_with_offset - 1;
     iterator_end += strlen(string_with_offset);
     while (isDelimiter(*iterator)) iterator++;
     while (isDelimiter(*iterator_end) || *iterator_end == '\n') iterator_end--;
@@ -84,7 +84,7 @@ static char *getStringWithoutOffset(char *string_with_offset) {
 
     char *stripped_string = malloc(
             sizeof(char) * (iterator_end - iterator + 1));
-    if(stripped_string == NULL) return NULL;
+    if (stripped_string == NULL) return NULL;
     stripped_string = strcpy(stripped_string, iterator);
     return stripped_string;
 
@@ -102,7 +102,7 @@ static int getNextWordLen(char *str) {
 
 static int loadCommandIntoList(List command, char *command_input) {
     char *stripped_string = getStringWithoutOffset(command_input);
-    if(stripped_string == NULL) return -1;
+    if (stripped_string == NULL) return -1;
     char *iterator = stripped_string;
     int len;
     while (*iterator != '\0') {
@@ -126,23 +126,23 @@ static bool isStringComment(char *input_string) {
     while (isDelimiter(*iterator) && *iterator != '\0') {
         iterator++;
     }
-    if (*iterator == '#'){
+    if (*iterator == '#') {
         return true;
     }
     return false;
 }
 
 static bool isStringEmpty(char *input_string) {
-    while(*input_string != '\0'){
-        if(isDelimiter(*input_string) && *input_string != '\n') return false;
+    while (*input_string != '\0') {
+        if (isDelimiter(*input_string) && *input_string != '\n') return false;
         input_string++;
     }
     return true;
 }
 
 static char *copyCommand(char *command) {
-    char *new_string = malloc(sizeof(char)*(strlen(command) + 1));
-    if(new_string == NULL) return NULL;
+    char *new_string = malloc(sizeof(char) * (strlen(command) + 1));
+    if (new_string == NULL) return NULL;
     strcpy(new_string, command);
     return new_string;
 }
@@ -265,8 +265,8 @@ static int pointsToNumber(char *points) {
     int points2x = 0;
     char *iterator = points;
     if (point_index == -1) {
-        points2x =  stringToInt(points);
-        return points2x*2;
+        points2x = stringToInt(points);
+        return points2x * 2;
     } else {
         *(iterator + point_index) = '\0';
         points2x = stringToInt(iterator);
@@ -282,12 +282,12 @@ static int pointsToNumber(char *points) {
 
 static ManagerResult mainAddGrade(List command, CourseManager course_manager) {
     ManagerResult error_code;
-    
+
     int semester = stringToInt((char *) listGetNext(command));
     int course_id = stringToInt((char *) listGetNext(command));
     int points = pointsToNumber((char *) listGetNext(command));
     int grade = stringToInt((char *) listGetNext(command));
-    
+
     if (semester == -1 || course_id == -1 || points == -1 || grade == -1) {
         return MANAGER_INVALID_ARGUMENT;
     } else {
@@ -300,15 +300,15 @@ static ManagerResult mainAddGrade(List command, CourseManager course_manager) {
 static ManagerResult
 mainRemoveGrade(List command, CourseManager course_manager) {
     ManagerResult error_code;
-    
+
     int semester = stringToInt((char *) listGetNext(command));
     int course_id = stringToInt((char *) listGetNext(command));
-    
+
     if (semester == -1 || course_id == -1) {
         return MANAGER_INVALID_ARGUMENT;
     } else {
         error_code = managerRemoveLastGrade(course_manager, semester,
-                                           course_id);
+                                            course_id);
         return error_code;
     }
 }
@@ -316,15 +316,15 @@ mainRemoveGrade(List command, CourseManager course_manager) {
 static ManagerResult
 mainUpdateGrade(List command, CourseManager course_manager) {
     ManagerResult error_code;
-    
+
     int course_id = stringToInt((char *) listGetNext(command));
     int new_grade = stringToInt((char *) listGetNext(command));
-    
+
     if (course_id == -1 || new_grade == -1) {
         return MANAGER_INVALID_ARGUMENT;
     } else {
         error_code = managerUpdateLastGrade(course_manager, course_id,
-                                           new_grade);
+                                            new_grade);
         return error_code;
     }
 }
@@ -419,7 +419,7 @@ static int convertManagerResultToMtmResult(ManagerResult error) {
     } else if (error == MANAGER_STUDENT_DOES_NOT_EXIST) {
         PRINT_ERR(MTM_STUDENT_DOES_NOT_EXIST);
         return 0;
-    } else if(error == MANAGER_SUCCESS) {
+    } else if (error == MANAGER_SUCCESS) {
         return 0;
     } else {
         assert(false);
@@ -445,15 +445,29 @@ commandRouter(List command, CourseManager course_manager, FILE *output) {
         return -1;
     }
 }
+
 //TODO:REMOVE
-static void printList(List list){
-    LIST_FOREACH(ListElement, iterator, list){
-        printf("%s ", (char*)iterator);
+static void printList(List list) {
+    LIST_FOREACH(ListElement, iterator, list) {
+        printf("%s ", (char *) iterator);
     }
 }
 
+static bool isMainArgumentsValid(char **argv, int argc) {
+    if (!isNumberMainArgumentsValid(argc)) return false;
+    for (int i = 1; i < argc; i++) {
+        if(strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "-o") == 0) {
+            i++;
+        }
+        else {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main(int argc, char **argv) {
-    if (!isNumberMainArgumentsValid(argc)) {
+    if (!isMainArgumentsValid(argv, argc)) {
         mtmPrintErrorMessage(stderr, MTM_INVALID_COMMAND_LINE_PARAMETERS);
         return -1;
     }
@@ -483,12 +497,11 @@ int main(int argc, char **argv) {
     while (fgets(buffer, MAX_LEN, input) != NULL) {
         if (isStringEmpty(buffer)) {
             continue;
-        }
-        else if (isStringComment(buffer)) {
+        } else if (isStringComment(buffer)) {
             continue;
         }
 
-        if(loadCommandIntoList(command, buffer) == -1) {
+        if (loadCommandIntoList(command, buffer) == -1) {
             mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
             return -1;
         }
