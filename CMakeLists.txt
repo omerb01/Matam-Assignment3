@@ -10,6 +10,7 @@ link_directories(headers)
 add_executable(Assignment3 main.c headers/GradesSheet.h
         headers/Student.h headers/Graph.h headers/CourseManager.h GradesSheet.c
         Student.c Graph.c CourseManager.c UsefulFunctions.c
-        headers/UsefulFunctions.h ListContainer/list_mtm.h ListContainer/mtm_list.c)
+        headers/UsefulFunctions.h headers/list.h headers/set.h
+        headers/mtm_ex3.h headers/test_utilities.h)
 
 target_link_libraries(Assignment3 libmtm.a)
