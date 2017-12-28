@@ -162,7 +162,6 @@ static int stringToInt(char *str) {
     char *string_number = str;
     while (*string_number != '\0') {
         if (!isDigit(*string_number)) {
-            mtmPrintErrorMessage(stderr, MTM_INVALID_COMMAND_LINE_PARAMETERS);
             return -1;
         } else {
             number = number * 10 + ((*string_number) - '0');
