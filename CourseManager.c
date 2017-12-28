@@ -223,10 +223,6 @@ ManagerResult managerRemoveStudent(CourseManager manager, int id) {
     if (graph_error != GRAPH_SUCCCESS) studentDestroy(student);
     CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
 
-    SetResult set_error = setRemove(manager->students, student);
-    if (set_error != SET_SUCCESS) studentDestroy(student);
-    CONVERT_SET_RESULT_TO_MANAGER_RESULT(set_error);
-
     if (!isValidId(id)) {
         studentDestroy(student);
         return MANAGER_INVALID_ARGUMENT;
@@ -238,6 +234,10 @@ ManagerResult managerRemoveStudent(CourseManager manager, int id) {
         assert(student_error == STUDENT_SUCCESS ||
                student_error == STUDENT_DIDNT_SEND_REQUEST);
     }
+
+    SetResult set_error = setRemove(manager->students, student);
+    if (set_error != SET_SUCCESS) studentDestroy(student);
+    CONVERT_SET_RESULT_TO_MANAGER_RESULT(set_error);
 
     ManagerResult manager_error;
     if (manager->current_logged_id == id) {

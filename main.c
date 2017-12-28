@@ -446,13 +446,6 @@ commandRouter(List command, CourseManager course_manager, FILE *output) {
     }
 }
 
-//TODO:REMOVE
-static void printList(List list) {
-    LIST_FOREACH(ListElement, iterator, list) {
-        printf("%s ", (char *) iterator);
-    }
-}
-
 static bool isMainArgumentsValid(char **argv, int argc) {
     if (!isNumberMainArgumentsValid(argc)) return false;
     for (int i = 1; i < argc; i++) {
@@ -483,7 +476,6 @@ static void commandProcess(List command, FILE *input, FILE *output,
             mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
             return;
         }
-        printList(command);
         printf("\n");
         critical_status = commandRouter(command, course_manager, output);
         if (critical_status == -1) break;
