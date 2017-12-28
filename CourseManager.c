@@ -196,7 +196,10 @@ managerAddStudent(CourseManager manager, int id, char *first_name,
     if (set_error != SET_SUCCESS) studentDestroy(student);
     CONVERT_SET_RESULT_TO_MANAGER_RESULT(set_error);
 
-    if (!isValidId(id)) return MANAGER_INVALID_ARGUMENT;
+    if (!isValidId(id)) {
+        studentDestroy(student);
+        return MANAGER_INVALID_ARGUMENT;
+    }
 
     GraphResult graph_error = graphAddVertex(manager->friendships, &id);
     if (graph_error != GRAPH_SUCCCESS) {
@@ -224,7 +227,10 @@ ManagerResult managerRemoveStudent(CourseManager manager, int id) {
     if (set_error != SET_SUCCESS) studentDestroy(student);
     CONVERT_SET_RESULT_TO_MANAGER_RESULT(set_error);
 
-    if (!isValidId(id)) return MANAGER_INVALID_ARGUMENT;
+    if (!isValidId(id)) {
+        studentDestroy(student);
+        return MANAGER_INVALID_ARGUMENT;
+    }
 
     StudentResult student_error;
     SET_FOREACH(Student, iterator, manager->students) {
