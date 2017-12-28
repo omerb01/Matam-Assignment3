@@ -433,10 +433,10 @@ static int studentErrorConverter(ManagerResult error) {
     }
 }
 
-static MtmErrorCode
+static int
 commandRouter(List command, CourseManager course_manager, FILE *output) {
     char *prime_command = (char *) listGetFirst(command);
-    MtmErrorCode error_code;
+    ManagerResult error_code;
     if (ROUTER_CMP("student")) {
         error_code = studentRouter(command, course_manager);
         return studentErrorConverter(error_code);
