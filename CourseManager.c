@@ -71,8 +71,8 @@ struct CourseManager_t {
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ USEFUL MACROS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#define CREATE_PERVERT($$id$$) \
-    studentCreate($$id$$, "Pervert", "Pervert")
+#define CREATE_DEMI_STUDENT($$id$$) \
+    studentCreate($$id$$, "Demi", "Demi")
 
 #define STORE_LOGGED_STUDENT($$manager$$, $$variable$$) \
     $$variable$$ = NULL; \
@@ -148,7 +148,7 @@ static ManagerResult findStudentById(CourseManager manager, int id,
                                      Student *result) {
     assert(manager != NULL && isValidId(id));
 
-    Student student = CREATE_PERVERT(id);
+    Student student = CREATE_DEMI_STUDENT(id);
     if (student == NULL) return MANAGER_OUT_OF_MEMORY;
 
     SET_FOREACH(Student, iterator, manager->students) {
@@ -213,7 +213,7 @@ ManagerResult managerRemoveStudent(CourseManager manager, int id) {
 
     if (!isValidId(id)) return MANAGER_INVALID_ARGUMENT;
 
-    Student student = CREATE_PERVERT(id);
+    Student student = CREATE_DEMI_STUDENT(id);
     if (student == NULL) return MANAGER_OUT_OF_MEMORY;
 
     GraphResult graph_error = graphRemoveVertex(manager->friendships, &id);
@@ -278,11 +278,11 @@ managerFacultyRequest(FILE *output_channel, CourseManager manager,
         return MANAGER_NULL_ARGUMENT;
     }
 
+    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
     if (!isValidCourseId(course_id) || !isValidRequest(request)) {
         return MANAGER_INVALID_ARGUMENT;
     }
-
-    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
 
     Student logged_student;
     STORE_LOGGED_STUDENT(manager, logged_student);
@@ -304,8 +304,8 @@ managerFacultyRequest(FILE *output_channel, CourseManager manager,
 ManagerResult managerSendFriendRequest(CourseManager manager,
                                        int id_to_request) {
     if (manager == NULL) return MANAGER_NULL_ARGUMENT;
-    if (!isValidId(id_to_request)) return MANAGER_INVALID_ARGUMENT;
     if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+    if (!isValidId(id_to_request)) return MANAGER_INVALID_ARGUMENT;
 
     ManagerResult manager_error;
     Student requested = NULL;
@@ -341,11 +341,11 @@ managerHandleFriendRequest(CourseManager manager, int id_waiting_for_response,
                            char *action) {
     if (manager == NULL || action == NULL) return MANAGER_NULL_ARGUMENT;
 
+    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
     if (!isValidId(id_waiting_for_response) || !isValidAction(action)) {
         return MANAGER_INVALID_ARGUMENT;
     }
-
-    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
 
     ManagerResult manager_error;
     GraphResult graph_error;
@@ -385,9 +385,9 @@ managerHandleFriendRequest(CourseManager manager, int id_waiting_for_response,
 ManagerResult managerUnfriend(CourseManager manager, int id_to_unfriend) {
     if (manager == NULL) return MANAGER_NULL_ARGUMENT;
 
-    if (!isValidId(id_to_unfriend)) return MANAGER_INVALID_ARGUMENT;
-
     if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
+    if (!isValidId(id_to_unfriend)) return MANAGER_INVALID_ARGUMENT;
 
     ManagerResult manager_error;
     GraphResult graph_error;
@@ -413,12 +413,12 @@ managerAddGrade(CourseManager manager, int semester, int course_id,
                 int points_x2, int grade_value) {
     if (manager == NULL) return MANAGER_NULL_ARGUMENT;
 
+    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
     if (!isValidSemester(semester) || !isValidCourseId(course_id) ||
         !isValidPointsX2(points_x2) || !isGradeValid(grade_value)) {
         return MANAGER_INVALID_ARGUMENT;
     }
-
-    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
 
     Student logged_student;
     STORE_LOGGED_STUDENT(manager, logged_student);
@@ -434,11 +434,11 @@ ManagerResult
 managerRemoveLastGrade(CourseManager manager, int semester, int course_id) {
     if (manager == NULL) return MANAGER_NULL_ARGUMENT;
 
+    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
     if (!isValidSemester(semester) || !isValidCourseId(course_id)) {
         return MANAGER_INVALID_ARGUMENT;
     }
-
-    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
 
     Student logged_student;
     STORE_LOGGED_STUDENT(manager, logged_student);
@@ -454,11 +454,11 @@ ManagerResult
 managerUpdateLastGrade(CourseManager manager, int course_id, int new_grade) {
     if (manager == NULL) return MANAGER_NULL_ARGUMENT;
 
+    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
     if (!isValidCourseId(course_id) || !isGradeValid(new_grade)) {
         return MANAGER_INVALID_ARGUMENT;
     }
-
-    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
 
     Student logged_student;
     STORE_LOGGED_STUDENT(manager, logged_student);
@@ -506,9 +506,9 @@ managerPrintGrades(char *flag, FILE *output_channel, CourseManager manager,
                    int amount) {
     if (output_channel == NULL || manager == NULL) return MANAGER_NULL_ARGUMENT;
 
-    if (!isValidAmount(amount)) return MANAGER_INVALID_ARGUMENT;
-
     if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
+    if (!isValidAmount(amount)) return MANAGER_INVALID_ARGUMENT;
 
     Student logged_student;
     STORE_LOGGED_STUDENT(manager, logged_student);
@@ -573,11 +573,11 @@ managerPrintReferences(FILE *output_channel, CourseManager manager,
                        int course_id, int amount) {
     if (output_channel == NULL || manager == NULL)return MANAGER_NULL_ARGUMENT;
 
+    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
+
     if (!isValidCourseId(course_id) || !isValidAmount(amount)) {
         return MANAGER_INVALID_ARGUMENT;
     }
-
-    if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
 
     Student logged_student;
     STORE_LOGGED_STUDENT(manager, logged_student);
