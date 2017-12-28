@@ -476,7 +476,6 @@ static void commandProcess(List command, FILE *input, FILE *output,
             mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
             return;
         }
-        printf("\n");
         critical_status = commandRouter(command, course_manager, output);
         if (critical_status == -1) break;
 
