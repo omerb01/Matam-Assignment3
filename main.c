@@ -18,20 +18,15 @@ mtmPrintErrorMessage(stderr, $$error$$);
 #define STUDENT_INTRO() \
 ManagerResult errorcode; \
 int id = stringToInt((char *) listGetNext(command)); \
-if (id == -1) {return MANAGER_NULL_ARGUMENT;}
+if (id == -1) {return MANAGER_FAIL;}
 
 static bool isAlphaOrDigit(char c);
-
 
 static bool isStringEmpty(char *input_string);
 
 static bool isStringComment(char *input_string);
 
-static bool isAlphaOrDigit(char c);
-
-
 static int getNextWord(char *str);
-
 
 static char *getStringWithoutOffset(char *string_with_offset);
 
@@ -176,6 +171,7 @@ static bool isDigit(char c) {
 
 static int stringToInt(char *str) {
     int number = 0;
+    if (str == NULL) return -1;
     char *string_number = str;
     while (*string_number != '\0') {
         if (!isDigit(*string_number)) {
@@ -355,7 +351,7 @@ gradesSheetRouter(List command, CourseManager course_manager) {
 static ManagerResult
 mainFacultyRequest(List command, CourseManager course_manager, FILE *output) {
     int course_id = stringToInt((char *) listGetNext(command));
-    char* request = (char *) listGetNext(command);
+    char *request = (char *) listGetNext(command);
     if (course_id == -1) return MANAGER_INVALID_ARGUMENT;
     return managerFacultyRequest(output, course_manager, course_id, request);
 }
@@ -384,9 +380,9 @@ reportRouter(List command, CourseManager course_manager, FILE *output) {
         if (amount == -1) return MANAGER_INVALID_ARGUMENT;
         return managerPrintLowestGrades(output, course_manager, amount);
     } else if (STUDENT_COMMAND("reference")) {
-        return mainReference(command,course_manager,output);
+        return mainReference(command, course_manager, output);
     } else if (STUDENT_COMMAND("faculty_request")) {
-        return mainFacultyRequest(command,course_manager,output);
+        return mainFacultyRequest(command, course_manager, output);
     } else {
         return MANAGER_FAIL;
     }
@@ -429,10 +425,10 @@ static int studentErrorConverter(ManagerResult error) {
     } else if (error == MANAGER_STUDENT_DOES_NOT_EXIST) {
         PRINT_ERR(MTM_STUDENT_DOES_NOT_EXIST);
         return 0;
-    } else if (error == MANAGER_FAIL){
+    } else if (error == MANAGER_FAIL) {
         PRINT_ERR(MTM_INVALID_COMMAND_LINE_PARAMETERS);
         return -1;
-    } else{
+    } else {
         return 0;
     }
 }
@@ -457,14 +453,13 @@ commandRouter(List command, CourseManager course_manager, FILE *output) {
 }
 
 
-
 int main(int argc, char **argv) {
     FILE *output = NULL;
     FILE *input = NULL;
     List command = listCreate((CopyListElement) copyCommand,
                               (FreeListElement) destroyCommand);
     CourseManager course_manager = managerCreate();
-    int critical_status=0;
+    int critical_status = 0;
     if (command == NULL) {
         mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
         return 1;
