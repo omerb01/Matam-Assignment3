@@ -16,11 +16,6 @@ mtmPrintErrorMessage(stderr, $$error$$);
 #define IS_COMMAND($$name$$) \
 !strcmp(sub_command, $$name$$)
 
-#define STUDENT_INTRO() \
-ManagerResult error_code; \
-int id = stringToInt((char *) listGetNext(command)); \
-if (id == -1) {return MANAGER_INVALID_ARGUMENT;}
-
 static bool isStringEmpty(char *input_string);
 
 static bool isStringComment(char *input_string);
@@ -54,7 +49,6 @@ static void getInputFile(int argc, char **argv, FILE **input) {
         }
     }
     *input = stdin;
-    return;
 }
 
 static void getOutputFile(int argc, char **argv, FILE **output) {
@@ -173,7 +167,8 @@ static int stringToInt(char *str) {
 
 static ManagerResult
 mainAddStudent(List command, CourseManager course_manager) {
-    STUDENT_INTRO();
+    ManagerResult error_code;
+    int id = stringToInt((char *) listGetNext(command));
     char *first_name = (char *) listGetNext(command);
     char *last_name = (char *) listGetNext(command);
 
@@ -183,28 +178,32 @@ mainAddStudent(List command, CourseManager course_manager) {
 
 static ManagerResult
 mainRemoveStudent(List command, CourseManager course_manager) {
-    STUDENT_INTRO();
+    ManagerResult error_code;
+    int id = stringToInt((char *) listGetNext(command));
     error_code = managerRemoveStudent(course_manager, id);
     return error_code;
 }
 
 static ManagerResult
 mainLoginStudent(List command, CourseManager course_manager) {
-    STUDENT_INTRO();
+    ManagerResult error_code;
+    int id = stringToInt((char *) listGetNext(command));
     error_code = managerLogin(course_manager, id);
     return error_code;
 }
 
 static ManagerResult
 mainFriendRequest(List command, CourseManager course_manager) {
-    STUDENT_INTRO();
+    ManagerResult error_code;
+    int id = stringToInt((char *) listGetNext(command));
     error_code = managerSendFriendRequest(course_manager, id);
     return error_code;
 }
 
 static ManagerResult
 mainHandleRequest(List command, CourseManager course_manager) {
-    STUDENT_INTRO();
+    ManagerResult error_code;
+    int id = stringToInt((char *) listGetNext(command));
     char *action = (char *) listGetNext(command);
     error_code = managerHandleFriendRequest(course_manager, id, action);
     return error_code;
@@ -212,7 +211,8 @@ mainHandleRequest(List command, CourseManager course_manager) {
 
 static ManagerResult
 mainUnfriendStudent(List command, CourseManager course_manager) {
-    STUDENT_INTRO();
+    ManagerResult error_code;
+    int id = stringToInt((char *) listGetNext(command));
     error_code = managerUnfriend(course_manager, id);
     return error_code;
 }
@@ -288,7 +288,7 @@ static ManagerResult mainAddGrade(List command, CourseManager course_manager) {
     int grade = stringToInt((char *) listGetNext(command));
 
     error_code = managerAddGrade(course_manager, semester, course_id,
-                                     points, grade);
+                                 points, grade);
     return error_code;
 }
 
@@ -299,13 +299,9 @@ mainRemoveGrade(List command, CourseManager course_manager) {
     int semester = stringToInt((char *) listGetNext(command));
     int course_id = stringToInt((char *) listGetNext(command));
 
-    if (semester == -1 || course_id == -1) {
-        return MANAGER_INVALID_ARGUMENT;
-    } else {
-        error_code = managerRemoveLastGrade(course_manager, semester,
-                                            course_id);
-        return error_code;
-    }
+    error_code = managerRemoveLastGrade(course_manager, semester,
+                                        course_id);
+    return error_code;
 }
 
 static ManagerResult
@@ -315,13 +311,9 @@ mainUpdateGrade(List command, CourseManager course_manager) {
     int course_id = stringToInt((char *) listGetNext(command));
     int new_grade = stringToInt((char *) listGetNext(command));
 
-    if (course_id == -1 || new_grade == -1) {
-        return MANAGER_INVALID_ARGUMENT;
-    } else {
-        error_code = managerUpdateLastGrade(course_manager, course_id,
-                                            new_grade);
-        return error_code;
-    }
+    error_code = managerUpdateLastGrade(course_manager, course_id,
+                                        new_grade);
+    return error_code;
 }
 
 static ManagerResult
