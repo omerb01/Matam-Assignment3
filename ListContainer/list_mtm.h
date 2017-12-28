@@ -1,3 +1,10 @@
+//
+// Created by Ilya on 12/28/2017.
+//
+//
+// Created by Ilya on 12/24/2017.
+//
+
 #ifndef LIST_H_
 #define LIST_H_
 
@@ -42,10 +49,10 @@ typedef struct List_t *List;
 
 /** Type used for returning error codes from list functions */
 typedef enum ListResult_t {
-	LIST_SUCCESS,
-	LIST_NULL_ARGUMENT,
-	LIST_OUT_OF_MEMORY,
-	LIST_INVALID_CURRENT,
+    LIST_SUCCESS,
+    LIST_NULL_ARGUMENT,
+    LIST_OUT_OF_MEMORY,
+    LIST_INVALID_CURRENT,
 } ListResult;
 
 /** Element data type for list container */
@@ -349,7 +356,7 @@ ListResult listRemoveCurrent(List list);
  * LIST_SUCCESS if sorting completed successfully.
  */
 ListResult listSort(List list, CompareListElements compareElement,
-	ListSortKey key);
+                    ListSortKey key);
 
 /**
  * Creates a new filtered copy of a list.
@@ -428,9 +435,11 @@ void listDestroy(List list);
  * @param iterator The name of the variable to hold the next list element
  * @param list the list to iterate over
  */
+
 #define LIST_FOREACH(type,iterator,list) \
 	for(type iterator = listGetFirst(list) ; \
 		iterator ;\
 		iterator = listGetNext(list))
 
 #endif /* LIST_H_ */
+

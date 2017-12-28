@@ -24,6 +24,7 @@ typedef enum ManagerResult_t {
     MANAGER_COURSE_DOES_NOT_EXIST,
     MANAGER_NULL_ARGUMENT,
     MANAGER_FAIL
+    // TODO: check how to remove it
 } ManagerResult;
 
 /* Creates a new Course Manager
