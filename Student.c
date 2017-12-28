@@ -72,7 +72,6 @@ static int studentCompareForSet(SetElement element1, SetElement element2) {
 
 Student studentCreate(int id, char *first_name, char *last_name) {
     assert(first_name != NULL && last_name != NULL);
-    assert(isValidId(id));
 
     Student student = MALLOC(student);
 

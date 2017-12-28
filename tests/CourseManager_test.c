@@ -50,11 +50,11 @@ static bool testManagerRemoveStudent() {
     ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
 
     manager_error = managerRemoveStudent(manager, 2057955118);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
     manager_error = managerRemoveStudent(manager, 0);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
     manager_error = managerRemoveStudent(manager, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
 
     managerAddStudent(manager, 205795511, "Omer", "Belhasin");
     manager_error = managerRemoveStudent(manager, 205795511);
@@ -116,11 +116,11 @@ static bool testManagerLogin() {
     manager_error = managerLogin(NULL, 205795511);
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
     manager_error = managerLogin(manager, 2057955118);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
     manager_error = managerLogin(manager, 0);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
     manager_error = managerLogin(manager, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
     manager_error = managerLogin(manager, 205795511);
     ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
 
@@ -178,16 +178,16 @@ static bool testManagerFacultyRequest() {
 
     manager_error = managerFacultyRequest(output_stream, manager, 234122444,
                                           "remove_course");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerFacultyRequest(output_stream, manager, 0,
                                           "remove_course");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerFacultyRequest(output_stream, manager, -1,
                                           "remove_course");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerFacultyRequest(output_stream, manager, 234122,
                                           "remove");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerFacultyRequest(output_stream, manager, 234122,
                                           "remove_course");
@@ -199,6 +199,19 @@ static bool testManagerFacultyRequest() {
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerLogin(manager, 205795511);
+    manager_error = managerFacultyRequest(output_stream, manager, 234122444,
+                                          "remove_course");
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerFacultyRequest(output_stream, manager, 0,
+                                          "remove_course");
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerFacultyRequest(output_stream, manager, -1,
+                                          "remove_course");
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerFacultyRequest(output_stream, manager, 234122,
+                                          "remove");
+    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+
     manager_error = managerFacultyRequest(output_stream, manager, 234122,
                                           "remove_course");
     ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
@@ -225,11 +238,11 @@ static bool testManagerSendFriendRequest() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerSendFriendRequest(manager, 2057955118);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerSendFriendRequest(manager, 0);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerSendFriendRequest(manager, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerSendFriendRequest(manager, 205795511);
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
@@ -239,6 +252,13 @@ static bool testManagerSendFriendRequest() {
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerLogin(manager, 205795511);
+    manager_error = managerSendFriendRequest(manager, 2057955118);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+    manager_error = managerSendFriendRequest(manager, 0);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+    manager_error = managerSendFriendRequest(manager, -1);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+
     manager_error = managerSendFriendRequest(manager, 205795512);
     ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
     manager_error = managerSendFriendRequest(manager, 205795511);
@@ -264,13 +284,13 @@ static bool testManagerHandleFriendRequest() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerHandleFriendRequest(manager, 2057955116, "accept");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerHandleFriendRequest(manager, 0, "accept");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerHandleFriendRequest(manager, -1, "accept");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerHandleFriendRequest(manager, 205795511, "accepted");
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerHandleFriendRequest(manager, 205795511, "accept");
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
@@ -280,6 +300,15 @@ static bool testManagerHandleFriendRequest() {
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerLogin(manager, 205795511);
+    manager_error = managerHandleFriendRequest(manager, 2057955116, "accept");
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+    manager_error = managerHandleFriendRequest(manager, 0, "accept");
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+    manager_error = managerHandleFriendRequest(manager, -1, "accept");
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+
+    manager_error = managerHandleFriendRequest(manager, 205795511, "accepted");
+    ASSERT_TEST(manager_error == MANAGER_NOT_REQUESTED);
     manager_error = managerHandleFriendRequest(manager, 205795511, "accept");
     ASSERT_TEST(manager_error == MANAGER_NOT_REQUESTED);
 
@@ -291,6 +320,8 @@ static bool testManagerHandleFriendRequest() {
     managerLogout(manager);
     managerLogin(manager, 111111111);
     managerSendFriendRequest(manager, 205795511);
+    manager_error = managerHandleFriendRequest(manager, 205795511, "accepted");
+    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
     manager_error = managerHandleFriendRequest(manager, 205795511, "reject");
     ASSERT_TEST(manager_error == MANAGER_SUCCESS);
     manager_error = managerSendFriendRequest(manager, 205795511);
@@ -321,11 +352,11 @@ static bool testManagerUnfriend() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerUnfriend(manager, 2057955118);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerUnfriend(manager, 0);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerUnfriend(manager, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerUnfriend(manager, 205795511);
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
@@ -336,6 +367,13 @@ static bool testManagerUnfriend() {
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerLogin(manager, 205795511);
+    manager_error = managerUnfriend(manager, 2057955118);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+    manager_error = managerUnfriend(manager, 0);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+    manager_error = managerUnfriend(manager, -1);
+    ASSERT_TEST(manager_error == MANAGER_STUDENT_DOES_NOT_EXIST);
+
     manager_error = managerUnfriend(manager, 205795511);
     ASSERT_TEST(manager_error == MANAGER_NOT_FRIEND);
     manager_error = managerUnfriend(manager, 111111111);
@@ -377,6 +415,29 @@ static bool testManagerAddGrade() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerAddGrade(manager, 0, 234122, 6, 80);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerAddGrade(manager, -1, 234122, 6, 80);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerAddGrade(manager, 1, 234122888, 6, 80);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerAddGrade(manager, 1, 0, 6, 80);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerAddGrade(manager, 1, -1, 6, 80);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerAddGrade(manager, 1, 234122, -1, 80);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerAddGrade(manager, 1, 234122, 6, 101);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerAddGrade(manager, 1, 234122, 6, -1);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+
+    manager_error = managerAddGrade(manager, 1, 234122, 6, 80);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+
+    managerAddStudent(manager, 205795511, "Omer", "Belhasin");
+    managerLogin(manager, 205795511);
+
+    manager_error = managerAddGrade(manager, 0, 234122, 6, 80);
     ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
     manager_error = managerAddGrade(manager, -1, 234122, 6, 80);
     ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
@@ -394,12 +455,6 @@ static bool testManagerAddGrade() {
     ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
 
     manager_error = managerAddGrade(manager, 1, 234122, 6, 80);
-    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
-
-    managerAddStudent(manager, 205795511, "Omer", "Belhasin");
-    managerLogin(manager, 205795511);
-
-    manager_error = managerAddGrade(manager, 1, 234122, 6, 80);
     ASSERT_TEST(manager_error == MANAGER_SUCCESS);
 
     managerDestroy(manager);
@@ -414,21 +469,32 @@ static bool testManagerRemoveLastGrade() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerRemoveLastGrade(manager, 0, 234122);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerRemoveLastGrade(manager, -1, 234122);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerRemoveLastGrade(manager, 1, 234122999);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerRemoveLastGrade(manager, 1, 0);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerRemoveLastGrade(manager, 1, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerRemoveLastGrade(manager, 1, 234122);
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerAddStudent(manager, 205795511, "Omer", "Belhasin");
     managerLogin(manager, 205795511);
+
+    manager_error = managerRemoveLastGrade(manager, 0, 234122);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerRemoveLastGrade(manager, -1, 234122);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerRemoveLastGrade(manager, 1, 234122999);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerRemoveLastGrade(manager, 1, 0);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerRemoveLastGrade(manager, 1, -1);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
 
     manager_error = managerRemoveLastGrade(manager, 1, 234122);
     ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
@@ -452,21 +518,32 @@ static bool testManagerUpdateLastGrade() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerUpdateLastGrade(manager, 234122888, 90);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerUpdateLastGrade(manager, 0, 90);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerUpdateLastGrade(manager, -1, 90);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerUpdateLastGrade(manager, 234122, 101);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerUpdateLastGrade(manager, 234122, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerUpdateLastGrade(manager, 234122, 90);
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerAddStudent(manager, 205795511, "Omer", "Belhasin");
     managerLogin(manager, 205795511);
+
+    manager_error = managerUpdateLastGrade(manager, 234122888, 90);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerUpdateLastGrade(manager, 0, 90);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerUpdateLastGrade(manager, -1, 90);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerUpdateLastGrade(manager, 234122, 101);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
+    manager_error = managerUpdateLastGrade(manager, 234122, -1);
+    ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
 
     manager_error = managerUpdateLastGrade(manager, 234122, 90);
     ASSERT_TEST(manager_error == MANAGER_COURSE_DOES_NOT_EXIST);
@@ -558,15 +635,20 @@ static bool testManagerPrintHighestGrades() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerPrintHighestGrades(output_stream, manager, 0);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerPrintHighestGrades(output_stream, manager, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerPrintHighestGrades(output_stream, manager, 2);
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerAddStudent(manager, 205795511, "Omer", "Belhasin");
     managerLogin(manager, 205795511);
+
+    manager_error = managerPrintHighestGrades(output_stream, manager, 0);
+    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    manager_error = managerPrintHighestGrades(output_stream, manager, -1);
+    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
 
     managerAddGrade(manager, 4, 234247, 6, 95);
     managerAddGrade(manager, 4, 234267, 6, 60);
@@ -597,15 +679,20 @@ static bool testManagerPrintLowestGrades() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerPrintLowestGrades(output_stream, manager, 0);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
     manager_error = managerPrintLowestGrades(output_stream, manager, -1);
-    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     manager_error = managerPrintLowestGrades(output_stream, manager, 2);
     ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
 
     managerAddStudent(manager, 205795511, "Omer", "Belhasin");
     managerLogin(manager, 205795511);
+
+    manager_error = managerPrintLowestGrades(output_stream, manager, 0);
+    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
+    manager_error = managerPrintLowestGrades(output_stream, manager, -1);
+    ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
 
     managerAddGrade(manager, 4, 234247, 6, 95);
     managerAddGrade(manager, 4, 234267, 6, 60);
@@ -636,6 +723,23 @@ static bool testManagerPrintReferences() {
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
 
     manager_error = managerPrintReferences(output_stream, manager, 234122, 0);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerPrintReferences(output_stream, manager, 234122, -1);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerPrintReferences(output_stream, manager, 234122888,
+                                           2);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerPrintReferences(output_stream, manager, 0, 2);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+    manager_error = managerPrintReferences(output_stream, manager, -1, 2);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+
+    manager_error = managerPrintReferences(output_stream, manager, 234122, 2);
+    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
+
+    managerAddStudent(manager, 205795511, "Omer", "Belhasin");
+    managerLogin(manager, 205795511);
+    manager_error = managerPrintReferences(output_stream, manager, 234122, 0);
     ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
     manager_error = managerPrintReferences(output_stream, manager, 234122, -1);
     ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
@@ -647,11 +751,6 @@ static bool testManagerPrintReferences() {
     manager_error = managerPrintReferences(output_stream, manager, -1, 2);
     ASSERT_TEST(manager_error == MANAGER_INVALID_ARGUMENT);
 
-    manager_error = managerPrintReferences(output_stream, manager, 234122, 2);
-    ASSERT_TEST(manager_error == MANAGER_NOT_LOGGED_IN);
-
-    managerAddStudent(manager, 205795511, "Omer", "Belhasin");
-    managerLogin(manager, 205795511);
     managerAddGrade(manager, 7, 104174, 7, 25);
     managerAddGrade(manager, 7, 104174, 7, 90);
     managerAddGrade(manager, 7, 236350, 6, 84);
