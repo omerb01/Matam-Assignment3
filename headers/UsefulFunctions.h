@@ -6,7 +6,6 @@
 #define ASSIGNMENT3_USEFULFUNCTIONS_H
 
 #include "set.h"
-#include "Student.h"
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~ USEFUL MACROS ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

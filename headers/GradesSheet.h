@@ -5,9 +5,6 @@
 #ifndef ASSIGNMENT3_GRADESSHEET_H
 #define ASSIGNMENT3_GRADESSHEET_H
 #include <stdio.h>
-#include "list.h"
-#include "../headers/mtm_ex3.h"
-#include "UsefulFunctions.h"
 
 typedef struct GradesSheet_t *GradesSheet;
 

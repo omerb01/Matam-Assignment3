@@ -7,9 +7,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-
 #include "set.h"
-#include "GradesSheet.h"
 
 typedef struct Student_t *Student;
 typedef enum StudentResult_t {

@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include "headers/mtm_ex3.h"
+#include "headers/Student.h"
 #include "headers/CourseManager.h"
 #include "headers/UsefulFunctions.h"
 
