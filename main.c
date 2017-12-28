@@ -287,13 +287,9 @@ static ManagerResult mainAddGrade(List command, CourseManager course_manager) {
     int points = pointsToNumber((char *) listGetNext(command));
     int grade = stringToInt((char *) listGetNext(command));
 
-    if (semester == -1 || course_id == -1 || points == -1 || grade == -1) {
-        return MANAGER_INVALID_ARGUMENT;
-    } else {
-        error_code = managerAddGrade(course_manager, semester, course_id,
+    error_code = managerAddGrade(course_manager, semester, course_id,
                                      points, grade);
-        return error_code;
-    }
+    return error_code;
 }
 
 static ManagerResult
