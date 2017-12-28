@@ -5,6 +5,7 @@
 #include "headers/CourseManager.h"
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #define ROUTER_CMP($$name$$) \
 !strcmp(prime_command, $$name$$)
@@ -12,21 +13,19 @@
 #define PRINT_ERR($$error$$) \
 mtmPrintErrorMessage(stderr, $$error$$);
 
-#define STUDENT_COMMAND($$name$$) \
+#define IS_COMMAND($$name$$) \
 !strcmp(sub_command, $$name$$)
 
 #define STUDENT_INTRO() \
-ManagerResult errorcode; \
+ManagerResult error_code; \
 int id = stringToInt((char *) listGetNext(command)); \
-if (id == -1) {return MANAGER_FAIL;}
-
-static bool isAlphaOrDigit(char c);
+if (id == -1) {return MANAGER_INVALID_ARGUMENT;}
 
 static bool isStringEmpty(char *input_string);
 
 static bool isStringComment(char *input_string);
 
-static int getNextWord(char *str);
+static int getNextWordLen(char *str);
 
 static char *getStringWithoutOffset(char *string_with_offset);
 
@@ -34,7 +33,7 @@ static bool isDelimiter(char c);
 
 static void destroyCommand(char *command);
 
-static bool isNumberArgumentsValid(int argc) {
+static bool isNumberMainArgumentsValid(int argc) {
     switch (argc) {
         case 5:
             return true;
@@ -48,31 +47,29 @@ static bool isNumberArgumentsValid(int argc) {
 }
 
 static void getInputFile(int argc, char **argv, FILE **input) {
-    if (argc == 1) *input = stdin;
+    if (argc == 1) {
+        *input = stdin;
+        return;
+    }
     for (int i = 0; i < argc; i++) {
-        if (!strcmp(argv[i], "-i")) {
+        if (strcmp(argv[i], "-i") == 0) {
             *input = fopen(argv[i + 1], "r");
-            if (!*input) {
-                mtmPrintErrorMessage(stderr, MTM_CANNOT_OPEN_FILE);
-            }
             return;
         }
     }
-    *input = stdin;
 }
 
 static void getOutputFile(int argc, char **argv, FILE **output) {
-    if (argc == 1) *output = stdin;
+    if (argc == 1) {
+        *output = stdin;
+        return;
+    }
     for (int i = 0; i < argc; i++) {
-        if (!strcmp(argv[i], "-o")) {
+        if (strcmp(argv[i], "-o") == 0) {
             *output = fopen(argv[i + 1], "w");
-            if (!*output) {
-                mtmPrintErrorMessage(stderr, MTM_CANNOT_OPEN_FILE);
-            }
             return;
         }
     }
-    *output = stdout;
 }
 
 static char *copyCommand(char *command);
@@ -86,18 +83,19 @@ static char *getStringWithoutOffset(char *string_with_offset) {
     char *iterator = string_with_offset;
     char *iterator_end = string_with_offset;
     iterator_end += strlen(string_with_offset);
-    while (!isAlphaOrDigit(*iterator)) iterator++;
-    while (!isAlphaOrDigit(*iterator_end)) iterator_end--;
+    while (isDelimiter(*iterator)) iterator++;
+    while (isDelimiter(*iterator_end) || *iterator_end == '\n') iterator_end--;
     *(++iterator_end) = '\0';
 
     char *stripped_string = malloc(
             sizeof(char) * (iterator_end - iterator + 1));
+    if(stripped_string == NULL) return NULL;
     stripped_string = strcpy(stripped_string, iterator);
     return stripped_string;
 
 }
 
-static int getNextWord(char *str) {
+static int getNextWordLen(char *str) {
     int len = 0;
     char *iterator = str;
     while (!isDelimiter(*iterator) && *iterator != '\0') {
@@ -107,12 +105,13 @@ static int getNextWord(char *str) {
     return len;
 }
 
-static void loadCommandsIntoList(List command, char *command_input) {
+static int loadCommandIntoList(List command, char *command_input) {
     char *stripped_string = getStringWithoutOffset(command_input);
+    if(stripped_string == NULL) return -1;
     char *iterator = stripped_string;
     int len;
     while (*iterator != '\0') {
-        len = getNextWord(iterator);
+        len = getNextWordLen(iterator);
         if (*(iterator + len) != '\0') {
             *(iterator + len) = '\0';
         } else {
@@ -124,38 +123,29 @@ static void loadCommandsIntoList(List command, char *command_input) {
         while (isDelimiter(*iterator)) iterator++;
     }
     free(stripped_string);
-}
-
-static bool isAlphaOrDigit(char c) {
-    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-        (c >= '0' && c <= '9'))
-        return true;
-    return false;
+    return 0;
 }
 
 static bool isStringComment(char *input_string) {
     char *iterator = input_string;
-    while (*iterator != '\0' && !isAlphaOrDigit(*iterator) &&
-           *iterator != '\n') {
+    while (isDelimiter(*iterator) && *iterator != '\0') {
         if (*iterator == '#') return true;
         iterator++;
     }
     return false;
 }
 
-
 static bool isStringEmpty(char *input_string) {
-    char *iterator;
-    iterator = input_string;
-    while (*iterator != '\0') {
-        if (isAlphaOrDigit(*iterator)) return false;
-        iterator++;
+    while(*input_string != '\0'){
+        if(isDelimiter(*input_string) && *input_string != '\n') return false;
+        input_string++;
     }
     return true;
 }
 
 static char *copyCommand(char *command) {
-    char *new_string = malloc(strlen(command) + 1);
+    char *new_string = malloc(sizeof(char)*(strlen(command) + 1));
+    if(new_string == NULL) return NULL;
     strcpy(new_string, command);
     return new_string;
 }
@@ -191,71 +181,72 @@ mainAddStudent(List command, CourseManager course_manager) {
     char *first_name = (char *) listGetNext(command);
     char *last_name = (char *) listGetNext(command);
 
-    errorcode = managerAddStudent(course_manager, id, first_name, last_name);
-    return errorcode;
+    error_code = managerAddStudent(course_manager, id, first_name, last_name);
+    return error_code;
 }
 
 static ManagerResult
 mainRemoveStudent(List command, CourseManager course_manager) {
     STUDENT_INTRO();
-    errorcode = managerRemoveStudent(course_manager, id);
-    return errorcode;
+    error_code = managerRemoveStudent(course_manager, id);
+    return error_code;
 }
 
 static ManagerResult
 mainLoginStudent(List command, CourseManager course_manager) {
     STUDENT_INTRO();
-    errorcode = managerLogin(course_manager, id);
-    return errorcode;
+    error_code = managerLogin(course_manager, id);
+    return error_code;
 }
 
 static ManagerResult
 mainFriendRequest(List command, CourseManager course_manager) {
     STUDENT_INTRO();
-    errorcode = managerSendFriendRequest(course_manager, id);
-    return errorcode;
+    error_code = managerSendFriendRequest(course_manager, id);
+    return error_code;
 }
 
 static ManagerResult
 mainHandleRequest(List command, CourseManager course_manager) {
     STUDENT_INTRO();
     char *action = (char *) listGetNext(command);
-    errorcode = managerHandleFriendRequest(course_manager, id, action);
-    return errorcode;
+    error_code = managerHandleFriendRequest(course_manager, id, action);
+    return error_code;
 }
 
 static ManagerResult
 mainUnfriendStudent(List command, CourseManager course_manager) {
     STUDENT_INTRO();
-    errorcode = managerUnfriend(course_manager, id);
-    return errorcode;
+    error_code = managerUnfriend(course_manager, id);
+    return error_code;
 }
 
 
 static ManagerResult mainLogoutStudent(CourseManager course_manager) {
-    ManagerResult errorcode;
-    errorcode = managerLogout(course_manager);
-    return errorcode;
+    ManagerResult error_code;
+    error_code = managerLogout(course_manager);
+    return error_code;
 }
 
 static ManagerResult studentRouter(List command, CourseManager course_manager) {
     char *sub_command = (char *) listGetNext(command);
-    if (STUDENT_COMMAND("add")) {
+    if (IS_COMMAND("add")) {
         return mainAddStudent(command, course_manager);
-    } else if (STUDENT_COMMAND("remove")) {
+    } else if (IS_COMMAND("remove")) {
         return mainRemoveStudent(command, course_manager);
-    } else if (STUDENT_COMMAND("login")) {
+    } else if (IS_COMMAND("login")) {
         return mainLoginStudent(command, course_manager);
-    } else if (STUDENT_COMMAND("logout")) {
+    } else if (IS_COMMAND("logout")) {
         return mainLogoutStudent(course_manager);
-    } else if (STUDENT_COMMAND("friend_request")) {
+    } else if (IS_COMMAND("friend_request")) {
         return mainFriendRequest(command, course_manager);
-    } else if (STUDENT_COMMAND("handle_request")) {
+    } else if (IS_COMMAND("handle_request")) {
         return mainHandleRequest(command, course_manager);
-    } else if (STUDENT_COMMAND("unfriend")) {
+    } else if (IS_COMMAND("unfriend")) {
         return mainUnfriendStudent(command, course_manager);
     } else {
-        return MANAGER_FAIL;
+        assert(false);
+        return MANAGER_NULL_ARGUMENT;
     }
 }
 
@@ -292,59 +283,66 @@ static int pointsToNumber(char *points) {
 }
 
 static ManagerResult mainAddGrade(List command, CourseManager course_manager) {
-    ManagerResult errorcode;
+    ManagerResult error_code;
+    
     int semester = stringToInt((char *) listGetNext(command));
     int course_id = stringToInt((char *) listGetNext(command));
     int points = pointsToNumber((char *) listGetNext(command));
     int grade = stringToInt((char *) listGetNext(command));
+    
     if (semester == -1 || course_id == -1 || points == -1 || grade == -1) {
         return MANAGER_INVALID_ARGUMENT;
     } else {
-        errorcode = managerAddGrade(course_manager, semester, course_id, points,
-                                    grade);
-        return errorcode;
+        error_code = managerAddGrade(course_manager, semester, course_id,
+                                     points, grade);
+        return error_code;
     }
 }
 
 static ManagerResult
 mainRemoveGrade(List command, CourseManager course_manager) {
-    ManagerResult errorcode;
+    ManagerResult error_code;
+    
     int semester = stringToInt((char *) listGetNext(command));
     int course_id = stringToInt((char *) listGetNext(command));
+    
     if (semester == -1 || course_id == -1) {
         return MANAGER_INVALID_ARGUMENT;
     } else {
-        errorcode = managerRemoveLastGrade(course_manager, semester,
-                                           course_id); //TODO:make sure it's the right command
-        return errorcode;
+        error_code = managerRemoveLastGrade(course_manager, semester,
+                                           course_id);
+        return error_code;
     }
 }
 
 static ManagerResult
 mainUpdateGrade(List command, CourseManager course_manager) {
-    ManagerResult errorcode;
+    ManagerResult error_code;
+    
     int course_id = stringToInt((char *) listGetNext(command));
     int new_grade = stringToInt((char *) listGetNext(command));
+    
     if (course_id == -1 || new_grade == -1) {
         return MANAGER_INVALID_ARGUMENT;
     } else {
-        errorcode = managerUpdateLastGrade(course_manager, course_id,
+        error_code = managerUpdateLastGrade(course_manager, course_id,
                                            new_grade);
-        return errorcode;
+        return error_code;
     }
 }
 
 static ManagerResult
 gradesSheetRouter(List command, CourseManager course_manager) {
     char *sub_command = (char *) listGetNext(command);
-    if (STUDENT_COMMAND("add")) {
+    if (IS_COMMAND("add")) {
         return mainAddGrade(command, course_manager);
-    } else if (STUDENT_COMMAND("remove")) {
+    } else if (IS_COMMAND("remove")) {
         return mainRemoveGrade(command, course_manager);
-    } else if (STUDENT_COMMAND("update")) {
+    } else if (IS_COMMAND("update")) {
         return mainUpdateGrade(command, course_manager);
     } else {
-        return MANAGER_FAIL;
+        assert(false);
+        return MANAGER_NULL_ARGUMENT;
     }
 }
 
@@ -367,32 +365,30 @@ mainReference(List command, CourseManager course_manager, FILE *output) {
 static ManagerResult
 reportRouter(List command, CourseManager course_manager, FILE *output) {
     char *sub_command = (char *) listGetNext(command);
-    if (STUDENT_COMMAND("full")) {
+    if (IS_COMMAND("full")) {
         return managerPrintFullSheet(output, course_manager);
-    } else if (STUDENT_COMMAND("clean")) {
+    } else if (IS_COMMAND("clean")) {
         return managerPrintCleanSheet(output, course_manager);
-    } else if (STUDENT_COMMAND("best")) {
+    } else if (IS_COMMAND("best")) {
         int amount = stringToInt((char *) listGetNext(command));
         if (amount == -1) return MANAGER_INVALID_ARGUMENT;
         return managerPrintHighestGrades(output, course_manager, amount);
-    } else if (STUDENT_COMMAND("worst")) {
+    } else if (IS_COMMAND("worst")) {
         int amount = stringToInt((char *) listGetNext(command));
         if (amount == -1) return MANAGER_INVALID_ARGUMENT;
         return managerPrintLowestGrades(output, course_manager, amount);
-    } else if (STUDENT_COMMAND("reference")) {
+    } else if (IS_COMMAND("reference")) {
         return mainReference(command, course_manager, output);
-    } else if (STUDENT_COMMAND("faculty_request")) {
+    } else if (IS_COMMAND("faculty_request")) {
         return mainFacultyRequest(command, course_manager, output);
     } else {
-        return MANAGER_FAIL;
+        assert(false);
+        return MANAGER_NULL_ARGUMENT;
     }
 }
 
-static int studentErrorConverter(ManagerResult error) {
-    if (error == MANAGER_NULL_ARGUMENT) {
-        PRINT_ERR(MTM_INVALID_PARAMETERS);
-        return 0;
-    } else if (error == MANAGER_ALREADY_FRIEND) {
+static int convertManagerResultToMtmResult(ManagerResult error) {
+    if (error == MANAGER_ALREADY_FRIEND) {
         PRINT_ERR(MTM_ALREADY_FRIEND);
         return 0;
     } else if (error == MANAGER_ALREADY_LOGGED_IN) {
@@ -425,77 +421,82 @@ static int studentErrorConverter(ManagerResult error) {
     } else if (error == MANAGER_STUDENT_DOES_NOT_EXIST) {
         PRINT_ERR(MTM_STUDENT_DOES_NOT_EXIST);
         return 0;
-    } else if (error == MANAGER_FAIL) {
-        PRINT_ERR(MTM_INVALID_COMMAND_LINE_PARAMETERS);
-        return -1;
-    } else {
+    } else if(error == MANAGER_SUCCESS) {
         return 0;
+    } else {
+        assert(false);
+        return -1;
     }
 }
-//TODO:FUCK THIS SHIT
+
 static int
 commandRouter(List command, CourseManager course_manager, FILE *output) {
     char *prime_command = (char *) listGetFirst(command);
     ManagerResult error_code;
     if (ROUTER_CMP("student")) {
         error_code = studentRouter(command, course_manager);
-        return studentErrorConverter(error_code);
+        return convertManagerResultToMtmResult(error_code);
     } else if (ROUTER_CMP("grade_sheet")) {
         error_code = gradesSheetRouter(command, course_manager);
-        return studentErrorConverter(error_code);
+        return convertManagerResultToMtmResult(error_code);
     } else if (ROUTER_CMP("report")) {
         error_code = reportRouter(command, course_manager, output);
-        return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+        return convertManagerResultToMtmResult(error_code);
     } else {
-        mtmPrintErrorMessage(stderr, MTM_INVALID_COMMAND_LINE_PARAMETERS);
-        return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+        assert(false);
+        return -1;
     }
 }
 
-
 int main(int argc, char **argv) {
+    if (!isNumberMainArgumentsValid(argc)) {
+        mtmPrintErrorMessage(stderr, MTM_INVALID_COMMAND_LINE_PARAMETERS);
+        return -1;
+    }
     FILE *output = NULL;
     FILE *input = NULL;
+    getInputFile(argc, argv, &input);
+    getOutputFile(argc, argv, &output);
+    if (input == NULL || output == NULL) {
+        mtmPrintErrorMessage(stderr, MTM_CANNOT_OPEN_FILE);
+        return -1;
+    }
+
     List command = listCreate((CopyListElement) copyCommand,
                               (FreeListElement) destroyCommand);
     CourseManager course_manager = managerCreate();
-    int critical_status = 0;
-    if (command == NULL) {
+    if (command == NULL || course_manager == NULL) {
+        listDestroy(command);
+        managerDestroy(course_manager);
         mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
-        return 1;
-    } else if (!isNumberArgumentsValid(argc)) {
-        mtmPrintErrorMessage(stderr, MTM_INVALID_COMMAND_LINE_PARAMETERS);
-        return 1;
+        return -1;
     }
-    getInputFile(argc, argv, &input);
-    getOutputFile(argc, argv, &output);
 
-    if (input == NULL || output == NULL) return 1;
+    int critical_status = 0;
+
     char buffer[MAX_LEN];
 
     while (fgets(buffer, MAX_LEN, input) != NULL) {
-        if (isStringEmpty(buffer)) continue;
-        else if (isStringComment(buffer)) continue;
-        loadCommandsIntoList(command, buffer);
-        critical_status = commandRouter(command, course_manager, output);
-        if (critical_status == -1) {
-            managerDestroy(course_manager);
-            listDestroy(command);
-            if (output != stdout) fclose(output);
-            if (input != stdin) fclose(input);
-            return 1;
+        if (isStringEmpty(buffer)) {
+            continue;
         }
+        else if (isStringComment(buffer)) {
+            continue;
+        }
+
+        if(loadCommandIntoList(command, buffer) == -1) {
+            mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
+            return -1;
+        }
+        critical_status = commandRouter(command, course_manager, output);
+        if (critical_status == -1) break;
+
         listClear(command);
     }
 
-
-
-
-    /*LIST_FOREACH(char*, arg, command){
-        printf("%s\n", arg);
-    }*/
     managerDestroy(course_manager);
     listDestroy(command);
     if (output != stdout) fclose(output);
     if (input != stdin) fclose(input);
+    return -1;
 }
