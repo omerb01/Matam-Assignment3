@@ -124,8 +124,10 @@ static int loadCommandIntoList(List command, char *command_input) {
 static bool isStringComment(char *input_string) {
     char *iterator = input_string;
     while (isDelimiter(*iterator) && *iterator != '\0') {
-        if (*iterator == '#') return true;
         iterator++;
+    }
+    if (*iterator == '#'){
+        return true;
     }
     return false;
 }
@@ -443,11 +445,13 @@ commandRouter(List command, CourseManager course_manager, FILE *output) {
     }
 }
 //TODO:REMOVE
+/*
 static void printList(List list){
     LIST_FOREACH(ListElement, iterator, list){
         printf("%s ", (char*)iterator);
     }
 }
+*/
 
 int main(int argc, char **argv) {
     if (!isNumberMainArgumentsValid(argc)) {
@@ -489,8 +493,7 @@ int main(int argc, char **argv) {
             mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
             return -1;
         }
-        printList(command);
-        printf("\n");
+        if(listGetFirst(command))
         critical_status = commandRouter(command, course_manager, output);
         if (critical_status == -1) break;
 
