@@ -432,7 +432,7 @@ static int studentErrorConverter(ManagerResult error) {
         return 0;
     }
 }
-
+//TODO:FUCK THIS SHIT
 static int
 commandRouter(List command, CourseManager course_manager, FILE *output) {
     char *prime_command = (char *) listGetFirst(command);
