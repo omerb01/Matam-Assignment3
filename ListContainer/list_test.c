@@ -1,14 +1,13 @@
 //
-// Created by Ilya on 12/28/2017.
+// Created by Omer on 09/12/2017.
 //
 
 #include <stdio.h>
-#include "..\headers\test_utilities.h"
-#include "list_mtm.h"
 #include <stdlib.h>
-
+#include "list_mtm.h"
 
 int test_counter = 1;
+
 #define ASSERT(test_condition)  \
    {if (!(test_condition)) {printf("TEST %d FAILED at line %d\n", \
     test_counter, __LINE__); } \
@@ -37,32 +36,8 @@ bool filterInt(ListElement num, ListFilterKey key) {
     else return false;
 }
 
-
-/*static bool testCreateList(){
-    List new_list = listCreate(copyInt, freeInt);
-    listDestroy(new_list);
-    return true;
-}
-
-static bool testCopyList(){
-    List new_list = listCreate(copyInt, freeInt);
-    List list = listCreate(copyInt, freeInt);
-
-    int *element = malloc(sizeof(*element));
-    *element = 1;
-    listInsertFirst(list, (void*)element);
-    *element = 2;
-    listInsertFirst(list, (void*)element);
-    *element = 3;
-    listInsertLast(list, (void*)element);
-    printList(list);
-    free(element);
-    listDestroy(list);
-    listDestroy(new_list);
-    return true;
-}*/
-
 int main() {
+
     ListResult error;
     int i;
     int *element = malloc(sizeof(int));
@@ -77,6 +52,7 @@ int main() {
     ASSERT(listGetCurrent(list1) == NULL);
     ASSERT(listGetFirst(list1) == NULL);
     ASSERT(listGetNext(list1) == NULL);
+    ASSERT(listGetSize(list1) == 0);
 
     List temp_list;
     temp_list = listCopy(NULL);
@@ -84,7 +60,6 @@ int main() {
     temp_list = listCopy(list1);
     ASSERT(listGetFirst(temp_list) == NULL);
     ASSERT(listGetSize(temp_list) == 0);
-
 
     *element = 1;
     error = listInsertFirst(list1, NULL);
@@ -102,6 +77,7 @@ int main() {
 
     ASSERT(listGetFirst(temp_list) == NULL);
     ASSERT(listGetSize(temp_list) == 0);
+
     error = listRemoveCurrent(list1);
     ASSERT(error == LIST_SUCCESS);
     ASSERT(listGetCurrent(list1) == NULL);
@@ -131,9 +107,6 @@ int main() {
     *element = 1;
     error = listInsertFirst(list1, element);
     ASSERT(error == LIST_SUCCESS);
-
-    listGetFirst(list1);
-    listGetNext(list1);
 
     i = 1;
     LIST_FOREACH(int*, current_num, list1) {
@@ -168,7 +141,6 @@ int main() {
     ASSERT(error == LIST_NULL_ARGUMENT);
     error = listInsertAfterCurrent(NULL, element);
     ASSERT(error == LIST_NULL_ARGUMENT);
-    //printList(list1);
     error = listInsertAfterCurrent(list1, element);
     ASSERT(error == LIST_SUCCESS);
     ASSERT(*(int *) listGetCurrent(list1) == 3);
@@ -215,6 +187,7 @@ int main() {
         if(i == 1) ASSERT(*current_num == 4);
         i--;
     }
+
     error = listSort(list1, NULL, NULL);
     ASSERT(error == LIST_NULL_ARGUMENT);
     error = listSort(NULL, compareInt, NULL);
@@ -224,15 +197,16 @@ int main() {
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if (i == 7) ASSERT(*current_num == 0);
-        if (i == 6) ASSERT(*current_num == 1);
-        if (i == 5) ASSERT(*current_num == 2);
-        if (i == 4) ASSERT(*current_num == 3);
-        if (i == 3) ASSERT(*current_num == 4);
-        if (i == 2) ASSERT(*current_num == 999);
-        if (i == 1) ASSERT(*current_num == 999);
+        if(i == 7) ASSERT(*current_num == 0);
+        if(i == 6) ASSERT(*current_num == 1);
+        if(i == 5) ASSERT(*current_num == 2);
+        if(i == 4) ASSERT(*current_num == 3);
+        if(i == 3) ASSERT(*current_num == 4);
+        if(i == 2) ASSERT(*current_num == 999);
+        if(i == 1) ASSERT(*current_num == 999);
         i--;
     }
+
     i = listGetSize(list2);
     LIST_FOREACH(int*, current_num, list2) {
         if(i == 7) ASSERT(*current_num == 0);
@@ -309,12 +283,19 @@ int main() {
         i--;
     }
 
+    error = listClear(NULL);
+    ASSERT(error == LIST_NULL_ARGUMENT);
+    error = listClear(list1);
+    ASSERT(error == LIST_SUCCESS);
+    ASSERT(listGetCurrent(list1) == NULL);
+    ASSERT(listGetFirst(list1) == NULL);
+    ASSERT(listGetSize(list1) == 0);
+
+    freeInt(element);
     listDestroy(temp_list);
     listDestroy(list1);
     listDestroy(list2);
     listDestroy(list3);
-    free(element);
-
 
     printf("FINISHED\n");
 }
