@@ -3,6 +3,7 @@
 
 // Updates:
 // 02.12.2017: an example in the comments of mtmPrintSemesterInfo was fixed.
+// 22.12.2017: reordered the values in MtmErrorCode, and removed the unused MTM_FILE_ERROR.
 
 #include <stdio.h> // For FILE*
 // You should avoid including unnecessary header files
@@ -26,8 +27,7 @@ typedef enum {
 	MTM_OUT_OF_MEMORY, // You should exit program after this error
 	MTM_INVALID_COMMAND_LINE_PARAMETERS, // You should exit the program after this error
 	MTM_CANNOT_OPEN_FILE, // You should exit program after this error
-	MTM_INVALID_PARAMETERS,
-	MTM_NOT_LOGGED_IN,
+	MTM_NOT_LOGGED_IN = 4,
 	MTM_ALREADY_LOGGED_IN,
 	MTM_STUDENT_DOES_NOT_EXIST,
 	MTM_STUDENT_ALREADY_EXISTS,
@@ -35,8 +35,8 @@ typedef enum {
 	MTM_ALREADY_FRIEND,
 	MTM_NOT_REQUESTED,
 	MTM_ALREADY_REQUESTED,
-	MTM_FILE_ERROR,
-	MTM_COURSE_DOES_NOT_EXIST
+	MTM_COURSE_DOES_NOT_EXIST = 13,
+	MTM_INVALID_PARAMETERS = 3
 } MtmErrorCode;
 
 /**
