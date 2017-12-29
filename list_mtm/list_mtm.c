@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list_mtm.h"
-#include "assert.h"
-
+#include <assert.h>
 
 typedef struct node_t {
     ListElement element;
@@ -15,6 +14,10 @@ struct List_t {
     CopyListElement copy;
     FreeListElement free;
 };
+
+#define ASSERT($$condition$$) \
+if($$condition$$){} \
+assert($$condition$$)
 
 static ListResult
 allocateMemory(Node *new_node, ListElement element, List list) {
@@ -46,7 +49,7 @@ static void swapElements(Node *element1, Node *element2) {
 
 static ListResult maxSort(List list, CompareListElements compareElement,
                           ListSortKey key) {
-    assert(list != NULL && compareElement != NULL);
+    ASSERT(list != NULL && compareElement != NULL);
     Node temp = list->iterator;
     for (listGetFirst(list);
          list->iterator != NULL; list->iterator = list->iterator->next) {
@@ -113,7 +116,7 @@ int listGetSize(List list) {
 }
 
 ListElement listGetFirst(List list) {
-    assert(list != NULL);
+    ASSERT(list != NULL);
     if (list->head->element == NULL) {
         list->iterator = NULL;
         return NULL;
@@ -254,7 +257,7 @@ List listFilter(List list, FilterListElement filterElement, ListFilterKey key) {
         if (filterElement(list_copy->iterator->element, key) == false) {
             list_error = listRemoveCurrent(list_copy);
             listGetFirst(list_copy);
-            assert(list_error == LIST_SUCCESS);
+            ASSERT(list_error == LIST_SUCCESS);
         }
         listGetNext(list_copy);
     }
@@ -288,10 +291,10 @@ listSort(List list, CompareListElements compareElement, ListSortKey key) {
 }
 
 void listDestroy(List list) {
-    assert(list != NULL);
+    ASSERT(list != NULL);
     ListResult error;
     error = listClear(list);
-    assert(error == LIST_SUCCESS);
+    ASSERT(error == LIST_SUCCESS);
     list->free(list->head);
     free(list);
 }

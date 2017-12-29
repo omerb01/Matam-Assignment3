@@ -18,6 +18,10 @@ struct CourseManager_t {
     Graph friendships;
 };
 
+#define ASSERT($$condition$$) \
+if($$condition$$){} \
+assert($$condition$$)
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ CONVERTERS MACROS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #define CONVERT_SET_RESULT_TO_MANAGER_RESULT($$set_error$$) \
@@ -32,7 +36,7 @@ struct CourseManager_t {
         case SET_ITEM_ALREADY_EXISTS: \
             return MANAGER_STUDENT_ALREADY_EXISTS; \
         default: \
-            assert(false); \
+            ASSERT(false); \
     }
 
 #define CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT($$graph_error$$) \
@@ -51,7 +55,7 @@ struct CourseManager_t {
         case GRAPH_EDGE_ALREADY_EXISTS: \
             return MANAGER_ALREADY_FRIEND; \
         default: \
-            assert(false); \
+            ASSERT(false); \
     }
 
 #define CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT($$student_error$$) \
@@ -70,7 +74,7 @@ struct CourseManager_t {
         case STUDENT_GRADE_DOES_NOT_EXIST: \
             return MANAGER_COURSE_DOES_NOT_EXIST; \
         default: \
-            assert(false); \
+            ASSERT(false); \
     }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ USEFUL MACROS ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,12 +89,12 @@ struct CourseManager_t {
                         &($$variable$$)); \
     if ($$manager_error$$ == MANAGER_OUT_OF_MEMORY) \
         {return MANAGER_OUT_OF_MEMORY;} \
-    assert($$manager_error$$ == MANAGER_SUCCESS)
+    ASSERT($$manager_error$$ == MANAGER_SUCCESS)
 
 // ~~~~~~~~~~~~~~~~~~~ USER-INTERFACE STATIC FUNCTIONS ~~~~~~~~~~~~~~~~~~~
 
 static SetElement studentCopyForSet(SetElement element) {
-    assert(element != NULL);
+    ASSERT(element != NULL);
     Student student = (Student) element;
 
     Student student_copy = studentCopy(student);
@@ -105,7 +109,7 @@ static void studentFreeForSet(SetElement element) {
 }
 
 static int studentCompareForSet(SetElement element1, SetElement element2) {
-    assert(element1 != NULL && element2 != NULL);
+    ASSERT(element1 != NULL && element2 != NULL);
     Student student1 = (Student) element1;
     Student student2 = (Student) element2;
 
@@ -113,7 +117,7 @@ static int studentCompareForSet(SetElement element1, SetElement element2) {
 }
 
 static VertexLabel copyInt(VertexLabel label) {
-    assert(label != NULL);
+    ASSERT(label != NULL);
     int *num = (int *) label;
 
     int *num_copy = malloc(sizeof(int));
@@ -130,7 +134,7 @@ static void freeInt(VertexLabel label) {
 }
 
 static int compareInt(VertexLabel label1, VertexLabel label2) {
-    assert(label1 != NULL && label2 != NULL);
+    ASSERT(label1 != NULL && label2 != NULL);
     int *num1 = (int *) label1;
     int *num2 = (int *) label2;
 
@@ -142,7 +146,7 @@ static int compareInt(VertexLabel label1, VertexLabel label2) {
 // ~~~~~~~~~~~~~~~~~~~~~~~~ GENERAL STATIC FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~
 
 static bool isStudentLogged(CourseManager manager) {
-    assert(manager != NULL);
+    ASSERT(manager != NULL);
 
     if (manager->current_logged_id != INVALID_ID) return true;
     return false;
@@ -150,7 +154,7 @@ static bool isStudentLogged(CourseManager manager) {
 
 static ManagerResult findStudentById(CourseManager manager, int id,
                                      Student *result) {
-    assert(manager != NULL);
+    ASSERT(manager != NULL);
 
     Student student = CREATE_DEMI_STUDENT(id);
     if (student == NULL) return MANAGER_OUT_OF_MEMORY;
@@ -206,7 +210,7 @@ managerAddStudent(CourseManager manager, int id, char *first_name,
     GraphResult graph_error = graphAddVertex(manager->friendships, &id);
     if (graph_error != GRAPH_SUCCCESS) {
         set_error = setRemove(manager->students, student);
-        assert(set_error == SET_SUCCESS);
+        ASSERT(set_error == SET_SUCCESS);
         studentDestroy(student);
     }
     CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
@@ -231,7 +235,7 @@ ManagerResult managerRemoveStudent(CourseManager manager, int id) {
     StudentResult student_error;
     SET_FOREACH(Student, iterator, manager->students) {
         student_error = studentRemoveSentFriendRequest(iterator, student);
-        assert(student_error == STUDENT_SUCCESS ||
+        ASSERT(student_error == STUDENT_SUCCESS ||
                student_error == STUDENT_DIDNT_SEND_REQUEST);
     }
 
@@ -241,7 +245,7 @@ ManagerResult managerRemoveStudent(CourseManager manager, int id) {
     ManagerResult manager_error;
     if (manager->current_logged_id == id) {
         manager_error = managerLogout(manager);
-        assert(manager_error == MANAGER_SUCCESS);
+        ASSERT(manager_error == MANAGER_SUCCESS);
     }
     studentDestroy(student);
     return MANAGER_SUCCESS;
@@ -290,7 +294,7 @@ managerFacultyRequest(FILE *output_channel, CourseManager manager,
         bool is_course_done;
         student_error = studentIsCourseDone(logged_student, course_id,
                                             &is_course_done);
-        assert(student_error == STUDENT_SUCCESS ||
+        ASSERT(student_error == STUDENT_SUCCESS ||
                student_error == STUDENT_INVALID_ARGUMENT);
         if (!is_course_done || student_error == STUDENT_INVALID_ARGUMENT) {
             return MANAGER_COURSE_DOES_NOT_EXIST;
@@ -325,7 +329,7 @@ ManagerResult managerSendFriendRequest(CourseManager manager,
     GraphResult graph_error = edgeExists(manager->friendships,
                                          &manager->current_logged_id,
                                          &id_to_request, &is_already_friend);
-    assert(graph_error == GRAPH_SUCCCESS || graph_error == GRAPH_OUT_OF_MEMORY);
+    ASSERT(graph_error == GRAPH_SUCCCESS || graph_error == GRAPH_OUT_OF_MEMORY);
     CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
     if (is_already_friend == true) return MANAGER_ALREADY_FRIEND;
     StudentResult student_error =
@@ -341,12 +345,12 @@ sender, int sender_id, Student logged_student, char
     GraphResult graph_error;
 
     student_error = studentRemoveSentFriendRequest(sender, logged_student);
-    assert(student_error != STUDENT_INVALID_ARGUMENT);
+    ASSERT(student_error != STUDENT_INVALID_ARGUMENT);
     CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
     if (strcmp(action, "reject") == 0) return MANAGER_SUCCESS;
 
     student_error = studentRemoveSentFriendRequest(logged_student, sender);
-    assert(student_error == STUDENT_SUCCESS ||
+    ASSERT(student_error == STUDENT_SUCCESS ||
            student_error == STUDENT_DIDNT_SEND_REQUEST);
 
     graph_error = graphAddEdge(manager->friendships, &sender_id,
@@ -381,7 +385,7 @@ managerHandleFriendRequest(CourseManager manager, int id_waiting_for_response,
     }
     student_error = studentIsSentFriendRequest(sender, logged_student,
                                                &result);
-    assert(student_error == STUDENT_SUCCESS);
+    ASSERT(student_error == STUDENT_SUCCESS);
     if (result == false) return MANAGER_NOT_REQUESTED;
     if (!isValidAction(action)) return MANAGER_INVALID_ARGUMENT;
     return handleRequestAfterValidation(manager, sender,
@@ -480,7 +484,7 @@ static ManagerResult managerPrintSheet(char *flag, FILE *output_channel,
     } else if (strcmp(flag, "clean") == 0) {
         student_error = studentPrintCleanSheet(output_channel, logged_student);
     } else {
-        assert(false);
+        ASSERT(false);
     }
 
     CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
@@ -515,7 +519,7 @@ managerPrintGrades(char *flag, FILE *output_channel, CourseManager manager,
         student_error = studentPrintLowestGrades(output_channel,
                                                  logged_student, amount);
     } else {
-        assert(false);
+        ASSERT(false);
     }
 
     CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
@@ -535,7 +539,7 @@ managerPrintLowestGrades(FILE *output_channel, CourseManager manager,
 }
 
 static Set buildFriendsSet(CourseManager manager, Set friends_ids) {
-    assert(manager != NULL && friends_ids != NULL);
+    ASSERT(manager != NULL && friends_ids != NULL);
 
     Set friends = setCreate(dontCopyElement, dontFreeElement,
                             studentCompareForSet);
@@ -549,14 +553,14 @@ static Set buildFriendsSet(CourseManager manager, Set friends_ids) {
             setDestroy(friends);
             return NULL;
         }
-        assert(manager_error == MANAGER_SUCCESS);
+        ASSERT(manager_error == MANAGER_SUCCESS);
 
         SetResult set_error = setAdd(friends, friend);
         if (set_error == SET_OUT_OF_MEMORY) {
             setDestroy(friends);
             return NULL;
         }
-        assert(set_error == SET_SUCCESS);
+        ASSERT(set_error == SET_SUCCESS);
     }
 
     return friends;
