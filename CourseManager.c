@@ -462,9 +462,6 @@ managerUpdateLastGrade(CourseManager manager, int course_id, int new_grade) {
 
     StudentResult student_error = studentUpdateLastGrade(logged_student,
                                                          course_id, new_grade);
-    if (student_error == STUDENT_INVALID_ARGUMENT) {
-        return MANAGER_COURSE_DOES_NOT_EXIST;
-    }
     CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
     return MANAGER_SUCCESS;
 }

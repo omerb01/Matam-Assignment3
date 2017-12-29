@@ -506,15 +506,14 @@ SheetResult
 sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
                      int new_grade) {
     CHECK_GRADE_NOT_NULL();
-    if (!(isValidCourseId(course_id) && isGradeValid(new_grade)))
-        return SHEET_INVALID_ARGUMENT;
 
     int last_grade_index = -1;
     List lastest_semester_list = getLatestCourse(grades_sheet,
                                                  &last_grade_index, course_id);
 
-
     if (last_grade_index != -1 && lastest_semester_list != NULL) {
+        if (!(isValidCourseId(course_id) && isGradeValid(new_grade)))
+            return SHEET_INVALID_ARGUMENT;
         LIST_FOREACH(Grade, grade_iterator, lastest_semester_list) {
             if (!last_grade_index) {
                 grade_iterator->grade_value = new_grade;
