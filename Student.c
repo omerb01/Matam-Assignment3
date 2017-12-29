@@ -343,9 +343,8 @@ studentPrintReferences(FILE *output_channel, Set friends,
         return STUDENT_NULL_ARGUMENT;
     }
 
-    if (!isValidCourseId(course_id) || !isValidAmount(amount)) {
-        return STUDENT_INVALID_ARGUMENT;
-    }
+    if (!isValidAmount(amount)) return STUDENT_INVALID_ARGUMENT;
+    if (!isValidCourseId(course_id)) return STUDENT_SUCCESS;
 
     List refrences = buildRefrencesList(friends, course_id);
     if (refrences == NULL) return STUDENT_OUT_OF_MEMORY;
