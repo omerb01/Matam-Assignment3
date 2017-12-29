@@ -2,8 +2,8 @@
 // Created by Omer on 15/12/2017.
 //
 
-#include "../headers/test_utilities.h"
-#include "../headers/CourseManager.h"
+#include "test_utilities.h"
+#include "../CourseManager.h"
 
 static bool testManagerCreate() {
     CourseManager manager = managerCreate();

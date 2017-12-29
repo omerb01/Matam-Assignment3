@@ -4,8 +4,8 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include "../headers/test_utilities.h"
-#include "../headers/Graph.h"
+#include "test_utilities.h"
+#include "../Graph.h"
 
 static SetElement copyInt(SetElement element) {
     assert(element != NULL);

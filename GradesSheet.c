@@ -2,10 +2,10 @@
 // Created by Omer on 15/12/2017.
 //
 
-#include "headers/list.h"
-#include "headers/GradesSheet.h"
-#include "headers/mtm_ex3.h"
-#include "headers/UsefulFunctions.h"
+#include "list.h"
+#include "GradesSheet.h"
+#include "mtm_ex3.h"
+#include "UsefulFunctions.h"
 #include <stdlib.h>
 
 #define GRADE_INSERT_LAST() \

@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 #include <string.h>
-#include "headers/UsefulFunctions.h"
+#include "UsefulFunctions.h"
 
 SetElement dontCopyElement(SetElement element) {
     /* DO NOTHING */

@@ -5,12 +5,12 @@
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
-#include "headers/set.h"
-#include "headers/list.h"
-#include "headers/mtm_ex3.h"
-#include "headers/GradesSheet.h"
-#include "headers/Student.h"
-#include "headers/UsefulFunctions.h"
+#include "set.h"
+#include "list.h"
+#include "mtm_ex3.h"
+#include "GradesSheet.h"
+#include "Student.h"
+#include "UsefulFunctions.h"
 
 struct Student_t {
     int id;

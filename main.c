@@ -2,9 +2,9 @@
 // Created by Omer on 08/12/2017.
 //
 
-#include "headers/list.h"
-#include "headers/mtm_ex3.h"
-#include "headers/CourseManager.h"
+#include "list.h"
+#include "mtm_ex3.h"
+#include "CourseManager.h"
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>

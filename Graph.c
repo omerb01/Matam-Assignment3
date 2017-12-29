@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "headers/Graph.h"
+#include "Graph.h"
 
 #define MALLOC($$type$$, $$variable$$) \
 $$type$$ $$variable$$ = malloc(sizeof(*($$variable$$))); \

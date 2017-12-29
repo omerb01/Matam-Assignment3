@@ -3,8 +3,8 @@
 //
 
 #include <stdlib.h>
-#include "../headers/test_utilities.h"
-#include "../headers/GradesSheet.h"
+#include "test_utilities.h"
+#include "../GradesSheet.h"
 
 
 typedef struct Grade_t {

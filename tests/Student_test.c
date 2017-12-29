@@ -3,9 +3,9 @@
 //
 
 #include <assert.h>
-#include "../headers/test_utilities.h"
-#include "../headers/Student.h"
-#include "../headers/UsefulFunctions.h"
+#include "test_utilities.h"
+#include "../Student.h"
+#include "../UsefulFunctions.h"
 
 static SetElement studentCopyForSet(SetElement element) {
     /* DO NOTHING */
