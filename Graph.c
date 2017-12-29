@@ -253,9 +253,9 @@ GraphResult graphAddEdge(Graph graph, VertexLabel label1, VertexLabel label2) {
         return GRAPH_NULL_ARGUMENT;
     }
 
-    bool is_vertex1_exists;
+    bool is_vertex1_exists = false;
     IS_VERTEX_EXISTS(graph, label1, is_vertex1_exists, GRAPH_OUT_OF_MEMORY);
-    bool is_vertex2_exists;
+    bool is_vertex2_exists = false;
     IS_VERTEX_EXISTS(graph, label2, is_vertex2_exists, GRAPH_OUT_OF_MEMORY);
 
     if (!is_vertex1_exists || !is_vertex2_exists) {
@@ -309,9 +309,9 @@ GraphResult graphRemoveEdge(Graph graph, VertexLabel label1,
         return GRAPH_NULL_ARGUMENT;
     }
 
-    bool is_vertex1_exists;
+    bool is_vertex1_exists = false;
     IS_VERTEX_EXISTS(graph, label1, is_vertex1_exists, GRAPH_OUT_OF_MEMORY);
-    bool is_vertex2_exists;
+    bool is_vertex2_exists = false;
     IS_VERTEX_EXISTS(graph, label2, is_vertex2_exists, GRAPH_OUT_OF_MEMORY);
 
     if (!is_vertex1_exists || !is_vertex2_exists) {
@@ -355,7 +355,7 @@ Set graphNeighbors(Graph graph, VertexLabel label) {
         return NULL;
     }
 
-    bool is_vertex_exists;
+    bool is_vertex_exists = false;
     IS_VERTEX_EXISTS(graph, label, is_vertex_exists, NULL);
 
     if (!is_vertex_exists) return NULL;
@@ -388,9 +388,9 @@ GraphResult edgeExists(Graph graph, VertexLabel label1, VertexLabel label2,
         return GRAPH_NULL_ARGUMENT;
     }
 
-    bool is_vertex1_exists;
+    bool is_vertex1_exists = false;
     IS_VERTEX_EXISTS(graph, label1, is_vertex1_exists, GRAPH_OUT_OF_MEMORY);
-    bool is_vertex2_exists;
+    bool is_vertex2_exists = false;
     IS_VERTEX_EXISTS(graph, label2, is_vertex2_exists, GRAPH_OUT_OF_MEMORY);
 
     if (!is_vertex1_exists || !is_vertex2_exists) {

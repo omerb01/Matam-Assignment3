@@ -302,7 +302,7 @@ static bool testVertexExists() {
     int *element1 = malloc(sizeof(int));
     int *element2 = malloc(sizeof(int));
     GraphResult graph_error;
-    bool result;
+    bool result = false;
 
     *element1 = 0;
     graph_error = vertexExists(NULL, element1, &result);
@@ -342,7 +342,7 @@ static bool testEdgeExists() {
     int *element1 = malloc(sizeof(int));
     int *element2 = malloc(sizeof(int));
     GraphResult graph_error;
-    bool result;
+    bool result = false;
 
     *element1 = 0;
     *element2 = 0;

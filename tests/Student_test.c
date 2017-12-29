@@ -100,7 +100,7 @@ static bool testStudentIsSentFriendRequest() {
     Student student3 = studentCreate(222222222, "Omer", "Adam");
     Student student4 = studentCreate(333333333, "Yosi", "Banai");
     StudentResult student_error;
-    bool result;
+    bool result = false;
 
     student_error = studentIsSentFriendRequest(NULL, student2, &result);
     ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);
@@ -148,7 +148,7 @@ static bool testStudentRemoveSentFriendRequest() {
     Student student1 = studentCreate(205795511, "Omer", "Belhasin");
     Student student2 = studentCreate(111111111, "Shlomo", "Artzi");
     StudentResult student_error;
-    bool result;
+    bool result = false;
 
     studentSendFriendReuqest(student1, student2);
     studentSendFriendReuqest(student2, student1);
@@ -292,7 +292,7 @@ static bool testStudentRemoveLastGrade() {
 static bool testStudentIsCourseDone() {
     Student student = studentCreate(205795511, "Omer", "Belhasin");
     StudentResult student_error;
-    bool result;
+    bool result = false;
 
     student_error = studentIsCourseDone(NULL, 234122, &result);
     ASSERT_TEST(student_error == STUDENT_NULL_ARGUMENT);

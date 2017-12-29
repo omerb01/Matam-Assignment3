@@ -291,7 +291,7 @@ managerFacultyRequest(FILE *output_channel, CourseManager manager,
 
     StudentResult student_error;
     if (strcmp(request, "remove_course") == 0) {
-        bool is_course_done;
+        bool is_course_done = false;
         student_error = studentIsCourseDone(logged_student, course_id,
                                             &is_course_done);
         ASSERT(student_error == STUDENT_SUCCESS ||
@@ -325,7 +325,7 @@ ManagerResult managerSendFriendRequest(CourseManager manager,
     if (id_to_request == manager->current_logged_id) {
         return MANAGER_ALREADY_FRIEND;
     }
-    bool is_already_friend;
+    bool is_already_friend = false;
     GraphResult graph_error = edgeExists(manager->friendships,
                                          &manager->current_logged_id,
                                          &id_to_request, &is_already_friend);
@@ -367,7 +367,7 @@ managerHandleFriendRequest(CourseManager manager, int id_waiting_for_response,
     ManagerResult manager_error;
     GraphResult graph_error;
     StudentResult student_error;
-    bool result;
+    bool result = false;
 
     Student sender = NULL;
     manager_error = findStudentById(manager, id_waiting_for_response, &sender);
