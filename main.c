@@ -273,7 +273,7 @@ static int isValidFloat(char *number){
         index++;
         iterator++;
     }
-    return 1;
+    return -1;
 }
 
 static int pointsToNumber(char *points) {
