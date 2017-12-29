@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "list_mtm.h"
+#include "../list_mtm/list_mtm.h"
 
 int test_counter = 1;
 
