@@ -251,17 +251,34 @@ static int isFloat(char *number) {
     char *iterator = number;
     int index = 0;
     while (*iterator != '\0') {
-        if (*iterator == '.') {
-            return index;
-        }
+        if(*iterator == '.') return index;
         index++;
         iterator++;
     }
     return -1;
 }
 
+static int isValidFloat(char *number){
+    char *iterator = number;
+    int index = 0;
+    if(*iterator == '.') return -1;
+    while (*iterator != '\0') {
+        if(!isDigit(*iterator) && (*iterator!='.')){
+            return -1;
+        }
+        else if (*iterator == '.' &&
+                 (*(iterator + 1) == '5' || *(iterator + 1) == '0')) {
+            return index;
+        }
+        index++;
+        iterator++;
+    }
+    return 1;
+}
+
 static int pointsToNumber(char *points) {
     int point_index = isFloat(points);
+    if(point_index != -1 && isValidFloat(points) == -1) return -1;
     int points2x = 0;
     char *iterator = points;
     if (point_index == -1) {
