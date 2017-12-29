@@ -131,10 +131,10 @@ int main() {
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if(i == 1) break;
+        if (i == 1) break;
         i--;
     }
-    ASSERT(*(int*)listGetCurrent(list1) == 3);
+    ASSERT(*(int *) listGetCurrent(list1) == 3);
 
     *element = 4;
     error = listInsertAfterCurrent(list1, NULL);
@@ -150,10 +150,10 @@ int main() {
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if(i == 3) break;
+        if (i == 3) break;
         i--;
     }
-    ASSERT(*(int*)listGetCurrent(list1) == 2);
+    ASSERT(*(int *) listGetCurrent(list1) == 2);
 
     *element = 999;
     error = listInsertBeforeCurrent(list1, element);
@@ -163,13 +163,13 @@ int main() {
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if(i == 7) ASSERT(*current_num == 0);
-        if(i == 6) ASSERT(*current_num == 1);
-        if(i == 5) ASSERT(*current_num == 999);
-        if(i == 4) ASSERT(*current_num == 2);
-        if(i == 3) ASSERT(*current_num == 999);
-        if(i == 2) ASSERT(*current_num == 3);
-        if(i == 1) ASSERT(*current_num == 4);
+        if (i == 7) ASSERT(*current_num == 0);
+        if (i == 6) ASSERT(*current_num == 1);
+        if (i == 5) ASSERT(*current_num == 999);
+        if (i == 4) ASSERT(*current_num == 2);
+        if (i == 3) ASSERT(*current_num == 999);
+        if (i == 2) ASSERT(*current_num == 3);
+        if (i == 1) ASSERT(*current_num == 4);
         i--;
     }
 
@@ -178,13 +178,13 @@ int main() {
 
     i = listGetSize(list2);
     LIST_FOREACH(int*, current_num, list2) {
-        if(i == 7) ASSERT(*current_num == 0);
-        if(i == 6) ASSERT(*current_num == 1);
-        if(i == 5) ASSERT(*current_num == 999);
-        if(i == 4) ASSERT(*current_num == 2);
-        if(i == 3) ASSERT(*current_num == 999);
-        if(i == 2) ASSERT(*current_num == 3);
-        if(i == 1) ASSERT(*current_num == 4);
+        if (i == 7) ASSERT(*current_num == 0);
+        if (i == 6) ASSERT(*current_num == 1);
+        if (i == 5) ASSERT(*current_num == 999);
+        if (i == 4) ASSERT(*current_num == 2);
+        if (i == 3) ASSERT(*current_num == 999);
+        if (i == 2) ASSERT(*current_num == 3);
+        if (i == 1) ASSERT(*current_num == 4);
         i--;
     }
 
@@ -197,30 +197,30 @@ int main() {
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if(i == 7) ASSERT(*current_num == 0);
-        if(i == 6) ASSERT(*current_num == 1);
-        if(i == 5) ASSERT(*current_num == 2);
-        if(i == 4) ASSERT(*current_num == 3);
-        if(i == 3) ASSERT(*current_num == 4);
-        if(i == 2) ASSERT(*current_num == 999);
-        if(i == 1) ASSERT(*current_num == 999);
+        if (i == 7) ASSERT(*current_num == 0);
+        if (i == 6) ASSERT(*current_num == 1);
+        if (i == 5) ASSERT(*current_num == 2);
+        if (i == 4) ASSERT(*current_num == 3);
+        if (i == 3) ASSERT(*current_num == 4);
+        if (i == 2) ASSERT(*current_num == 999);
+        if (i == 1) ASSERT(*current_num == 999);
         i--;
     }
 
     i = listGetSize(list2);
     LIST_FOREACH(int*, current_num, list2) {
-        if(i == 7) ASSERT(*current_num == 0);
-        if(i == 6) ASSERT(*current_num == 1);
-        if(i == 5) ASSERT(*current_num == 999);
-        if(i == 4) ASSERT(*current_num == 2);
-        if(i == 3) ASSERT(*current_num == 999);
-        if(i == 2) ASSERT(*current_num == 3);
-        if(i == 1) ASSERT(*current_num == 4);
+        if (i == 7) ASSERT(*current_num == 0);
+        if (i == 6) ASSERT(*current_num == 1);
+        if (i == 5) ASSERT(*current_num == 999);
+        if (i == 4) ASSERT(*current_num == 2);
+        if (i == 3) ASSERT(*current_num == 999);
+        if (i == 2) ASSERT(*current_num == 3);
+        if (i == 1) ASSERT(*current_num == 4);
         i--;
     }
 
     LIST_FOREACH(int*, current_num, list1) {
-        if(*current_num == 999) {
+        if (*current_num == 999) {
             error = listRemoveCurrent(list1); // removes one "999"
             ASSERT(error == LIST_SUCCESS);
         }
@@ -230,17 +230,17 @@ int main() {
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if(i == 6) ASSERT(*current_num == 0);
-        if(i == 5) ASSERT(*current_num == 1);
-        if(i == 4) ASSERT(*current_num == 2);
-        if(i == 3) ASSERT(*current_num == 3);
-        if(i == 2) ASSERT(*current_num == 4);
-        if(i == 1) ASSERT(*current_num == 999);
+        if (i == 6) ASSERT(*current_num == 0);
+        if (i == 5) ASSERT(*current_num == 1);
+        if (i == 4) ASSERT(*current_num == 2);
+        if (i == 3) ASSERT(*current_num == 3);
+        if (i == 2) ASSERT(*current_num == 4);
+        if (i == 1) ASSERT(*current_num == 999);
         i--;
     }
 
     LIST_FOREACH(int*, current_num, list1) {
-        if(*current_num == 999) {
+        if (*current_num == 999) {
             error = listRemoveCurrent(list1); // removes one "999"
             ASSERT(error == LIST_SUCCESS);
         }
@@ -248,11 +248,11 @@ int main() {
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if(i == 5) ASSERT(*current_num == 0);
-        if(i == 4) ASSERT(*current_num == 1);
-        if(i == 3) ASSERT(*current_num == 2);
-        if(i == 2) ASSERT(*current_num == 3);
-        if(i == 1) ASSERT(*current_num == 4);
+        if (i == 5) ASSERT(*current_num == 0);
+        if (i == 4) ASSERT(*current_num == 1);
+        if (i == 3) ASSERT(*current_num == 2);
+        if (i == 2) ASSERT(*current_num == 3);
+        if (i == 1) ASSERT(*current_num == 4);
         i--;
     }
 
@@ -267,19 +267,19 @@ int main() {
 
     i = listGetSize(list3);
     LIST_FOREACH(int*, current_num, list3) {
-        if(i == 3) ASSERT(*current_num == 0);
-        if(i == 2) ASSERT(*current_num == 2);
-        if(i == 1) ASSERT(*current_num == 4);
+        if (i == 3) ASSERT(*current_num == 0);
+        if (i == 2) ASSERT(*current_num == 2);
+        if (i == 1) ASSERT(*current_num == 4);
         i--;
     }
 
     i = listGetSize(list1);
     LIST_FOREACH(int*, current_num, list1) {
-        if(i == 5) ASSERT(*current_num == 0);
-        if(i == 4) ASSERT(*current_num == 1);
-        if(i == 3) ASSERT(*current_num == 2);
-        if(i == 2) ASSERT(*current_num == 3);
-        if(i == 1) ASSERT(*current_num == 4);
+        if (i == 5) ASSERT(*current_num == 0);
+        if (i == 4) ASSERT(*current_num == 1);
+        if (i == 3) ASSERT(*current_num == 2);
+        if (i == 2) ASSERT(*current_num == 3);
+        if (i == 1) ASSERT(*current_num == 4);
         i--;
     }
 

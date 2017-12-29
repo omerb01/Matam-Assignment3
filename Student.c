@@ -191,12 +191,12 @@ StudentResult studentIsCourseDone(Student student, int course_id,
 
     int highest_grade;
     SheetResult sheet_error = sheetHighestGrade(student->grades_sheet,
-                                                    course_id,
-                                                    &highest_grade);
-    if(sheet_error == SHEET_INVALID_ARGUMENT){
+                                                course_id,
+                                                &highest_grade);
+    if (sheet_error == SHEET_INVALID_ARGUMENT) {
         return STUDENT_INVALID_ARGUMENT;
     }
-    if(sheet_error == SHEET_GRADE_DOES_NOT_EXIST) {
+    if (sheet_error == SHEET_GRADE_DOES_NOT_EXIST) {
         *result = false;
         return STUDENT_SUCCESS;
     }
@@ -305,14 +305,11 @@ static List buildRefrencesList(Set friends, int course_id) {
     ListResult list_error;
     RefrenceSource refrence_source;
     int highest_grade;
-
     List refrences = listCreate(refrenceCopy, refrenceFree);
     if (refrences == NULL) return NULL;
-
     SET_FOREACH(Student, iterator, friends) {
-
         sheet_error = sheetHighestGrade(iterator->grades_sheet, course_id,
-                                            &highest_grade);
+                                        &highest_grade);
         if (sheet_error == SHEET_GRADE_DOES_NOT_EXIST) {
             highest_grade = NONE_GRADE;
         } else if (sheet_error == SHEET_OUT_OF_MEMORY) {
@@ -321,13 +318,11 @@ static List buildRefrencesList(Set friends, int course_id) {
         } else {
             assert(sheet_error == SHEET_SUCCESS);
         }
-
         refrence_source = refrenceCreate(iterator, highest_grade);
         if (refrence_source == NULL) {
             listDestroy(refrences);
             return NULL;
         }
-
         list_error = listInsertLast(refrences, refrence_source);
         if (list_error == LIST_OUT_OF_MEMORY) {
             listDestroy(refrences);
@@ -336,7 +331,6 @@ static List buildRefrencesList(Set friends, int course_id) {
         }
         assert(list_error == LIST_SUCCESS);
     }
-
     return refrences;
 }
 

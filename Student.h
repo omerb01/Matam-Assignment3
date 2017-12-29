@@ -54,6 +54,7 @@ int studentCompare(Student student1, Student student2);
  */
 StudentResult studentSendFriendReuqest(Student,
                                        Student requested);
+
 /* Checks if the given student sent a friend request to the requested student
  * returns:
  * STUDENT_NULL_ARGUMENT if one of the relevant arguments is NULL

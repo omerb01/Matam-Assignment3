@@ -19,6 +19,12 @@ vertexCreate($$label$$, ($$graph$$)->copyLabel, ($$graph$$)->freeLabel, \
 edgeCreate($$label1$$, $$label2$$, ($$graph$$)->copyLabel, \
                 ($$graph$$)->freeLabel, ($$graph$$)->compareLabel)
 
+#define IS_VERTEX_EXISTS($$graph$$, $$label$$, $$result$$, $$return$$) \
+{ GraphResult graph_error = vertexExists($$graph$$, $$label$$, &($$result$$)); \
+if (graph_error == GRAPH_OUT_OF_MEMORY) return $$return$$; \
+assert(graph_error == GRAPH_SUCCCESS); }
+
+
 /* ~~~~~~~~~~~~~~~~~~~~ STRUCTURES DECLARATIONS ~~~~~~~~~~~~~~~~~~~~ */
 
 struct Graph_t {
@@ -246,16 +252,11 @@ GraphResult graphAddEdge(Graph graph, VertexLabel label1, VertexLabel label2) {
     if (graph == NULL || label1 == NULL || label2 == NULL) {
         return GRAPH_NULL_ARGUMENT;
     }
-    GraphResult graph_error;
 
     bool is_vertex1_exists;
-    graph_error = vertexExists(graph, label1, &is_vertex1_exists);
-    if (graph_error == GRAPH_OUT_OF_MEMORY) return GRAPH_OUT_OF_MEMORY;
-    assert(graph_error == GRAPH_SUCCCESS);
+    IS_VERTEX_EXISTS(graph, label1, is_vertex1_exists, GRAPH_OUT_OF_MEMORY);
     bool is_vertex2_exists;
-    graph_error = vertexExists(graph, label2, &is_vertex2_exists);
-    if (graph_error == GRAPH_OUT_OF_MEMORY) return GRAPH_OUT_OF_MEMORY;
-    assert(graph_error == GRAPH_SUCCCESS);
+    IS_VERTEX_EXISTS(graph, label2, is_vertex2_exists, GRAPH_OUT_OF_MEMORY);
 
     if (!is_vertex1_exists || !is_vertex2_exists) {
         return GRAPH_VERTEX_DOES_NOT_EXIST;
@@ -307,16 +308,11 @@ GraphResult graphRemoveEdge(Graph graph, VertexLabel label1,
     if (graph == NULL || label1 == NULL || label2 == NULL) {
         return GRAPH_NULL_ARGUMENT;
     }
-    GraphResult graph_error;
 
     bool is_vertex1_exists;
-    graph_error = vertexExists(graph, label1, &is_vertex1_exists);
-    if (graph_error == GRAPH_OUT_OF_MEMORY) return GRAPH_OUT_OF_MEMORY;
-    assert(graph_error == GRAPH_SUCCCESS);
+    IS_VERTEX_EXISTS(graph, label1, is_vertex1_exists, GRAPH_OUT_OF_MEMORY);
     bool is_vertex2_exists;
-    graph_error = vertexExists(graph, label2, &is_vertex2_exists);
-    if (graph_error == GRAPH_OUT_OF_MEMORY) return GRAPH_OUT_OF_MEMORY;
-    assert(graph_error == GRAPH_SUCCCESS);
+    IS_VERTEX_EXISTS(graph, label2, is_vertex2_exists, GRAPH_OUT_OF_MEMORY);
 
     if (!is_vertex1_exists || !is_vertex2_exists) {
         return GRAPH_VERTEX_DOES_NOT_EXIST;
@@ -331,28 +327,10 @@ GraphResult graphRemoveEdge(Graph graph, VertexLabel label1,
     return convertToGraphResult(set_error, "edge");
 }
 
-Set graphNeighbors(Graph graph, VertexLabel label) {
-    if (graph == NULL || label == NULL) {
-        return NULL;
-    }
-    GraphResult graph_error;
-
-    bool is_vertex_exists;
-    graph_error = vertexExists(graph, label, &is_vertex_exists);
-    if (graph_error == GRAPH_OUT_OF_MEMORY) return NULL;
-    assert(graph_error == GRAPH_SUCCCESS);
-
-    if (!is_vertex_exists) return NULL;
-
-    Vertex vertex = VERTEX_CREATE(label, graph);
-    if (vertex == NULL) return NULL;
-
+static Set buildNeighborsSet(Graph graph, Vertex vertex) {
     Set neighbors = setCreate(graph->copyLabel, graph->freeLabel,
                               graph->compareLabel);
-    if (neighbors == NULL) {
-        vertexDestroy(vertex);
-        return NULL;
-    }
+    if (neighbors == NULL) return NULL;
 
     SetResult set_error;
     SET_FOREACH(Edge, iterator, graph->edges) {
@@ -363,12 +341,29 @@ Set graphNeighbors(Graph graph, VertexLabel label) {
             set_error = setAdd(neighbors, iterator->vertex1->label);
         }
         if (set_error == SET_OUT_OF_MEMORY) {
-            vertexDestroy(vertex);
             setDestroy(neighbors);
             return NULL;
         }
         assert(set_error == SET_SUCCESS);
     }
+
+    return neighbors;
+}
+
+Set graphNeighbors(Graph graph, VertexLabel label) {
+    if (graph == NULL || label == NULL) {
+        return NULL;
+    }
+
+    bool is_vertex_exists;
+    IS_VERTEX_EXISTS(graph, label, is_vertex_exists, NULL);
+
+    if (!is_vertex_exists) return NULL;
+
+    Vertex vertex = VERTEX_CREATE(label, graph);
+    if (vertex == NULL) return NULL;
+
+    Set neighbors = buildNeighborsSet(graph, vertex);
 
     vertexDestroy(vertex);
     return neighbors;
@@ -392,16 +387,11 @@ GraphResult edgeExists(Graph graph, VertexLabel label1, VertexLabel label2,
     if (graph == NULL || label1 == NULL || label2 == NULL || result == NULL) {
         return GRAPH_NULL_ARGUMENT;
     }
-    GraphResult graph_error;
 
     bool is_vertex1_exists;
-    graph_error = vertexExists(graph, label1, &is_vertex1_exists);
-    if (graph_error == GRAPH_OUT_OF_MEMORY) return GRAPH_OUT_OF_MEMORY;
-    assert(graph_error == GRAPH_SUCCCESS);
+    IS_VERTEX_EXISTS(graph, label1, is_vertex1_exists, GRAPH_OUT_OF_MEMORY);
     bool is_vertex2_exists;
-    graph_error = vertexExists(graph, label2, &is_vertex2_exists);
-    if (graph_error == GRAPH_OUT_OF_MEMORY) return GRAPH_OUT_OF_MEMORY;
-    assert(graph_error == GRAPH_SUCCCESS);
+    IS_VERTEX_EXISTS(graph, label2, is_vertex2_exists, GRAPH_OUT_OF_MEMORY);
 
     if (!is_vertex1_exists || !is_vertex2_exists) {
         return GRAPH_VERTEX_DOES_NOT_EXIST;

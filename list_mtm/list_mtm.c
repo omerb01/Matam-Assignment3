@@ -38,26 +38,28 @@ static void setOldIterator(Node old_iterator, List list) {
     }
 }
 
-static void swapElements(Node *element1, Node *element2){
-    ListElement temp=(*element1)->element;
-    (*element1)->element=(*element2)->element;
+static void swapElements(Node *element1, Node *element2) {
+    ListElement temp = (*element1)->element;
+    (*element1)->element = (*element2)->element;
     (*element2)->element = temp;
 }
 
 static ListResult maxSort(List list, CompareListElements compareElement,
-                          ListSortKey key){
+                          ListSortKey key) {
     assert(list != NULL && compareElement != NULL);
-    Node temp=list->iterator;
-    for(listGetFirst(list);list->iterator!=NULL;list->iterator = list->iterator->next){
-        for(temp=list->iterator->next; temp!=NULL; temp=temp->next){
-            if(compareElement(list->iterator->element,temp->element,key)>0){
-                swapElements(&(list->iterator),&(temp));
+    Node temp = list->iterator;
+    for (listGetFirst(list);
+         list->iterator != NULL; list->iterator = list->iterator->next) {
+        for (temp = list->iterator->next; temp != NULL; temp = temp->next) {
+            if (compareElement(list->iterator->element, temp->element, key) >
+                0) {
+                swapElements(&(list->iterator), &(temp));
             }
-            if(temp->next==NULL){
+            if (temp->next == NULL) {
                 break;
             }
         }
-        if(list->iterator->next==NULL){
+        if (list->iterator->next == NULL) {
             break;
         }
     }
@@ -191,7 +193,7 @@ ListResult listInsertBeforeCurrent(List list, ListElement element) {
     temp_iterator = list->iterator;
     for (listGetFirst(list); (list->iterator->next != NULL &&
                               list->iterator->next !=
-                              temp_iterator); list->iterator = list->iterator->next)  {}
+                              temp_iterator); list->iterator = list->iterator->next) {}
     list->iterator->next = new_node;
     new_node->next = temp_iterator;
     list->iterator = temp_iterator;
@@ -242,21 +244,21 @@ ListResult listRemoveCurrent(List list) {
     return LIST_SUCCESS;
 }
 
-List listFilter(List list, FilterListElement filterElement, ListFilterKey key){
+List listFilter(List list, FilterListElement filterElement, ListFilterKey key) {
     if (list == NULL || filterElement == NULL) return NULL;
     ListResult list_error;
     List list_copy = listCopy(list);
     if (list_copy == NULL) return NULL;
     listGetFirst(list_copy);
-    while(list_copy->iterator!=NULL){
-        if(filterElement(list_copy->iterator->element,key) == false){
+    while (list_copy->iterator != NULL) {
+        if (filterElement(list_copy->iterator->element, key) == false) {
             list_error = listRemoveCurrent(list_copy);
             listGetFirst(list_copy);
             assert(list_error == LIST_SUCCESS);
         }
         listGetNext(list_copy);
     }
-    list_copy->iterator=NULL;
+    list_copy->iterator = NULL;
     return list_copy;
 
 }

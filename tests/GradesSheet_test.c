@@ -13,6 +13,7 @@ typedef struct Grade_t {
     int points_x2;
     int grade_value;
 } *Grade;
+
 static bool testGradesSheetCreate() {
     GradesSheet sheet = sheetCreate();
     ASSERT_TEST(sheet != NULL);
@@ -20,6 +21,7 @@ static bool testGradesSheetCreate() {
     sheetDestroy(sheet);
     return true;
 }
+
 static bool testGradesSheetCopy() {
     GradesSheet gsheet = sheetCreate();
     sheetAddGrade(gsheet, 1, 104012, 11, 84);
@@ -81,6 +83,7 @@ static bool testGradesSheetCopy() {
     sheetDestroy(copied_sheet);
     return true;
 }
+
 static bool testGradesSheetAddGrade() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -146,6 +149,7 @@ static bool testGradesSheetAddGrade() {
     sheetDestroy(gsheet);
     return true;
 }
+
 static bool testGradesSheetRemoveGrade() {
 
     SheetResult errorcode;
@@ -218,6 +222,7 @@ static bool testGradesSheetRemoveGrade() {
     sheetDestroy(gsheet);
     return true;
 }
+
 static bool testGradesSheetUpdateGrade() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -285,6 +290,7 @@ static bool testGradesSheetUpdateGrade() {
     sheetDestroy(gsheet);
     return true;
 }
+
 static bool testGradesSheetHighestLastGrade() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -421,6 +427,7 @@ static bool testSheetPrintFull() {
     sheetDestroy(gsheet);
     return true;
 }
+
 static bool testSheetPrintClear() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -490,6 +497,7 @@ static bool testSheetPrintClear() {
     return true;
 
 }
+
 static bool testSheetPrintHighestGrades() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();
@@ -558,6 +566,7 @@ static bool testSheetPrintHighestGrades() {
     sheetDestroy(gsheet);
     return true;
 }
+
 static bool testSheetPrintLowestGrades() {
     SheetResult errorcode;
     GradesSheet gsheet = sheetCreate();

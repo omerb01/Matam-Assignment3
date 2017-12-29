@@ -21,7 +21,7 @@ void dontFreeElement(SetElement);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~ VALIDATION FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~
 
-#define INVALID_ID -1
+#define INVALID_ID (-1)
 
 bool isValidId(int id);
 
@@ -45,4 +45,5 @@ bool isValidRequest(char *request);
 bool isGradeFail(int grade_value);
 
 bool isSportCourse(int course_id);
+
 #endif //ASSIGNMENT3_USEFULFUNCTIONS_H

@@ -217,10 +217,8 @@ managerAddStudent(CourseManager manager, int id, char *first_name,
 
 ManagerResult managerRemoveStudent(CourseManager manager, int id) {
     if (manager == NULL) return MANAGER_NULL_ARGUMENT;
-
     Student student = CREATE_DEMI_STUDENT(id);
     if (student == NULL) return MANAGER_OUT_OF_MEMORY;
-
     GraphResult graph_error = graphRemoveVertex(manager->friendships, &id);
     if (graph_error != GRAPH_SUCCCESS) studentDestroy(student);
     CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
@@ -240,13 +238,11 @@ ManagerResult managerRemoveStudent(CourseManager manager, int id) {
     SetResult set_error = setRemove(manager->students, student);
     if (set_error != SET_SUCCESS) studentDestroy(student);
     CONVERT_SET_RESULT_TO_MANAGER_RESULT(set_error);
-
     ManagerResult manager_error;
     if (manager->current_logged_id == id) {
         manager_error = managerLogout(manager);
         assert(manager_error == MANAGER_SUCCESS);
     }
-
     studentDestroy(student);
     return MANAGER_SUCCESS;
 }
@@ -258,13 +254,9 @@ ManagerResult managerLogin(CourseManager manager, int id) {
         return MANAGER_ALREADY_LOGGED_IN;
     }
 
-    Student student;
+    Student student = NULL;
     ManagerResult manager_error = findStudentById(manager, id, &student);
-    if (manager_error == MANAGER_OUT_OF_MEMORY) return MANAGER_OUT_OF_MEMORY;
-    if (manager_error == MANAGER_STUDENT_DOES_NOT_EXIST) {
-        return MANAGER_STUDENT_DOES_NOT_EXIST;
-    }
-    assert(manager_error == MANAGER_SUCCESS);
+    if (manager_error != MANAGER_SUCCESS) return manager_error;
 
     if (!isValidId(id)) return MANAGER_INVALID_ARGUMENT;
 
@@ -299,7 +291,7 @@ managerFacultyRequest(FILE *output_channel, CourseManager manager,
         student_error = studentIsCourseDone(logged_student, course_id,
                                             &is_course_done);
         assert(student_error == STUDENT_SUCCESS ||
-                       student_error == STUDENT_INVALID_ARGUMENT);
+               student_error == STUDENT_INVALID_ARGUMENT);
         if (!is_course_done || student_error == STUDENT_INVALID_ARGUMENT) {
             return MANAGER_COURSE_DOES_NOT_EXIST;
         }
@@ -318,15 +310,10 @@ ManagerResult managerSendFriendRequest(CourseManager manager,
                                        int id_to_request) {
     if (manager == NULL) return MANAGER_NULL_ARGUMENT;
     if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
-
     ManagerResult manager_error;
     Student requested = NULL;
     manager_error = findStudentById(manager, id_to_request, &requested);
-    if (manager_error == MANAGER_OUT_OF_MEMORY) return MANAGER_OUT_OF_MEMORY;
-    if (manager_error == MANAGER_STUDENT_DOES_NOT_EXIST) {
-        return MANAGER_STUDENT_DOES_NOT_EXIST;
-    }
-    assert(manager_error == MANAGER_SUCCESS);
+    if (manager_error != MANAGER_SUCCESS) return manager_error;
 
     Student logged_student;
     STORE_LOGGED_STUDENT(manager, logged_student);
@@ -341,10 +328,30 @@ ManagerResult managerSendFriendRequest(CourseManager manager,
     assert(graph_error == GRAPH_SUCCCESS || graph_error == GRAPH_OUT_OF_MEMORY);
     CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
     if (is_already_friend == true) return MANAGER_ALREADY_FRIEND;
-
     StudentResult student_error =
             studentSendFriendReuqest(logged_student, requested);
     CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
+    return MANAGER_SUCCESS;
+}
+
+static ManagerResult handleRequestAfterValidation(CourseManager manager, Student
+sender, int sender_id, Student logged_student, char
+                                                  *action) {
+    StudentResult student_error;
+    GraphResult graph_error;
+
+    student_error = studentRemoveSentFriendRequest(sender, logged_student);
+    assert(student_error != STUDENT_INVALID_ARGUMENT);
+    CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
+    if (strcmp(action, "reject") == 0) return MANAGER_SUCCESS;
+
+    student_error = studentRemoveSentFriendRequest(logged_student, sender);
+    assert(student_error == STUDENT_SUCCESS ||
+           student_error == STUDENT_DIDNT_SEND_REQUEST);
+
+    graph_error = graphAddEdge(manager->friendships, &sender_id,
+                               &manager->current_logged_id);
+    CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
     return MANAGER_SUCCESS;
 }
 
@@ -352,9 +359,7 @@ ManagerResult
 managerHandleFriendRequest(CourseManager manager, int id_waiting_for_response,
                            char *action) {
     if (manager == NULL || action == NULL) return MANAGER_NULL_ARGUMENT;
-
     if (!isStudentLogged(manager)) return MANAGER_NOT_LOGGED_IN;
-
     ManagerResult manager_error;
     GraphResult graph_error;
     StudentResult student_error;
@@ -362,12 +367,7 @@ managerHandleFriendRequest(CourseManager manager, int id_waiting_for_response,
 
     Student sender = NULL;
     manager_error = findStudentById(manager, id_waiting_for_response, &sender);
-    if (manager_error == MANAGER_OUT_OF_MEMORY) return MANAGER_OUT_OF_MEMORY;
-    if (manager_error == MANAGER_STUDENT_DOES_NOT_EXIST) {
-        return MANAGER_STUDENT_DOES_NOT_EXIST;
-    }
-    assert(manager_error == MANAGER_SUCCESS);
-
+    if (manager_error != MANAGER_SUCCESS) return manager_error;
     graph_error = edgeExists(manager->friendships, &id_waiting_for_response,
                              &manager->current_logged_id, &result);
     CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
@@ -379,27 +379,14 @@ managerHandleFriendRequest(CourseManager manager, int id_waiting_for_response,
     if (!isValidId(id_waiting_for_response)) {
         return MANAGER_STUDENT_DOES_NOT_EXIST;
     }
-
     student_error = studentIsSentFriendRequest(sender, logged_student,
                                                &result);
     assert(student_error == STUDENT_SUCCESS);
-    if(result == false) return MANAGER_NOT_REQUESTED;
-
+    if (result == false) return MANAGER_NOT_REQUESTED;
     if (!isValidAction(action)) return MANAGER_INVALID_ARGUMENT;
-
-    student_error = studentRemoveSentFriendRequest(sender, logged_student);
-    assert(student_error != STUDENT_INVALID_ARGUMENT);
-    CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
-    if (strcmp(action, "reject") == 0) return MANAGER_SUCCESS;
-
-    student_error = studentRemoveSentFriendRequest(logged_student, sender);
-    assert(student_error == STUDENT_SUCCESS ||
-           student_error == STUDENT_DIDNT_SEND_REQUEST);
-
-    graph_error = graphAddEdge(manager->friendships, &id_waiting_for_response,
-                               &manager->current_logged_id);
-    CONVERT_GRAPH_RESULT_TO_MANAGER_RESULT(graph_error);
-    return MANAGER_SUCCESS;
+    return handleRequestAfterValidation(manager, sender,
+                                        id_waiting_for_response,
+                                        logged_student, action);
 }
 
 ManagerResult managerUnfriend(CourseManager manager, int id_to_unfriend) {
@@ -413,11 +400,7 @@ ManagerResult managerUnfriend(CourseManager manager, int id_to_unfriend) {
     Student student_to_unfriend = NULL;
     manager_error = findStudentById(manager, id_to_unfriend,
                                     &student_to_unfriend);
-    if (manager_error == MANAGER_OUT_OF_MEMORY) return MANAGER_OUT_OF_MEMORY;
-    if (manager_error == MANAGER_STUDENT_DOES_NOT_EXIST) {
-        return MANAGER_STUDENT_DOES_NOT_EXIST;
-    }
-    assert(manager_error == MANAGER_SUCCESS);
+    if (manager_error != MANAGER_SUCCESS) return manager_error;
 
     graph_error = graphRemoveEdge(manager->friendships,
                                   &manager->current_logged_id, &id_to_unfriend);
@@ -457,7 +440,7 @@ managerRemoveLastGrade(CourseManager manager, int semester, int course_id) {
     StudentResult student_error = studentRemoveLastGrade(logged_student,
                                                          semester,
                                                          course_id);
-    if(student_error == STUDENT_INVALID_ARGUMENT) {
+    if (student_error == STUDENT_INVALID_ARGUMENT) {
         return MANAGER_COURSE_DOES_NOT_EXIST;
     }
     CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);
@@ -475,7 +458,7 @@ managerUpdateLastGrade(CourseManager manager, int course_id, int new_grade) {
 
     StudentResult student_error = studentUpdateLastGrade(logged_student,
                                                          course_id, new_grade);
-    if(student_error == STUDENT_INVALID_ARGUMENT) {
+    if (student_error == STUDENT_INVALID_ARGUMENT) {
         return MANAGER_COURSE_DOES_NOT_EXIST;
     }
     CONVERT_STUDENT_RESULT_TO_MANAGER_RESULT(student_error);

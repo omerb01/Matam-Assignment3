@@ -9,12 +9,12 @@
 
 static SetElement copyInt(SetElement element) {
     assert(element != NULL);
-    int* num = (int*)element;
+    int *num = (int *) element;
 
-    int* num_copy = malloc(sizeof(int));
+    int *num_copy = malloc(sizeof(int));
     *num_copy = *num;
 
-    return (SetElement)num_copy;
+    return (SetElement) num_copy;
 }
 
 static void freeInt(SetElement element) {
@@ -23,11 +23,11 @@ static void freeInt(SetElement element) {
 
 static int compareInt(SetElement element1, SetElement element2) {
     assert(element1 != NULL && element2 != NULL);
-    int* num1 = (int*)element1;
-    int* num2 = (int*)element2;
+    int *num1 = (int *) element1;
+    int *num2 = (int *) element2;
 
-    if(*num1 == *num2) return 0;
-    else if(*num1 > *num2) return 1;
+    if (*num1 == *num2) return 0;
+    else if (*num1 > *num2) return 1;
     else return -1;
 }
 
@@ -43,7 +43,7 @@ static bool testGraphCreate() {
 static bool testGraphAddVertex() {
 
     Graph graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element = malloc(sizeof(int));
+    int *element = malloc(sizeof(int));
     GraphResult graph_error;
 
     *element = 10;
@@ -68,8 +68,8 @@ static bool testGraphAddVertex() {
 static bool testGraphAddEdge() {
 
     Graph graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element1 = malloc(sizeof(int));
-    int* element2 = malloc(sizeof(int));
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
     GraphResult graph_error;
 
     *element1 = 1;
@@ -123,8 +123,8 @@ static bool testGraphAddEdge() {
 static bool testGraphRemoveVertex() {
 
     Graph graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element1 = malloc(sizeof(int));
-    int* element2 = malloc(sizeof(int));
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
     GraphResult graph_error;
 
     *element1 = 1;
@@ -184,8 +184,8 @@ static bool testGraphRemoveVertex() {
 static bool testGraphRemoveEdge() {
 
     Graph graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element1 = malloc(sizeof(int));
-    int* element2 = malloc(sizeof(int));
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
     GraphResult graph_error;
 
     *element1 = 1;
@@ -233,8 +233,8 @@ static bool testGraphRemoveEdge() {
 static bool testGraphNeighbors() {
 
     Graph graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element1 = malloc(sizeof(int));
-    int* element2 = malloc(sizeof(int));
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
     Set neighbors;
 
     *element1 = 1;
@@ -277,9 +277,9 @@ static bool testGraphNeighbors() {
 
     int i = 0;
     SET_FOREACH(int*, iterator, neighbors) {
-        if(i == 0) ASSERT_TEST(*iterator == 2);
-        if(i == 1) ASSERT_TEST(*iterator == 3);
-        if(i == 2) ASSERT_TEST(*iterator == 4);
+        if (i == 0) ASSERT_TEST(*iterator == 2);
+        if (i == 1) ASSERT_TEST(*iterator == 3);
+        if (i == 2) ASSERT_TEST(*iterator == 4);
         i++;
     }
     setDestroy(neighbors);
@@ -299,8 +299,8 @@ static bool testGraphNeighbors() {
 static bool testVertexExists() {
 
     Graph graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element1 = malloc(sizeof(int));
-    int* element2 = malloc(sizeof(int));
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
     GraphResult graph_error;
     bool result;
 
@@ -339,8 +339,8 @@ static bool testVertexExists() {
 static bool testEdgeExists() {
 
     Graph graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element1 = malloc(sizeof(int));
-    int* element2 = malloc(sizeof(int));
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
     GraphResult graph_error;
     bool result;
 
@@ -426,8 +426,8 @@ static bool testGraphDestroy() {
     graphDestroy(NULL);
 
     graph = graphCreate(copyInt, freeInt, compareInt);
-    int* element1 = malloc(sizeof(int));
-    int* element2 = malloc(sizeof(int));
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
 
     *element1 = 1;
     graphAddVertex(graph, element1);
@@ -444,7 +444,7 @@ static bool testGraphDestroy() {
     return true;
 }
 
-int main(){
+int main() {
     RUN_TEST(testGraphCreate);
     RUN_TEST(testGraphAddVertex);
     RUN_TEST(testGraphAddEdge);

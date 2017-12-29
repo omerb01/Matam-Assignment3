@@ -559,7 +559,7 @@ static bool testManagerUpdateLastGrade() {
 static bool testManagerPrintFullSheet() {
     CourseManager manager = managerCreate();
     ManagerResult manager_error;
-    FILE* output_stream = stdout;
+    FILE *output_stream = stdout;
 
     manager_error = managerPrintFullSheet(NULL, manager);
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
@@ -585,7 +585,7 @@ static bool testManagerPrintFullSheet() {
     printf("\n");
     manager_error = managerPrintFullSheet(output_stream, manager);
     ASSERT_TEST(manager_error == MANAGER_SUCCESS);
-    
+
     managerDestroy(manager);
     return true;
 }
@@ -593,7 +593,7 @@ static bool testManagerPrintFullSheet() {
 static bool testManagerPrintCleanSheet() {
     CourseManager manager = managerCreate();
     ManagerResult manager_error;
-    FILE* output_stream = stdout;
+    FILE *output_stream = stdout;
 
     manager_error = managerPrintCleanSheet(NULL, manager);
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
@@ -627,7 +627,7 @@ static bool testManagerPrintCleanSheet() {
 static bool testManagerPrintHighestGrades() {
     CourseManager manager = managerCreate();
     ManagerResult manager_error;
-    FILE* output_stream = stdout;
+    FILE *output_stream = stdout;
 
     manager_error = managerPrintHighestGrades(NULL, manager, 2);
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
@@ -671,7 +671,7 @@ static bool testManagerPrintHighestGrades() {
 static bool testManagerPrintLowestGrades() {
     CourseManager manager = managerCreate();
     ManagerResult manager_error;
-    FILE* output_stream = stdout;
+    FILE *output_stream = stdout;
 
     manager_error = managerPrintLowestGrades(NULL, manager, 2);
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
@@ -715,7 +715,7 @@ static bool testManagerPrintLowestGrades() {
 static bool testManagerPrintReferences() {
     CourseManager manager = managerCreate();
     ManagerResult manager_error;
-    FILE* output_stream = stdout;
+    FILE *output_stream = stdout;
 
     manager_error = managerPrintReferences(NULL, manager, 234122, 2);
     ASSERT_TEST(manager_error == MANAGER_NULL_ARGUMENT);
@@ -758,7 +758,7 @@ static bool testManagerPrintReferences() {
     managerAddGrade(manager, 7, 236603, 4, 71);
     managerAddGrade(manager, 7, 394902, 3, 98);
     managerAddGrade(manager, 7, 236703, 6, 100);
-    
+
     managerAddStudent(manager, 111111111, "Shlomo", "Artzi");
     managerLogout(manager);
     managerLogin(manager, 111111111);
@@ -810,7 +810,7 @@ static bool testManagerPrintReferences() {
     printf("\n");
     manager_error = managerPrintReferences(output_stream, manager, 394902, 2);
     ASSERT_TEST(manager_error == MANAGER_SUCCESS);
-    
+
     managerDestroy(manager);
     return true;
 }

@@ -201,7 +201,7 @@ static bool testStudentAddGrade() {
     ASSERT_TEST(student_error == STUDENT_INVALID_ARGUMENT);
     student_error = studentAddGrade(student, 1, 104167, 0, 43);
     ASSERT_TEST(student_error == STUDENT_SUCCESS);
-    
+
     studentDestroy(student);
     return true;
 }

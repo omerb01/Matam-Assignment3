@@ -4,6 +4,7 @@
 
 #ifndef ASSIGNMENT3_GRADESSHEET_H
 #define ASSIGNMENT3_GRADESSHEET_H
+
 #include <stdio.h>
 
 typedef struct GradesSheet_t *GradesSheet;
@@ -78,7 +79,7 @@ SheetResult sheetHighestGrade(GradesSheet, int course_id, int *result);
  * SHEET_NULL_ARGUMENT if the given grades sheet is null
  * otherwise SHEET_SUCCESS
  */
-SheetResult sheetPrintFull(FILE* output_channel, GradesSheet);
+SheetResult sheetPrintFull(FILE *output_channel, GradesSheet);
 
 /* Prints a clean version (the effective grades) of the given grades sheet
  * returns:
@@ -86,7 +87,7 @@ SheetResult sheetPrintFull(FILE* output_channel, GradesSheet);
  * SHEET_OUT_OF_MEMORY if memory problem occurred
  * otherwise SHEET_SUCCESS
  */
-SheetResult sheetPrintClean(FILE* output_channel, GradesSheet);
+SheetResult sheetPrintClean(FILE *output_channel, GradesSheet);
 
 /* Prints a given amount of highest effective grades in the *clean version* grades sheet
  * returns:
@@ -95,7 +96,9 @@ SheetResult sheetPrintClean(FILE* output_channel, GradesSheet);
  * SHEET_OUT_OF_MEMORY if memory problem occurred
  * otherwise SHEET_SUCCESS
  */
-SheetResult sheetPrintHighestGrades(FILE* output_channel, GradesSheet, int amount);
+SheetResult
+sheetPrintHighestGrades(FILE *output_channel, GradesSheet, int amount);
+
 /* Prints a given amount of lowest effective grades in the *clean version* grades sheet
  * returns:
  * SHEET_NULL_ARGUMENT if the given grades sheet is null
@@ -103,7 +106,9 @@ SheetResult sheetPrintHighestGrades(FILE* output_channel, GradesSheet, int amoun
  * SHEET_OUT_OF_MEMORY if memory problem occurred
  * otherwise SHEET_SUCCESS
  */
-SheetResult sheetPrintLowestGrades(FILE* output_channel, GradesSheet, int amount);
+SheetResult
+sheetPrintLowestGrades(FILE *output_channel, GradesSheet, int amount);
+
 /* Destroys the grade sheet
  * de-allocates all relevant memory
  */

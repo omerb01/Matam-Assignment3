@@ -9,7 +9,8 @@
 #include <stdlib.h>
 
 #define GRADE_INSERT_LAST() \
-new_semester = listCreate((CopyListElement) gradeCopyFunction,(FreeListElement) gradeFreeFunction); \
+new_semester = listCreate((CopyListElement) gradeCopyFunction, \
+                            (FreeListElement)gradeFreeFunction); \
 listInsertLast(new_semester, (ListElement) new_grade); \
 listInsertLast(grades_sheet->sheet, (ListElement) new_semester); \
 
@@ -19,10 +20,12 @@ else if(grade1->$$field$$ == grade2->$$field$$){return 0;} \
 else{ return -1;}
 
 #define CHECK_GRADE_NOT_NULL() \
- if (grades_sheet == NULL || grades_sheet->sheet == NULL) {return SHEET_NULL_ARGUMENT;}
-#define CHECK_GRADE_OUTPUT_NOT_NULL() \
- if (grades_sheet == NULL || grades_sheet->sheet == NULL || output_channel == NULL) {return SHEET_NULL_ARGUMENT;}
+ if (grades_sheet == NULL || grades_sheet->sheet == NULL) \
+                {return SHEET_NULL_ARGUMENT;}
 
+#define CHECK_GRADE_OUTPUT_NOT_NULL() \
+ if (grades_sheet == NULL || grades_sheet->sheet == NULL || \
+        output_channel == NULL) {return SHEET_NULL_ARGUMENT;}
 
 struct GradesSheet_t {
     List sheet;
@@ -38,15 +41,6 @@ typedef struct Grade_t {
 static bool filterCourse(Grade grade, ListFilterKey key);
 
 static List generateCleanList(GradesSheet grades_sheet);
-
-
-/*static void printList(List toprint) { TODO: Remove at the end
-    printf("\n");
-    LIST_FOREACH(Grade, grade, toprint) {
-        printf("Semester:%d\tCourse:%d\tGrade:%d\n", grade->semester,
-               grade->course_id, grade->grade_value);
-    }
-}*/
 
 static ListElement semesterListCopy(ListElement semesterGradesList) {
     if ((List) semesterGradesList == NULL) return NULL;
@@ -157,7 +151,7 @@ static List getCleanGradesForCurrentSemester(List semester) {
 }
 
 static SheetResult
-printSemesterInfo(FILE *output_stream, List clean_grades_sheet, List semester,
+printSemesterInfo(FILE *output_stream, List semester,
                   int *total_points_sheet, int *failed_total_sheet) {
     int total_points = 0, failed_points = 0, effective_points = 0,
             effective_grade_sum = 0;
@@ -341,15 +335,11 @@ semeserGradesSortFunction(Grade grade1, Grade grade2, ListSortKey key) {
 }
 
 static List
-createSortedCleanSheetByKey(GradesSheet grades_sheet, int counter,
+createSortedCleanSheetByKey(GradesSheet grades_sheet,
                             ListSortKey key) {
-    int list_size;
     List clean_grades_list = generateCleanList(grades_sheet);
     if (clean_grades_list == NULL) return NULL;
 
-
-    list_size = listGetSize(clean_grades_list);
-    counter = list_size > counter ? counter : list_size;
     ListResult result = listSort(clean_grades_list,
                                  (CompareListElements) semeserGradesSortFunction,
                                  (ListSortKey) key);
@@ -371,7 +361,7 @@ static int getLastSemesterNumber(GradesSheet grades_sheet) {
 static List
 getLatestCourse(GradesSheet grades_sheet, int *latest_index, int course_id) {
     int last_grade_index;
-    List latest_semester_list=NULL;
+    List latest_semester_list = NULL;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         last_grade_index = getSemesterLastGradeIndex(current_semester_list,
                                                      course_id);
@@ -388,7 +378,7 @@ static List
 getLatestCourseToRemove(GradesSheet grades_sheet, int *latest_index,
                         int course_id, int semester) {
     int last_grade_index;
-    List latest_semester_list=NULL;
+    List latest_semester_list = NULL;
     LIST_FOREACH(List, current_semester_list, grades_sheet->sheet) {
         if (((Grade) listGetFirst(current_semester_list))->semester ==
             semester) {
@@ -467,7 +457,7 @@ sheetAddGrade(GradesSheet grades_sheet, int semester, int course_id,
     Grade new_grade = gradeCopy(semester, course_id, points_x2,
                                 grade_value);
     if (new_grade == NULL) return SHEET_OUT_OF_MEMORY;
-    List new_semester=NULL;//TODO
+    List new_semester = NULL;
     int grade_inserted = 0;
 
     SheetResult result = insertGradeIntoSheet(grades_sheet, new_grade,
@@ -533,8 +523,7 @@ sheetUpdateLastGrade(GradesSheet grades_sheet, int course_id,
             last_grade_index--;
         }
         return SHEET_SUCCESS;
-    }
-    else if(last_grade_index == -1 && lastest_semester_list == NULL) {
+    } else if (last_grade_index == -1 && lastest_semester_list == NULL) {
         return SHEET_GRADE_DOES_NOT_EXIST;
     }
     return SHEET_OUT_OF_MEMORY;
@@ -566,26 +555,26 @@ SheetResult sheetPrintFull(FILE *output_channel, GradesSheet grades_sheet) {
     List clean_grades_sheet = generateCleanList(grades_sheet);
     if (clean_grades_sheet == NULL) return SHEET_OUT_OF_MEMORY;
 
-    int total_points_sheet = 0, failed_points_sheet = 0;/*, effective_point_sheet = 0, effective_grade_sum_sheet = 0;*/
-    ListResult result = listSort(grades_sheet->sheet,
-                                 (CompareListElements) semesterIdCompareFunction,
-                                 0);
-    if (result == LIST_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
+    int total_points_sheet = 0, failed_points_sheet = 0;
+    ListResult list_result = listSort(grades_sheet->sheet,
+                                      (CompareListElements) semesterIdCompareFunction,
+                                      0);
+    if (list_result == LIST_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
     LIST_FOREACH(List, semester_grades_list, grades_sheet->sheet) {
-        SheetResult result = printSemesterInfo(output_channel,
-                                               clean_grades_sheet,
-                                               semester_grades_list,
-                                               &total_points_sheet,
-                                               &failed_points_sheet);
-        if (result == SHEET_OUT_OF_MEMORY) {
+        SheetResult sheet_result = printSemesterInfo(output_channel,
+                                                     semester_grades_list,
+                                                     &total_points_sheet,
+                                                     &failed_points_sheet);
+        if (sheet_result == SHEET_OUT_OF_MEMORY) {
             listDestroy(clean_grades_sheet);
             return SHEET_OUT_OF_MEMORY;
         }
     }
-    SheetResult sresult = printFullSheetSummary(output_channel, grades_sheet,
-                                                total_points_sheet,
-                                                failed_points_sheet);
-    if (sresult == SHEET_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
+    SheetResult sheet_result = printFullSheetSummary(output_channel,
+                                                     grades_sheet,
+                                                     total_points_sheet,
+                                                     failed_points_sheet);
+    if (sheet_result == SHEET_OUT_OF_MEMORY) return SHEET_OUT_OF_MEMORY;
 
     listDestroy(clean_grades_sheet);
 
@@ -625,7 +614,6 @@ sheetPrintHighestGrades(FILE *output_channel, GradesSheet grades_sheet,
     if (amount <= 0) return SHEET_INVALID_ARGUMENT;
     int key = 0, counter = amount;
     List clean_grades_list = createSortedCleanSheetByKey(grades_sheet,
-                                                         counter,
                                                          (ListSortKey) &key);
     if (clean_grades_list == NULL) return SHEET_OUT_OF_MEMORY;
 
@@ -648,7 +636,6 @@ sheetPrintLowestGrades(FILE *output_channel, GradesSheet grades_sheet,
     if (!isValidAmount(amount)) return SHEET_INVALID_ARGUMENT;
     int key = 1, counter = amount;
     List clean_grades_list = createSortedCleanSheetByKey(grades_sheet,
-                                                         counter,
                                                          (ListSortKey) &key);
     if (clean_grades_list == NULL) return SHEET_OUT_OF_MEMORY;
 
