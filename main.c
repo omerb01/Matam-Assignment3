@@ -77,7 +77,6 @@ static char *getStringWithoutOffset(char *string_with_offset) {
     while (isDelimiter(*iterator)) iterator++;
     while (isDelimiter(*iterator_end) || *iterator_end == '\n') iterator_end--;
     *(++iterator_end) = '\0';
-
     char *stripped_string = malloc(
             sizeof(char) * (iterator_end - iterator + 1));
     if (stripped_string == NULL) return NULL;
@@ -130,7 +129,7 @@ static bool isStringComment(char *input_string) {
 
 static bool isStringEmpty(char *input_string) {
     while (*input_string != '\0') {
-        if (isDelimiter(*input_string) && *input_string != '\n') return false;
+        if (!isDelimiter(*input_string) && *input_string != '\n') return false;
         input_string++;
     }
     return true;
@@ -461,6 +460,7 @@ static void commandProcess(List command, FILE *input, FILE *output,
             mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
             return;
         }
+
         critical_status = commandRouter(command, course_manager, output);
         if (critical_status == -1) break;
 
