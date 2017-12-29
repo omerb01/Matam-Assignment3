@@ -471,7 +471,7 @@ static void commandProcess(List command, FILE *input, FILE *output,
 int main(int argc, char **argv) {
     if (!isMainArgumentsValid(argv, argc)) {
         mtmPrintErrorMessage(stderr, MTM_INVALID_COMMAND_LINE_PARAMETERS);
-        return -1;
+        return 0;
     }
     FILE *output = NULL;
     FILE *input = NULL;
@@ -479,7 +479,7 @@ int main(int argc, char **argv) {
     getOutputFile(argc, argv, &output);
     if (input == NULL || output == NULL) {
         mtmPrintErrorMessage(stderr, MTM_CANNOT_OPEN_FILE);
-        return -1;
+        return 0;
     }
 
     List command = listCreate((CopyListElement) copyCommand,
@@ -489,7 +489,7 @@ int main(int argc, char **argv) {
         listDestroy(command);
         managerDestroy(course_manager);
         mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
-        return -1;
+        return 0;
     }
     commandProcess(command, input, output, course_manager);
 
@@ -497,5 +497,5 @@ int main(int argc, char **argv) {
     listDestroy(command);
     if (output != stdout) fclose(output);
     if (input != stdin) fclose(input);
-    return -1;
+    return 0;
 }
