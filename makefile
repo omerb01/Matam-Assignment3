@@ -12,7 +12,7 @@ OBJS=main.o CourseManager.o GradesSheet.o Graph.o Student.o \
 OBJS_FULL=$(GRAPH_OBJS) $(SHEET_OBJS) $(STUDENT_OBJS) $(MANAGER_OBJS) $(LIST_OBJS)
 
 mtm_cm : $(OBJS)
-	$(CC) $(DEBUG) $(OBJS) -o $@ $(LIBRARIES)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LIBRARIES)
 
 main.o: main.c list.h mtm_ex3.h CourseManager.h Graph.h set.h Student.h
 Graph.o: Graph.c Graph.h set.h
@@ -23,11 +23,11 @@ Student.o: Student.c set.h list.h mtm_ex3.h GradesSheet.h Student.h set.h Useful
 UsefulFunctions.o: UsefulFunctions.c UsefulFunctions.h set.h
  
 tests : $(OBJS_FULL)
-	$(CC) $(DEBUG) $(MANAGER_OBJS) -o CourseManager_test $(LIBRARIES)
-	$(CC) $(DEBUG) $(SHEET_OBJS) -o GradesSheet_test $(LIBRARIES)
-	$(CC) $(DEBUG) $(GRAPH_OBJS) -o Graph_test $(LIBRARIES)
-	$(CC) $(DEBUG) $(LIST_OBJS) -o list_mtm_test $(LIBRARIES)
-	$(CC) $(DEBUG) $(STUDENT_OBJS) -o Student_test $(LIBRARIES)
+	$(CC) $(CFLAGS) $(MANAGER_OBJS) -o CourseManager_test $(LIBRARIES)
+	$(CC) $(CFLAGS) $(SHEET_OBJS) -o GradesSheet_test $(LIBRARIES)
+	$(CC) $(CFLAGS) $(GRAPH_OBJS) -o Graph_test $(LIBRARIES)
+	$(CC) $(CFLAGS) $(LIST_OBJS) -o list_mtm_test $(LIBRARIES)
+	$(CC) $(CFLAGS) $(STUDENT_OBJS) -o Student_test $(LIBRARIES)
  
 list_mtm/list_mtm.o: list_mtm/list_mtm.c list_mtm/list_mtm.h
 
